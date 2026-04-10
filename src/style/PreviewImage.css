@@ -1,0 +1,110 @@
+
+
+.main-image {
+  position: relative;
+  /* width: 100%;
+  height: 350px; */
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 16 / 9;
+}
+
+/* Arrow Buttons */
+.preview-image-arrow {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  height: 3rem;
+  width: 3rem;
+  font-size: 20px;
+  border-radius: 50%;
+}
+
+.prev-img-arrow-left:hover {
+  color: #1c8c8c;
+}
+
+.prev-img-arrow-right:hover {
+  color: #1c8c8c;
+}
+
+.prev-img-arrow-disabled {
+  visibility: hidden;
+}
+
+/* previews */
+.preview-container {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  padding: 20px 10px 10px;
+
+  border-radius: 12px;
+
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.573),
+    rgba(0, 0, 0, 0)
+  );
+  /* background-color: white; */
+}
+
+.preview-wrapper {
+  display: flex;
+  /* justify-content: flex-start; */
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+  height: 5rem;
+  overflow-x: scroll;
+  overflow-y: visible;
+  scrollbar-width: none;
+  min-width: 0;
+  flex: 1;
+} 
+
+.preview-wrapper::-webkit-scrollbar {
+  display: none; /* hide scrollbar Chrome/Safari */
+}
+
+.preview {
+  width: 120px;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 3px solid #1c8c8c;
+  transition: 0.3s ease-in;
+}
+
+/* .preview:hover {
+  opacity: 1;
+}
+
+.preview-active {
+  opacity: 1;
+  border: 4px solid #1c8c8c;
+} */
+
+.preview:hover {
+  opacity: 1;
+}
+
+.preview-active {
+  opacity: 1;
+  border: 3px solid white;
+  position: relative;
+  bottom: 5px;
+  z-index: 500; 
+}

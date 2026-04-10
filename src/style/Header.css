@@ -1,0 +1,145 @@
+.header {
+  width: 100%;
+  background-color: #ffffff;
+  /* border-bottom: 1px solid #eaeaea; */
+  padding: 8px 80px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0px;
+  z-index: 10000;
+  background: rgba(255, 255, 255, 0.347);
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 4px 20px rgba(0,0,0,0.05);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.logo img {
+  height: 50px;
+  width: 50px;
+}
+
+.logo-dot {
+  width: 14px;
+  height: 14px;
+  border: 3px solid #0f766e;
+  border-radius: 50%;
+}
+
+.logo h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #111;
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background-color: #111;
+  transition: 0.3s;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  gap: 35px;
+}
+
+.nav-link {
+  text-decoration: none;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.nav-link:hover {
+  color: #0f766e;
+}
+
+/* Active link styling */
+.nav-link.active {
+  color: #0f766e;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    padding: 15px 20px;
+  }
+
+  .nav {
+    position: fixed;
+    top: 65px; /* height of header */
+    right: -100%;
+    width: 200px;
+    height: calc(100% - 65px);
+    background-color: #fff;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+    transition: right 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav.active {
+    right: 0;
+  }
+
+  .nav-link {
+    font-size: 1.2rem;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* Profile */
+.profile {
+  width: 38px;
+  height: 38px;
+  background-color: #0f766e;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+}

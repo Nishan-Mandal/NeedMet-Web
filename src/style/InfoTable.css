@@ -1,0 +1,40 @@
+.info-section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.table-container {
+  width: 100%;
+  text-align: center;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-table th,
+.info-table td {
+  border: 1px solid #00000025;
+  padding: 10px;
+}
+
+.info-table th {
+  background-color: rgba(0, 0, 0, 0.146);
+}
+
+.hours-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

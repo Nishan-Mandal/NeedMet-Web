@@ -1,0 +1,111 @@
+.listing-details {
+    padding: 20px 80px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: start;
+    gap: 1.5rem;
+}
+
+.listing-details-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1.2;
+    /* gap: 2rem; */
+}
+
+.likes-contact {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.likes {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    color: rgba(0, 0, 0, 0.824);
+}
+
+.likes-count {
+    font-weight: 550;
+}
+
+.likes-count i {
+    color: #1c8c8c;
+    margin-right: 5px;
+}
+
+.contact {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.contact button {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    border-radius: 15px;
+    display: flex;
+    gap: 0.5rem;
+    transition: 0.2s ease;
+}
+
+
+.call {
+    background-color: transparent;
+    color: black;
+    border: 2px solid rgba(0, 0, 0, 0.32);
+}
+
+.call i {
+    color: #1c8c8c;
+    transition: 0.2s ease;
+}
+
+.direction {
+    background-color: #1c8c8c;
+    color: white;
+    border: none;
+    border: 2px solid #1c8c8c;
+}
+
+.contact button:hover {
+    cursor: pointer;
+}
+
+.call:hover i{
+    color: white;
+}
+.call:hover {
+    background-color: #1c8c8c;
+    border: 2px solid #1c8c8c;
+    color: white;
+}
+
+.direction:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid rgba(0, 0, 0, 0.32);
+}
+
+.direction i {
+    transition: 0.2s ease;
+}
+.direction:hover i {
+    color: #1c8c8c;
+}
+
+.listing-details-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}

@@ -1,0 +1,134 @@
+.hero {
+  background: linear-gradient(180deg, #1c8c8c 0%, #ffffff 100%);
+  padding: 60px 80px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+/* LEFT */
+.hero-left {
+  flex: 1;
+  color: white;
+}
+
+.hero-location {
+  font-weight: 550;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  color: #065151;
+}
+
+.hero-search {
+  background: white;
+  border-radius: 30px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+}
+
+.hero-search input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 1.2rem;
+}
+
+.search-icon {
+  margin-right: 10px;
+  color: #777;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tag-btn {
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.tag-btn:hover {
+  background: white;
+}
+
+/* RIGHT */
+.hero-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-image-card {
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.219);
+}
+
+.hero-image-card img {
+  width: auto;
+  height: 17rem;
+  background-size: cover;
+  border-radius: 20px;
+  display: block;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1080px) {
+  /* .hero-inner {
+    flex-direction: column-reverse;
+    text-align: center;
+  } */
+
+  .hero-location {
+    font-size: 1rem;
+  }
+
+  .hero-search {
+    margin: 0 auto 20px;
+  }
+
+  .hero-search input{
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .tag-btn {
+    font-size: 10px;
+  }
+
+}
+
+@media (max-width: 750px) {
+  .hero {
+    padding: 40px 20px;
+  }
+
+  .hero-inner {
+    flex-direction: column-reverse;
+  }
+
+  .hero-search {
+    width: 100%;
+  }
+
+}

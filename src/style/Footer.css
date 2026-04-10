@@ -1,0 +1,133 @@
+.footer {
+  background-color: white;
+  padding: 0px 60px 20px 60px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.footer-quote {
+  padding: 4rem;
+  font-size: 3rem;
+  text-align: center;
+  color: #77777798;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 700;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-column h4 {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #111;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-column ul li {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.footer-column ul li:hover {
+  color: #0f766e;
+}
+
+.footer-column a {
+  text-decoration: none;
+  color: #555;
+}
+
+.footer-column a:hover {
+  color: #0f766e;
+}
+
+/* Social */
+.footer-social-icons {
+  display: flex;
+  gap: 15px;
+  font-size: 18px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.footer-social-icons i:hover {
+  color: #0f766e;
+}
+
+/* Store Buttons */
+.store-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.store-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background-color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.store-btn:hover {
+  background-color: #0f766e;
+  color: white;
+  border-color: #0f766e;
+}
+
+/* Bottom */
+.footer-bottom {
+  text-align: center;
+  font-size: 13px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 15px;
+}
+
+/* Responsive */
+@media (max-width: 550px) {
+  .footer-container {
+    /* grid-template-columns: repeat(2, 1fr); */
+    flex-direction: column;
+  }
+
+  .footer-quote {
+    font-size: 2rem;
+    padding: 2rem 0 3rem;
+  }
+
+  .footer-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .footer-column ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
