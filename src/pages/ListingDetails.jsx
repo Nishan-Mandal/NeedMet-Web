@@ -1,4 +1,4 @@
-import { Header, Footer, ListingBasicInfo, InfoTable, ListingSection, RatingSection, PreviewImage } from '../components'
+import { ListingBasicInfo, InfoTable, ListingSection, RatingSection, PreviewImage, ListingDetailsLoader } from '../components'
 // import { listing } from '../data/listing_dummy_data.js'
 import { useParams, useLocation } from 'react-router-dom';
 import { useListings } from '../hooks/useListings.js';
@@ -39,11 +39,7 @@ function ListingDetails() {
   }
 
   if(loading) {
-    return (
-      <h2 style={{ textAlign: 'center', margin: '5rem 0' }}>
-        Loading Listing
-      </h2>
-    );
+    return <ListingDetailsLoader />
   }
 
   if (!listing) {
@@ -95,12 +91,32 @@ function ListingDetails() {
   const imageList = listing?.images?.map(image => image.fullUrl) || [];
 
 
+  // Shared right-column content used in both desktop and mobile
+  const rightContent = (
+    <>
+      <ListingBasicInfo listing={listing} />
+      <InfoTable
+        title='Opening Hours'
+        columns={['Day', 'Hours']}
+        rows={openingHoursRows}
+        style={{ width: '100%' }}
+      />
+      <InfoTable
+        title='Detailed Information'
+        columns={["Details", "Info"]}
+        rows={detailsRows}
+        style={{ width: '100%' }}
+        fixHeight={'280px'}
+      />
+    </>
+  );
+
   return (
     <>
       <div className="listing-details">
+
         <div className="listing-details-left">
-          <PreviewImage images={imageList}/>
-          {/* <ImageSlider /> */}
+          <PreviewImage images={imageList} />
 
           <div className="likes-contact">
             <div className="likes">
@@ -108,23 +124,31 @@ function ListingDetails() {
                 <i className="fa-solid fa-thumbs-up"></i>
                 {listing.likes}
               </div>
-
-              <div className="views-count">
-                ({listing.views} Views)
-              </div>
+              <div className="views-count">({listing.views} Views)</div>
             </div>
-
             <div className="contact">
-              <button className='call'>
+              <a 
+                href={`tel:${listing?.phone || listing?.alternatePhone}`}
+                className='call'
+              >
                 <i className="fa-solid fa-phone"></i>
-                Call
-              </button>
-
-              <button className="direction">
+                {listing?.phone || listing?.alternatePhone}
+              </a>
+              <a 
+                href={`https://www.google.com/maps/dir/?api=1&destination=${listing?.geo?.lat},${listing?.geo?.lng}`}  
+                target="_blank"
+                rel="noreferrer"
+                className="direction"
+              >
                 <i className="fa-solid fa-location-arrow"></i>
                 Direction
-              </button>
+              </a>
             </div>
+          </div>
+
+          {/* Mobile-only: right content injected here in correct order */}
+          <div className="listing-details-right-mobile">
+            {rightContent}
           </div>
 
           <RatingSection
@@ -137,30 +161,17 @@ function ListingDetails() {
           />
         </div>
 
+        {/* Desktop-only right column */}
         <div className="listing-details-right">
-          <ListingBasicInfo listing={listing}/>
-
-          <InfoTable 
-            title='Opening Hours'
-            columns={['Day', 'Hours']}
-            rows={openingHoursRows}
-            style={{width: '100%'}}
-          />
-
-          <InfoTable 
-            title='Detailed Information'
-            columns={["Details", "Info"]}
-            rows={detailsRows}
-            style={{width: '100%'}}
-            fixHeight={'280px'}
-          /> 
+          {rightContent}
         </div>
+
       </div>
 
-      <ListingSection title="Similar Listings" listings={newListings} see_all_navigate='/listings/similar'/>
-      <ListingSection title="Recommended Listings" listings={recommendedListings} see_all_navigate='/listings/recommended'/>
+      <ListingSection title="Similar Listings" listings={newListings} see_all_navigate='/listings/similar' />
+      <ListingSection title="Recommended Listings" listings={recommendedListings} see_all_navigate='/listings/recommended' />
     </>
-  )
+  );
 }
 
 export default ListingDetails;

@@ -1,24 +1,30 @@
+/* ─── Container ───────────────────────────────────────────────────── */
 .hl-container {
-  padding: 24px;
+  padding: 40px 80px;
   display: flex;
   flex-direction: column;
   gap: 40px;
 }
 
-/* Skeleton Base */
-.hl-skeleton {
-  background: #e5e7eb;
+/* ─── Shimmer Loader Base ─────────────────────────────────────────── */
+.hl-loader {
+  background: linear-gradient(
+    90deg,
+    #e5e7eb 25%,
+    #f3f4f6 50%,
+    #e5e7eb 75%
+  );
+  background-size: 200% 100%;
   border-radius: 12px;
-  animation: hl-pulse 1.5s infinite ease-in-out;
+  animation: hl-shimmer 1.6s infinite linear;
 }
 
-@keyframes hl-pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+@keyframes hl-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-/* Hero */
+/* ─── Hero ────────────────────────────────────────────────────────── */
 .hl-hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -38,13 +44,13 @@
   border-radius: 16px;
 }
 
-/* Search */
+/* ─── Search ──────────────────────────────────────────────────────── */
 .hl-search {
   height: 40px;
   border-radius: 999px;
 }
 
-/* Tags */
+/* ─── Tags ────────────────────────────────────────────────────────── */
 .hl-tags {
   display: flex;
   flex-wrap: wrap;
@@ -53,27 +59,30 @@
 
 .hl-tag {
   height: 24px;
-  width: 80px;
+  width: 100px;
   border-radius: 999px;
 }
 
-/* Text */
-.hl-text.hl-small {
+/* ─── Text Variants ───────────────────────────────────────────────── */
+.hl-text-small {
   height: 14px;
   width: 120px;
+  border-radius: 6px;
 }
 
-.hl-text.hl-medium {
+.hl-text-medium {
   height: 16px;
   width: 70%;
+  border-radius: 6px;
 }
 
-.hl-text.hl-tiny {
+.hl-text-tiny {
   height: 10px;
   width: 50px;
+  border-radius: 6px;
 }
 
-/* Section */
+/* ─── Section ─────────────────────────────────────────────────────── */
 .hl-section {
   display: flex;
   flex-direction: column;
@@ -83,13 +92,14 @@
 .hl-title {
   height: 18px;
   width: 150px;
+  border-radius: 6px;
 }
 
-/* Categories */
+/* ─── Categories ──────────────────────────────────────────────────── */
 .hl-categories {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
 }
 
 .hl-category-item {
@@ -105,10 +115,10 @@
   border-radius: 10px;
 }
 
-/* Cards */
+/* ─── Cards ───────────────────────────────────────────────────────── */
 .hl-cards {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 24px;
 }
 
@@ -124,23 +134,117 @@
   border-radius: 12px;
 }
 
-/* Responsive */
+/* ─── Tablet (≤ 768px) ────────────────────────────────────────────── */
 @media (max-width: 768px) {
+  .hl-container {
+    padding: 28px 32px;
+    gap: 32px;
+  }
+
   .hl-hero {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .hl-hero-image {
+    height: 200px;
   }
 
   .hl-categories {
-    grid-template-columns: repeat(4, 1fr);
+    gap: 1.8rem;
+  }
+
+  .hl-icon {
+    height: 42px;
+    width: 42px;
+  }
+
+  .hl-cards {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .hl-card-img {
+    height: 130px;
+  }
+
+  .hl-tag {
+    width: 80px;
+    height: 22px;
+  }
+
+  .hl-title {
+    width: 120px;
+  }
+}
+
+/* ─── Phone (≤ 480px) ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .hl-container {
+    padding: 20px 16px;
+    gap: 28px;
+  }
+
+  .hl-hero {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .hl-hero-image {
+    height: 170px;
+    border-radius: 12px;
+  }
+
+  .hl-search {
+    height: 36px;
+  }
+
+  .hl-tags {
+    gap: 6px;
+  }
+
+  .hl-tag {
+    width: 70px;
+    height: 20px;
+  }
+
+  .hl-categories {
+    gap: 1.2rem;
+  }
+
+  .hl-icon {
+    height: 38px;
+    width: 38px;
+    border-radius: 8px;
+  }
+
+  .hl-text-tiny {
+    height: 9px;
+    width: 40px;
   }
 
   .hl-cards {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
-}
 
-@media (max-width: 480px) {
-  .hl-cards {
-    grid-template-columns: 1fr;
+  .hl-card-img {
+    height: 110px;
+    border-radius: 10px;
+  }
+
+  .hl-text-medium {
+    height: 14px;
+    width: 80%;
+  }
+
+  .hl-text-small {
+    height: 12px;
+    width: 100px;
+  }
+
+  .hl-title {
+    height: 16px;
+    width: 100px;
   }
 }

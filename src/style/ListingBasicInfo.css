@@ -7,7 +7,7 @@
     flex-direction: column;
     gap: 0.7rem;
     width: 100%;
-}   
+}
 
 .listing-basic-info-category {
     font-size: 1rem;
@@ -21,7 +21,6 @@
     font-size: 2rem;
     font-weight: 600;
     text-transform: capitalize;
-    /* margin: 0; */
 }
 
 /* Rating */
@@ -52,7 +51,6 @@
 }
 
 /* Location + Social */
-
 .location {
     display: flex;
     align-items: center;
@@ -79,9 +77,9 @@
 }
 
 .social-icons a.disabled {
-  opacity: 0.15;
-  pointer-events: none;
-  filter: grayscale(100%);
+    opacity: 0.15;
+    pointer-events: none;
+    filter: grayscale(100%);
 }
 
 .social-icons a:hover {
@@ -89,7 +87,6 @@
 }
 
 /* Description */
-
 .listing-description h4 {
     border-top: 1px solid #33333324;
     padding: 15px 0 5px 0;
@@ -108,7 +105,6 @@
     align-items: center;
     padding: 15px 0;
     border-top: 1px solid #33333324;
-    /* margin-top: 1rem; */
 }
 
 .owner-left {
@@ -163,6 +159,145 @@
 }
 
 .help-btn:hover {
-    /* background: #0d6efd; */
     color: black;
+}
+
+
+/* ─── Tablet (≤ 768px) ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .listing-basic-info {
+        padding: 16px 16px 0;
+        gap: 0.6rem;
+        border-radius: 8px;
+    }
+
+    .listing-info-title {
+        font-size: 1.6rem;
+    }
+
+    .listing-basic-info-category {
+        font-size: 0.9rem;
+    }
+
+    .social-icons-img {
+        height: 30px;
+        width: 30px;
+    }
+
+    .social-icons {
+        gap: 12px;
+    }
+
+    .owner-logo {
+        width: 48px;
+        height: 48px;
+        font-size: 1.1rem;
+    }
+
+    .owner-name {
+        font-size: 0.95rem;
+    }
+
+    .help-btn {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+    }
+
+    .listing-description p {
+        font-size: 13px;
+    }
+}
+
+
+/* ─── Phone (≤ 480px) ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .listing-basic-info {
+        padding: 14px 14px 0;
+        gap: 0.55rem;
+        border-radius: 6px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);
+    }
+
+    .listing-basic-info-category {
+        font-size: 0.8rem;
+    }
+
+    .listing-info-title {
+        font-size: 1.3rem;
+    }
+
+    .listing-rating {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .five-stars {
+        font-size: 0.9rem;
+    }
+
+    .rating-value {
+        font-size: 0.85rem;
+    }
+
+    .location {
+        font-size: 0.875rem;
+        margin: 2px 0;
+    }
+
+    .social-icons {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .social-icons-img {
+        height: 28px;
+        width: 28px;
+    }
+
+    .listing-description h4 {
+        padding: 12px 0 4px 0;
+        font-size: 0.95rem;
+    }
+
+    .listing-description p {
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .listing-owner {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 0;
+    }
+
+    .owner-left {
+        gap: 8px;
+    }
+
+    .owner-logo {
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+
+    .owner-name {
+        font-size: 0.88rem;
+    }
+
+    .owner-role {
+        font-size: 11px;
+    }
+
+    .help-btn {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+        gap: 0.25rem;
+        flex-shrink: 0;
+    }
+
+    .help-btn span {
+        display: none; /* icon only on very small screens */
+    }
 }

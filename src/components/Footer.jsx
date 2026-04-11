@@ -64,7 +64,7 @@ export default function Footer() {
 
       {/* Bottom */}
       <div className="footer-bottom">
-        © 2026 NeedMate. All rights reserved.
+        © 2026 NeedMet. All rights reserved.
       </div>
     </footer>
   );

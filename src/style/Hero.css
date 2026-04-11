@@ -92,43 +92,143 @@
   display: block;
 }
 
-/* RESPONSIVE */
+
+/* ─── Large Tablet / Small Desktop (≤ 1080px) ────────────────────── */
 @media (max-width: 1080px) {
-  /* .hero-inner {
-    flex-direction: column-reverse;
-    text-align: center;
-  } */
+  .hero {
+    padding: 50px 50px;
+  }
+
+  .hero-inner {
+    gap: 30px;
+  }
 
   .hero-location {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
   }
 
   .hero-search {
-    margin: 0 auto 20px;
+    margin-bottom: 18px;
   }
 
-  .hero-search input{
-    width: 100%;
+  .hero-search input {
     font-size: 1rem;
   }
 
   .tag-btn {
-    font-size: 10px;
+    font-size: 11px;
+    padding: 7px 13px;
   }
-
 }
 
-@media (max-width: 750px) {
+
+/* ─── Tablet (≤ 768px) ────────────────────────────────────────────── */
+@media (max-width: 768px) {
   .hero {
-    padding: 40px 20px;
+    padding: 40px 32px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
   }
 
   .hero-inner {
-    flex-direction: column-reverse;
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .hero-left {
+    flex: unset;
+    width: 100%;
+  }
+
+  .hero-right {
+    flex: unset;
+    width: 100%;
+  }
+
+  .hero-location {
+    font-size: 1rem;
+    margin-bottom: 14px;
   }
 
   .hero-search {
     width: 100%;
+    margin-bottom: 16px;
+    padding: 10px 16px;
   }
 
+  .hero-search input {
+    font-size: 1rem;
+  }
+
+  .hero-tags {
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .tag-btn {
+    font-size: 12px;
+    padding: 7px 14px;
+  }
+
+  .hero-image-card img {
+    height: 14rem;
+  }
+}
+
+
+/* ─── Phone (≤ 480px) ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .hero {
+    padding: 28px 16px 36px;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
+
+  .hero-inner {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .hero-location {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    gap: 6px;
+  }
+
+  .hero-search {
+    padding: 9px 14px;
+    margin-bottom: 14px;
+    border-radius: 24px;
+  }
+
+  .hero-search input {
+    font-size: 0.9rem;
+  }
+
+  .search-icon {
+    margin-right: 8px;
+    font-size: 0.9rem;
+  }
+
+  .hero-tags {
+    gap: 8px;
+  }
+
+  .tag-btn {
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 16px;
+  }
+
+  .hero-image-card {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .hero-image-card img {
+    height: 11rem;
+    border-radius: 14px;
+  }
 }

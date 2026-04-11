@@ -17,7 +17,8 @@ const router = createBrowserRouter(
       <Route path='' element={<Home />} /> 
       <Route path='listing/:listingId' element={<ListingDetails />} />
       <Route path="/listings/:type" element={<ListingsPage />} />
-      <Route path="/all_category" element={<AllCategory />} />
+      <Route path="/listings/category/:category_name" element={<ListingsPage />} />
+      <Route path="/all_categories" element={<AllCategory />} />
     </Route>
   )
 

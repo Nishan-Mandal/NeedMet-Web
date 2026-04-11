@@ -1,16 +1,16 @@
-.info-section h2 {
-    margin-bottom: 1.5rem;
-    font-size: 1.2rem;
-}
-
 .info-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
   border-radius: 10px;
   padding: 20px;
+}
+
+.info-section h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
 }
 
 .table-container {
@@ -21,12 +21,16 @@
 .info-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* forces columns to share width equally — enables wrapping */
 }
 
 .info-table th,
 .info-table td {
   border: 1px solid #00000025;
   padding: 10px;
+  word-break: break-word;   /* break long words if needed */
+  white-space: normal;      /* allow text to wrap */
+  overflow-wrap: break-word;
 }
 
 .info-table th {
@@ -37,4 +41,50 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+
+/* ─── Tablet (≤ 768px) ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .info-section {
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .info-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .info-table th,
+  .info-table td {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+}
+
+
+/* ─── Phone (≤ 480px) ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .info-section {
+    padding: 14px;
+    border-radius: 6px;
+  }
+
+  .info-section h2 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .info-table th,
+  .info-table td {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .hours-cell {
+    gap: 3px;
+    font-size: 0.78rem;
+  }
 }
