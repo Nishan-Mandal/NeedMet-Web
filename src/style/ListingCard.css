@@ -40,6 +40,9 @@
   color: #9b9b9b;
   margin-bottom: 4px;
   text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Title */
