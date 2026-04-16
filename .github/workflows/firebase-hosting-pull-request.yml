@@ -27,4 +27,4 @@ jobs:
       - name: Deploy Preview Channel
         run: |
           firebase hosting:channel:deploy pr-${{ github.event.number }} \
-          --token "${{ secrets.FIREBASE_TOKEN }}"
+          --token "${{ secrets.FIREBASE_SERVICE_ACCOUNT_STARTUP20_5EAA7 }}"

@@ -27,4 +27,4 @@ jobs:
 
       # Deploy to Firebase Hosting
       - name: Deploy to Firebase
-        run: firebase deploy --only hosting --token "${{ secrets.FIREBASE_TOKEN }}"
+        run: firebase deploy --only hosting --token "${{ secrets.FIREBASE_SERVICE_ACCOUNT_STARTUP20_5EAA7 }}"
