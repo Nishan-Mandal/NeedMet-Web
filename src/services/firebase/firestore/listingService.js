@@ -32,14 +32,6 @@ export const getListingById = async (listingId) => {
 };
 
 
-
-// const formatData = (snap) => {
-//     return snap.docs.map((doc) => ({
-//         id: doc.id, 
-//         ...doc.data()
-//     }));
-// };
-
 const formatData = (snap) => {
   return snap.docs.map((doc) =>
     Listing.fromJson({
@@ -50,23 +42,6 @@ const formatData = (snap) => {
 };
 
 const listingRef = collection(firestore, "listings");
-
-// export const getAllListings = async ({ quantity }) => {
-//     try {
-//         console.log('[Api Call] getAllListings -> start');
-
-//         const q = query(listingRef, limit(quantity));
-//         const snap = await getDocs(q);
-
-//         console.log('[Api Call] getAllListings -> end');
-        
-//         return formatData(snap);
-
-//     } catch(error) {
-//         console.error("Error fetching listings:", error);
-//         return [];
-//     }
-// }
 
 export const getListingByCategory = async ({ category, quantity }) => {
     try {

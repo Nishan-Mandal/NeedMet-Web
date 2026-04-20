@@ -41,7 +41,7 @@ const ListingsPage = () => {
   else if (type === "similar") {
     fetchFn = getListingByCategory;
     params = {
-      category: ["some dynamic category"],
+      category: [],
       ...params,
     };
   }

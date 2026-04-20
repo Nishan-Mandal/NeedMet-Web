@@ -4,7 +4,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { useListings } from '../hooks/useListings.js';
 import { useListingById } from '../hooks/useListingById.js';
 import '../style/ListingDetails.css'
-import { getNewListings } from '../services/firebase/firestore/listingService.js';
+import { getNewListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
 
 
 function ListingDetails() {
@@ -24,13 +24,13 @@ function ListingDetails() {
     {'quantity':10}, 
     shouldFetch
   )
-  const { listings: recommendedListings, loading: recommendedLoading, error: recommendedError} = useListings(
-    getNewListings, 
-    {'quantity':10}, 
+  const { listings: similarListings, loading: similarLoading, error: similarError} = useListings(
+    getListingByCategory, 
+    { category: [listing?.category], quantity: 10 }, 
     shouldFetch
   )
 
-  if (error || newError || recommendedError) {
+  if (error || newError || similarError) {
     return (
       <h2 style={{ textAlign: 'center', margin: '5rem 0' }}>
         Error loading listing
@@ -168,8 +168,8 @@ function ListingDetails() {
 
       </div>
 
-      <ListingSection title="Similar Listings" listings={newListings} see_all_navigate='/listings/similar' />
-      <ListingSection title="Recommended Listings" listings={recommendedListings} see_all_navigate='/listings/recommended' />
+      <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate='/listings/similar' />
+      <ListingSection title="Newly Added Listings" listings={newListings} see_all_navigate='/listings/newly_added' />
     </>
   );
 }
