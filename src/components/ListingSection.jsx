@@ -44,11 +44,15 @@ export default function ListingSection({ title, listings=[], see_all_navigate })
       }
 
       {/* Cards Grid */}
-      <div className="listing-grid">
-        {listings.map((listing) => (
-          <ListingCard key={listing.listingId} listing={listing} />
-        ))}
-      </div>
+      {
+        listings.length === 0 ?
+          <p style={{textAlign: 'center'}}>No Listings Found</p> :
+          <div className="listing-grid">
+            {listings.map((listing) => (
+              <ListingCard key={listing.listingId} listing={listing} />
+            ))}
+          </div>
+      }
 
     </section>
   );

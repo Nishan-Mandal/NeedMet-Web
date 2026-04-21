@@ -96,19 +96,19 @@ export const getNewListings = async ({ quantity }) => {
     }
 };
 
-// export const getRecommendedListings = async ({ quantity }) => {
-//     try {
-//         console.log('[Api Call] getRecommendedListings -> start');
+export const getRecommendedListings = async ({ quantity }) => {
+    try {
+        console.log('[Api Call] getRecommendedListings -> start');
         
-//         const q = query(listingRef, where("claimStatus", "==", "approved"), limit(quantity));
-//         const snap = await getDocs(q);
+        const q = query(listingRef, where("tags", "array-contains", "recommended"), limit(quantity));
+        const snap = await getDocs(q);
 
-//         console.log('[Api Call] getRecommendedListings -> end');
+        console.log('[Api Call] getRecommendedListings -> end');
 
-//         return formatData(snap);
+        return formatData(snap);
     
-//     } catch(error) {
-//         console.error("Error fetching listings:", error);
-//         return [];
-//     }
-// };
+    } catch(error) {
+        console.error("Error fetching listings:", error);
+        return [];
+    }
+};

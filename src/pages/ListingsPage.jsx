@@ -56,11 +56,11 @@ const ListingsPage = () => {
   }
 
   if(error) {
-    return <p>Something went wrong, Come back later...</p>
+    return <p style={{textAlign: 'center'}}>Something went wrong, Come back later...</p>
   }
 
   if(listings.length == 0) {
-    return <p>No listings found</p>
+    return <p style={{textAlign: 'center'}}>No listings found</p>
   }
 
   return (
