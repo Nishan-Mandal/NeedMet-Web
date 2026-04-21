@@ -53,15 +53,21 @@
   font-size: 1.5rem;
 }
 
-.search-pill i {
-  font-size: 1.3rem;
-  color: black;
+.search-pill {
+  padding: 10px 14px;
+  color: #555;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.search-pill.active {
+  color: #1c8c8c;
 }
 
 /* NAV */
 .nav {
   display: flex;
-  gap: 1rem;
+  gap: 1.3rem;
 }
 
 .nav-link {
@@ -99,7 +105,6 @@
 /* active */
 .nav-link.active {
   color: #1c8c8c;
-  font-weight: 600;
 }
 
 .nav-link.active::after {
@@ -114,6 +119,7 @@
 /* ───────── MOBILE ───────── */
 .mobile-header {
   display: none;
+  z-index: 9999;
 }
 
 .bottom-nav {
@@ -174,6 +180,7 @@
     border-top: 1px solid #eee;
     justify-content: space-around;
     align-items: center;
+    z-index: 9999;
   }
 
   .bnav-item {

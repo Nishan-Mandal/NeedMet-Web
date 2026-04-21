@@ -20,14 +20,14 @@ export default function Header() {
           </div>
 
           <div className="header-inner-right">
-            <NavLink to="/search" className="search-pill">
+            <NavLink to="/search" className={({ isActive }) => isActive ? "search-pill active" : "search-pill"}>
               <i className="fa-solid fa-magnifying-glass"></i>
             </NavLink>
 
             <nav className="nav">
               <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
               <NavLink to="/all_categories" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Categories</NavLink>
-              <NavLink to="/about" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
+              <NavLink to="/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
               <NavLink to="/contact" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink>
             </nav>
 
@@ -90,7 +90,7 @@ export default function Header() {
           </div>
         </NavLink>
 
-        <NavLink to="/about" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
+        <NavLink to="/about_us" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <circle cx="12" cy="8" r="4" />
             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />

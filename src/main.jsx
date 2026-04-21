@@ -8,7 +8,8 @@ import {
   Home, 
   ListingDetails, 
   ListingsPage, 
-  AllCategory
+  AllCategory, 
+  Maintenance
 } from './pages'
 
 const router = createBrowserRouter(
@@ -19,6 +20,9 @@ const router = createBrowserRouter(
       <Route path="/listings/:type" element={<ListingsPage />} />
       <Route path="/listings/category/:category_name" element={<ListingsPage />} />
       <Route path="/all_categories" element={<AllCategory />} />
+      <Route path="/about_us" element={<Maintenance />} />
+      <Route path="/contact" element={<Maintenance />} />
+      <Route path="/search" element={<Maintenance />} />
     </Route>
   )
 
