@@ -1,5 +1,5 @@
 .listing-section {
-  padding: 20px 80px;
+  padding: 20px 80px 10px 80px;
 }
 
 /* Header */
@@ -46,7 +46,7 @@
 /* ─── Tablet (481px – 1024px) ─── */
 @media (min-width: 481px) and (max-width: 1024px) {
   .listing-section {
-    padding: 20px 32px;
+    padding: 20px 32px 5px 32px;
   }
 
   .listing-grid {
@@ -68,7 +68,7 @@
 /* ─── Mobile (≤ 480px) ─── */
 @media (max-width: 480px) {
   .listing-section {
-    padding: 16px 16px;
+    padding: 16px 16px 5px 16px;
   }
 
   .listing-header {
