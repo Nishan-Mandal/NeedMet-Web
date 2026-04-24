@@ -1,0 +1,241 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== Page ===== */
+.nodata-page {
+  position: relative;
+  min-height: 70vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  padding: 1rem 10rem;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, sans-serif;
+  overflow: hidden;
+}
+
+/* ===== Grid overlay ===== */
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(28, 140, 140, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(28, 140, 140, 0.07) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ===== Left Section ===== */
+.nodata-left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.nodata-left img {
+  max-width: 350px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ===== Right Section ===== */
+.nodata-right {
+  max-width: 400px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Title ===== */
+.title {
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  color: #0f3a3a;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.title-gradient {
+  background: linear-gradient(135deg, #1c8c8c 0%, #2dbab0 100%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ===== Message ===== */
+.message {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #5a7575;
+  margin-bottom: 2rem;
+}
+
+/* ===== Actions ===== */
+.actions {
+  display: flex;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: 0.25s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #1c8c8c;
+  color: #ffffff;
+  box-shadow: 0 8px 20px -4px rgba(28, 140, 140, 0.45);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .nodata-page {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .nodata-right {
+    max-width: 100%;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .nodata-page {
+    padding: 1rem 2rem;
+  }
+}
+
+/* No Listing Found */
+/* ── InlineNoListingsFound.css — compact single-row empty state ── */
+
+.no-listings-row {
+  width: 100%;
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  background: #e9fdfd58;
+  border-radius: 14px;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* icon */
+.no-listings-img img{
+  width: 100px;
+  height: auto;
+}
+
+.spin-ring {
+  animation: spin 10s linear infinite;
+  transform-origin: 14px 14px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* text block */
+.no-listings-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.no-listings-heading {
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1a2e27;
+  white-space: nowrap;
+}
+
+.no-listings-sub {
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 0.78rem;
+  color: #6b8f82;
+}
+
+/* button */
+.no-listings-btn {
+  flex-shrink: 0;
+  background: #1c8c8c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+  white-space: nowrap;
+}
+
+.no-listings-btn:hover {
+  background: #0b8f6e;
+  box-shadow: 0 4px 12px rgba(15, 163, 127, 0.28);
+}
+
+.no-listings-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── responsive ── */
+@media (max-width: 540px) {
+  .no-listings-row {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 16px;
+    min-height: unset;
+    gap: 10px;
+  }
+
+  .no-listings-heading,
+  .no-listings-sub {
+    white-space: normal;
+  }
+
+  .no-listings-text {
+    text-align: center;
+  }
+
+  .no-listings-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

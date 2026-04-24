@@ -9,8 +9,9 @@ import {
   ListingDetails, 
   ListingsPage, 
   AllCategory, 
-  Maintenance
 } from './pages'
+import { SystemState } from './components'
+import MaintenanceImg from "./assets/maintenance.jpg"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,9 +21,48 @@ const router = createBrowserRouter(
       <Route path="/listings/:type" element={<ListingsPage />} />
       <Route path="/listings/category/:category_name" element={<ListingsPage />} />
       <Route path="/all_categories" element={<AllCategory />} />
-      <Route path="/about_us" element={<Maintenance />} />
-      <Route path="/contact" element={<Maintenance />} />
-      <Route path="/search" element={<Maintenance />} />
+      <Route 
+        path="/about_us" 
+        element={
+          <SystemState 
+            imageSrc={MaintenanceImg} 
+            title='Feature in' 
+            highlight='Progress' 
+            message="We're crafting something exceptional behind the scenes.This experience will be ready for you very soon." 
+            actionType='navigate' 
+            actionLabel='Back to Home' 
+            actionTo='/' 
+          />
+        } 
+      />
+      <Route 
+        path="/contact" 
+        element={
+          <SystemState 
+            imageSrc={MaintenanceImg} 
+            title='Feature in' 
+            highlight='Progress' 
+            message="We're crafting something exceptional behind the scenes.This experience will be ready for you very soon." 
+            actionType='navigate' 
+            actionLabel='Back to Home' 
+            actionTo='/' 
+          />
+        } 
+      />
+      <Route 
+        path="/search" 
+        element={
+          <SystemState 
+            imageSrc={MaintenanceImg} 
+            title='Feature in' 
+            highlight='Progress' 
+            message="We're crafting something exceptional behind the scenes.This experience will be ready for you very soon." 
+            actionType='navigate' 
+            actionLabel='Back to Home' 
+            actionTo='/' 
+          />
+        } 
+      />
     </Route>
   )
 

@@ -25,23 +25,29 @@ export default function CategorySection({ title, categories, data, style = {}, s
           )}
         </div>
 
-        <div className="category-grid">
-          {categoryList.map((category, index) => {
-            
-            const name = category.name || category.category;
-            const image = category.imageUrl;
-            const id = category.id || index;
+        {
+          categoryList.length === 0 ? (
+            <p style={{"textAlign": 'center'}}>No categories available.</p>
+          ) : (
+            <div className="category-grid">
+              {categoryList.map((category, index) => {
+                
+                const name = category.name || category.category;
+                const image = category.imageUrl;
+                const id = category.id || index;
 
-            return (
-              <div className="category-card" key={id} onClick={() => navigate_to_selected_category(name)}>
-                <div className="category-icon">
-                  <img src={image} alt={name} />
-                </div>
-                <p className="category-name">{name}</p>
-              </div>
-            );
-          })}
-        </div>
+                return (
+                  <div className="category-card" key={id} onClick={() => navigate_to_selected_category(name)}>
+                    <div className="category-icon">
+                      <img src={image} alt={name} />
+                    </div>
+                    <p className="category-name">{name}</p>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        } 
 
       </div>
     </section>

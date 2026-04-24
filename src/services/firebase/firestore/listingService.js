@@ -62,27 +62,10 @@ export const getListingByCategory = async ({ category, quantity }) => {
     }
 }
 
-// export const getListingsByCategoryId = async ({ categoryId }) => {
-//     try {
-//         console.log('[Api Call] getListingsByCategory -> start');
-
-//         const q = query(listingRef, where("categoryId", "==", categoryId));
-//         const snap = await getDocs(q);
-
-//         console.log('[Api Call] getListingsByCategory -> end');
-
-//         return formatData(snap);
-            
-//     } catch(error) {
-//         console.error("Error fetching listings:", error);
-//         return [];
-//     }
-// };
-
 export const getNewListings = async ({ quantity }) => {
     try {
         console.log('[Api Call] getNewListings -> start');
-        
+
         const q = query(listingRef, orderBy("createdAt", "desc"), limit(quantity));
         const snap = await getDocs(q);
 

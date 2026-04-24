@@ -1,5 +1,5 @@
-import { Hero, CategorySection, ListingSection, HomeLoader } from '../components'
-// import { listing } from '../data/listing_dummy_data.js'
+import { Hero, CategorySection, ListingSection, HomeLoader, SystemState } from '../components'
+import ErrorImg from "../assets/error.png"
 import { useListings } from '../hooks/useListings.js';
 import { useHomeDetails } from '../hooks/useHomeDetails.js';
 import { getListingByCategory, getNewListings, getRecommendedListings } from '../services/firebase/firestore/listingService.js';
@@ -7,7 +7,6 @@ import { getListingByCategory, getNewListings, getRecommendedListings } from '..
 function Home() {
 
   const { homeData, loading: homeLoading, error: homeError } = useHomeDetails();
-  // console.log(homeData)
 
   const categoryList = homeData?.listings || [];
 
@@ -27,10 +26,19 @@ function Home() {
     return <HomeLoader />;
   }
 
-  if(homeError || newError || recommendedError) {
-    return <p>Something went wrong, Come back later...</p>
+  if(homeError) {
+    return (
+      <SystemState
+        imageSrc={ErrorImg}
+        title="OOPS! Something Went"
+        highlight="Wrong"
+        message="We couldn't load the content right now. Please check your connection and try again later."
+        actionType="refresh"
+        actionLabel="Try Again"
+      />
+    );
   }
-
+  
   return (
     <>
       <Hero data={homeData}/>

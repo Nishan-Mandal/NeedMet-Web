@@ -1,5 +1,14 @@
-import { ListingBasicInfo, InfoTable, ListingSection, RatingSection, PreviewImage, ListingDetailsLoader } from '../components'
-// import { listing } from '../data/listing_dummy_data.js'
+import { 
+  ListingBasicInfo, 
+  InfoTable, 
+  ListingSection, 
+  RatingSection, 
+  PreviewImage, 
+  ListingDetailsLoader,
+  SystemState
+} from '../components'
+import ErrorImg from "../assets/error.png"
+import NoDataImg from "../assets/no_data.png"
 import { useParams, useLocation } from 'react-router-dom';
 import { useListings } from '../hooks/useListings.js';
 import { useListingById } from '../hooks/useListingById.js';
@@ -30,11 +39,16 @@ function ListingDetails() {
     shouldFetch
   )
 
-  if (error || newError || similarError) {
+  if (error) {
     return (
-      <h2 style={{ textAlign: 'center', margin: '5rem 0' }}>
-        Error loading listing
-      </h2>
+      <SystemState
+        imageSrc={ErrorImg}
+        title="OOPS! Something Went"
+        highlight="Wrong"
+        message="We couldn't load the content right now. Please check your connection and try again later."
+        actionType="refresh"
+        actionLabel="Try Again"
+      />
     );
   }
 
@@ -44,9 +58,15 @@ function ListingDetails() {
 
   if (!listing) {
     return (
-      <h2 style={{ textAlign: 'center', margin: '5rem 0' }}>
-        Listing Not Found
-      </h2>
+      <SystemState
+        imageSrc={NoDataImg}
+        title="No Listing"
+        highlight="Found"
+        message="Be the first to contribute by adding a store or service related to this category!"
+        actionType="navigate"
+        actionLabel="+ Contribute Now"
+        actionTo=""
+      />
     );
   }
 

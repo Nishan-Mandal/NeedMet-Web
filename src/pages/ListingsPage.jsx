@@ -2,7 +2,8 @@ import { useParams } from "react-router-dom";
 import { useListings } from "../hooks/useListings";
 import { getNewListings, getListingByCategory } from "../services/firebase/firestore/listingService";
 import { useLocation } from "react-router-dom";
-import { ListingSection, ListingSectionLoader } from "../components";
+import { ListingSection, ListingSectionLoader, SystemState } from "../components";
+import ErrorImg from "../assets/error.png";
 
 const ListingsPage = () => {
   const { state } = useLocation();
@@ -56,11 +57,16 @@ const ListingsPage = () => {
   }
 
   if(error) {
-    return <p style={{textAlign: 'center'}}>Something went wrong, Come back later...</p>
-  }
-
-  if(listings.length == 0) {
-    return <p style={{textAlign: 'center'}}>No listings found</p>
+    return (
+      <SystemState
+        imageSrc={ErrorImg}
+        title="OOPS! Something Went"
+        highlight="Wrong"
+        message="We couldn't load the content right now. Please check your connection and try again later."
+        actionType="refresh"
+        actionLabel="Try Again"
+      />
+    );
   }
 
   return (
