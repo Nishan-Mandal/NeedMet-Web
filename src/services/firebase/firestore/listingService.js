@@ -32,14 +32,6 @@ export const getListingById = async (listingId) => {
 };
 
 
-
-// const formatData = (snap) => {
-//     return snap.docs.map((doc) => ({
-//         id: doc.id, 
-//         ...doc.data()
-//     }));
-// };
-
 const formatData = (snap) => {
   return snap.docs.map((doc) =>
     Listing.fromJson({
@@ -50,23 +42,6 @@ const formatData = (snap) => {
 };
 
 const listingRef = collection(firestore, "listings");
-
-// export const getAllListings = async ({ quantity }) => {
-//     try {
-//         console.log('[Api Call] getAllListings -> start');
-
-//         const q = query(listingRef, limit(quantity));
-//         const snap = await getDocs(q);
-
-//         console.log('[Api Call] getAllListings -> end');
-        
-//         return formatData(snap);
-
-//     } catch(error) {
-//         console.error("Error fetching listings:", error);
-//         return [];
-//     }
-// }
 
 export const getListingByCategory = async ({ category, quantity }) => {
     try {
@@ -87,27 +62,10 @@ export const getListingByCategory = async ({ category, quantity }) => {
     }
 }
 
-// export const getListingsByCategoryId = async ({ categoryId }) => {
-//     try {
-//         console.log('[Api Call] getListingsByCategory -> start');
-
-//         const q = query(listingRef, where("categoryId", "==", categoryId));
-//         const snap = await getDocs(q);
-
-//         console.log('[Api Call] getListingsByCategory -> end');
-
-//         return formatData(snap);
-            
-//     } catch(error) {
-//         console.error("Error fetching listings:", error);
-//         return [];
-//     }
-// };
-
 export const getNewListings = async ({ quantity }) => {
     try {
         console.log('[Api Call] getNewListings -> start');
-        
+
         const q = query(listingRef, orderBy("createdAt", "desc"), limit(quantity));
         const snap = await getDocs(q);
 
@@ -121,19 +79,19 @@ export const getNewListings = async ({ quantity }) => {
     }
 };
 
-// export const getRecommendedListings = async ({ quantity }) => {
-//     try {
-//         console.log('[Api Call] getRecommendedListings -> start');
+export const getRecommendedListings = async ({ quantity }) => {
+    try {
+        console.log('[Api Call] getRecommendedListings -> start');
         
-//         const q = query(listingRef, where("claimStatus", "==", "approved"), limit(quantity));
-//         const snap = await getDocs(q);
+        const q = query(listingRef, where("tags", "array-contains", "recommended"), limit(quantity));
+        const snap = await getDocs(q);
 
-//         console.log('[Api Call] getRecommendedListings -> end');
+        console.log('[Api Call] getRecommendedListings -> end');
 
-//         return formatData(snap);
+        return formatData(snap);
     
-//     } catch(error) {
-//         console.error("Error fetching listings:", error);
-//         return [];
-//     }
-// };
+    } catch(error) {
+        console.error("Error fetching listings:", error);
+        return [];
+    }
+};

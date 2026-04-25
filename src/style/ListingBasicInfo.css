@@ -115,8 +115,8 @@
 }
 
 .owner-logo {
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     background: #1c8c8c;
     color: white;
     display: flex;
@@ -124,7 +124,7 @@
     justify-content: center;
     border-radius: 50%;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
 }
 
 .owner-name {

@@ -1,6 +1,6 @@
 .hero {
   background: linear-gradient(180deg, #1c8c8c 0%, #ffffff 100%);
-  padding: 60px 80px;
+  padding: 30px 80px 10px 80px;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
 }
@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 50px;
+  gap: 20px;
 }
 
 /* LEFT */
@@ -86,7 +86,7 @@
 
 .hero-image-card img {
   width: auto;
-  height: 17rem;
+  /* height: 17rem; */
   background-size: cover;
   border-radius: 20px;
   display: block;
@@ -126,7 +126,7 @@
 /* ─── Tablet (≤ 768px) ────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .hero {
-    padding: 40px 32px;
+    padding: 30px 32px 10px 32px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
   }
@@ -181,7 +181,7 @@
 /* ─── Phone (≤ 480px) ─────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .hero {
-    padding: 28px 16px 36px;
+    padding: 20px 16px 10px 16px;
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
   }

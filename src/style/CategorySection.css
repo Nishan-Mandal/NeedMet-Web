@@ -1,5 +1,5 @@
 .category-section {
-  padding: 20px 80px;
+  padding: 20px 80px 10px 80px;
 }
 
 .category-container-top {
@@ -31,7 +31,7 @@
 /* GRID */
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
   gap: 1rem;
 }
 
@@ -59,8 +59,8 @@
 }
 
 .category-icon img {
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
   display: block;
   background: white;
@@ -80,7 +80,7 @@
 /* ─── Tablet (481px – 1024px) ─── */
 @media (min-width: 481px) and (max-width: 1024px) {
   .category-section {
-    padding: 20px 32px;
+    padding: 10px 32px 10px 32px;
   }
 
   .category-title {
@@ -111,7 +111,7 @@
 /* ─── Mobile (≤ 480px) ─── */
 @media (max-width: 480px) {
   .category-section {
-    padding: 16px 16px;
+    padding: 10px 16px 5px 16px;
   }
 
   .category-container-top {

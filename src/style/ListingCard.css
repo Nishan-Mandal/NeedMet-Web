@@ -1,8 +1,7 @@
 .listing-card {
-  padding: 0.5rem 0.5rem;
   max-width: 100%;
   background: #ffffff;
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
   border: 1px solid rgba(0, 0, 0, 0.075);
@@ -20,12 +19,13 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: 14px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .listing-image img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
 }
 
@@ -97,13 +97,13 @@
 /* ─── Tablet (481px – 768px) ─── */
 @media (min-width: 481px) and (max-width: 768px) {
   .listing-card {
-    /* max-width: 100%; */
     max-width: 100%;
     border-radius: 12px;
   }
 
   .listing-image {
-    border-radius: 10px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
   }
 
   .listing-content {
@@ -124,10 +124,7 @@
 /* ─── Mobile (≤ 480px) ─── */
 @media (max-width: 480px) {
   .listing-card {
-    /* max-width: 100%; */
     border-radius: 12px;
-    padding: 0.4rem 0.4rem;
-    /* Disable lift on touch devices */
     transition: none;
   }
 
@@ -141,9 +138,13 @@
   }
 
   .listing-image {
-    border-radius: 10px;
-    /* Slightly taller crop on small screens */
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16/9;
+  }
+
+  .listing-image img {
+    aspect-ratio: 16/9;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
   }
 
   .listing-content {

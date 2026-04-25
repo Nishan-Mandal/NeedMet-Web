@@ -7,7 +7,7 @@ function InfoTable({ title, columns, rows , style, fixHeight}) {
         <h2>{title}</h2>
 
         <div className="table-container">
-          No Info
+          No Data Available
         </div>
       </div>
     )
