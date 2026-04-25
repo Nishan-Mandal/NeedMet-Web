@@ -1,5 +1,5 @@
 .listing-section {
-  padding: 20px 80px;
+  padding: 20px 80px 10px 80px;
 }
 
 /* Header */
@@ -36,22 +36,33 @@
 }
 
 /* Grid */
+/* ─── Big Laptop (≥ 1280px) — 6 columns ─── */
 .listing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
-  justify-content: start;
-  gap: 12px;
+  grid-template-columns: repeat(6, 1fr);
+  row-gap: 1rem;
+  column-gap: 0.5rem;
 }
 
-/* ─── Tablet (481px – 1024px) ─── */
-@media (min-width: 481px) and (max-width: 1024px) {
+/* ─── Smaller Laptop (1025px – 1279px) — 5 columns ─── */
+@media (min-width: 1025px) and (max-width: 1279px) {
   .listing-section {
-    padding: 20px 32px;
+    padding: 20px 48px 10px 48px;
   }
 
   .listing-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    justify-content: unset;
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* ─── Tablet (769px – 1024px) — 4 columns ─── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .listing-section {
+    padding: 20px 32px 5px 32px;
+  }
+
+  .listing-grid {
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
   }
 
@@ -65,10 +76,31 @@
   }
 }
 
-/* ─── Mobile (≤ 480px) ─── */
+/* ─── Smaller Tablet (481px – 768px) — 3 columns ─── */
+@media (min-width: 481px) and (max-width: 768px) {
+  .listing-section {
+    padding: 16px 24px 5px 24px;
+  }
+
+  .listing-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .listing-header h2,
+  .listing-header-without-see-all h2 {
+    font-size: 1.2rem;
+  }
+
+  .listing-header-without-see-all {
+    padding: 6px 0 16px;
+  }
+}
+
+/* ─── Phone (≤ 480px) — 2 columns ─── */
 @media (max-width: 480px) {
   .listing-section {
-    padding: 16px 16px;
+    padding: 16px 16px 5px 16px;
   }
 
   .listing-header {
@@ -90,7 +122,6 @@
 
   .listing-grid {
     grid-template-columns: repeat(2, 1fr);
-    justify-content: unset;
     gap: 10px;
   }
 }

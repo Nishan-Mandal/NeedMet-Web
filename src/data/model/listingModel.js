@@ -227,7 +227,7 @@ class Listing {
       isClaimed: json.isClaimed || false,
 
       ownerId: json.ownerId || "",
-      ownerName: json.ownerName || "Unknown",
+      ownerName: capitalizeWords(json.ownerName) || "Unknown",
       claimStatus: json.claimStatus || "unclaimed",
       verifiedBy: json.verifiedBy || null,
 

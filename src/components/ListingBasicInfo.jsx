@@ -51,6 +51,22 @@ export default function ListingBasicInfo({ listing, className = '' }) {
         return stars
     }
 
+    const getOwnerLogo = (fullName) => {
+        const parts = fullName.trim().split(/\s+/);
+
+        const firstChar = parts[0] ? parts[0][0] : "";
+
+        if (parts.length === 1) {
+            return firstChar.toUpperCase();
+        }
+
+        const lastChar = parts[parts.length - 1]
+            ? parts[parts.length - 1][0]
+            : "";
+
+        return (firstChar + lastChar).toUpperCase();
+    };
+
     return (
         <div className={`listing-basic-info ${className}`}>
 
@@ -106,7 +122,7 @@ export default function ListingBasicInfo({ listing, className = '' }) {
             <div className="listing-owner">
                 <div className="owner-left">
                     <div className="owner-logo">
-                        {listing.ownerName[0]}
+                        {getOwnerLogo(listing.ownerName)}
                     </div>
 
                     <div>

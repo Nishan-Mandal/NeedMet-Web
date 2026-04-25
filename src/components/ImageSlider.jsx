@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 function ImageSlider({
   slide=false, 
   width = "600px",
-  height = "400px",
   images = [
     'https://firebasestorage.googleapis.com/v0/b/startup20-5eaa7.firebasestorage.app/o/listings%2FSALEFTRkbVNN1SI4yGQT%2Ffull_719c5166-7702-4770-9f97-5be90964cb29.jpg?alt=media&token=4e8885a1-78bd-4b78-9de8-9a99d83c1450', 
     'https://firebasestorage.googleapis.com/v0/b/startup20-5eaa7.firebasestorage.app/o/listings%2FSALEFTRkbVNN1SI4yGQT%2Ffull_0785d585-a979-4539-8b2a-e4a4a57e2551.jpg?alt=media&token=9ef49997-cd6a-4727-a9d1-0dba5fdc16b8', 
@@ -60,7 +59,7 @@ function ImageSlider({
   return (
     <div
       className="carousel-container"
-      style={{ width, height }}
+      style={{ width }}
       onMouseEnter={stopAutoSlide}
       onMouseLeave={startAutoSlide}
     >

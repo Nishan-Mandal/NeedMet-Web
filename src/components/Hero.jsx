@@ -48,7 +48,7 @@ export default function Hero({ data }) {
 
         {/* RIGHT SIDE */}
         <div className="hero-right">
-          <ImageSlider width="90%" slide={true} images={images}/>
+          <ImageSlider width="85%" slide={true} images={images}/>
         </div>
 
       </div>

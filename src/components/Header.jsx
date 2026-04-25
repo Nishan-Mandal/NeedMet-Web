@@ -8,6 +8,7 @@ export default function Header() {
 
   return (
     <>
+      {/* ── Desktop HEADER ── */}
       <header className="header">
         <div className="header-inner">
 
@@ -16,23 +17,20 @@ export default function Header() {
               <img src={companyLogo} alt="NeedMet logo" />
               <span className="logo-name">NeedMet</span>
             </div>
-
-            {/* SEARCH */}
           </div>
 
           <div className="header-inner-right">
-            <NavLink to="/search" className="search-pill">
+            <NavLink to="/search" className={({ isActive }) => isActive ? "search-pill active" : "search-pill"}>
               <i className="fa-solid fa-magnifying-glass"></i>
             </NavLink>
-            {/* NAV */}
+
             <nav className="nav">
               <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
               <NavLink to="/all_categories" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Categories</NavLink>
-              <NavLink to="/about" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
+              <NavLink to="/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
               <NavLink to="/contact" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink>
             </nav>
 
-            {/* PLAY STORE */}
             <a
               className="play-store-btn"
               href="https://play.google.com/store/apps/details?id=com.findon.app"
@@ -53,7 +51,6 @@ export default function Header() {
           <span>NeedMet</span>
         </div>
 
-        {/* PLAY STORE */}
         <a
           className="play-store-btn"
           href="https://play.google.com/store/apps/details?id=com.findon.app"
@@ -67,11 +64,9 @@ export default function Header() {
 
       {/* ── MOBILE BOTTOM NAV ── */}
       <nav className="bottom-nav">
-
         <NavLink to="/" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
-          <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z" />
-            <path d="M9 21V12h6v9" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 50 50" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M25 3L2 21h3v26h14V30h12v17h14V21h3L25 3z" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <span>Home</span>
         </NavLink>
@@ -86,7 +81,6 @@ export default function Header() {
           <span>Categories</span>
         </NavLink>
 
-        {/* CENTER FAB */}
         <NavLink to="/search" className="bnav-fab">
           <div className="bnav-fab-inner">
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="white">
@@ -96,7 +90,7 @@ export default function Header() {
           </div>
         </NavLink>
 
-        <NavLink to="/about" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
+        <NavLink to="/about_us" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <circle cx="12" cy="8" r="4" />
             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
@@ -110,7 +104,6 @@ export default function Header() {
           </svg>
           <span>Contact</span>
         </NavLink>
-
       </nav>
     </>
   );

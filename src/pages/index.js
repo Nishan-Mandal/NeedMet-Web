@@ -7,5 +7,5 @@ export {
     Home, 
     ListingDetails, 
     ListingsPage, 
-    AllCategory
+    AllCategory, 
 }
