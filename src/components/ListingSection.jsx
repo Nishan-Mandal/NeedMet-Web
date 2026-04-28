@@ -13,10 +13,7 @@ function HeaderWithSeeAll({title, listings, see_all_navigate}) {
       <Link 
         to={see_all_navigate} 
         state={{ 
-          title,
-          listings,
-          type: see_all_navigate, 
-          params: { quantity: 20 } 
+          title
         }} 
         className="see-all"
       >
@@ -45,7 +42,7 @@ export default function ListingSection({ title, listings=[], see_all_navigate })
       {
         see_all_navigate === 'false' || listings.length === 0 ? 
           <HeaderWithOutSeeAll title={title}/> : 
-          <HeaderWithSeeAll title={title} listings={listings} see_all_navigate={see_all_navigate}/>
+          <HeaderWithSeeAll title={title} see_all_navigate={see_all_navigate}/>
       }
 
       {/* Cards Grid */}

@@ -1,5 +1,5 @@
 import { firestore } from "../../../firebase/firebaseConfig";
-import { collection, getDocs, query, where, orderBy, limit, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy, limit, doc, getDoc, startAfter } from "firebase/firestore";
 import { Listing } from "../../../data/model/listingModel";
 
 
@@ -14,11 +14,6 @@ export const getListingById = async (listingId) => {
     if (!snap.exists()) return null;
 
     console.log('[Api Call] getListingById -> end');
-
-    // return {
-    //   id: snap.id,
-    //   ...snap.data()
-    // };
 
     return Listing.fromJson({
         listingId: snap.id,
@@ -62,6 +57,41 @@ export const getListingByCategory = async ({ category, quantity }) => {
     }
 }
 
+export const getListingByCategoryPaginated = async ({ category, quantity = 20, pageParam = null }) => {
+    try {
+        console.log('[Api Call] getNewListingsPaginated -> start');
+
+        if (!category || category.length === 0) 
+            return { 
+                listings: [], 
+                lastDoc: null, 
+                hasMore: false 
+            };
+
+        let q = query(listingRef, where("category", "in", category), limit(quantity));
+        if (pageParam) q = query(listingRef, where("category", "in", category), startAfter(pageParam), limit(quantity));
+
+        const snap = await getDocs(q);
+        const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
+
+        console.log('[Api Call] getNewListingsPaginated -> end');
+
+        return { 
+            listings: formatData(snap), 
+            lastDoc, 
+            hasMore: snap.docs.length === quantity 
+        };
+
+    } catch (error) {
+        console.error("Error fetching listings:", error);
+        return { 
+            listings: [], 
+            lastDoc: null, 
+            hasMore: false 
+        };
+    }
+};
+
 export const getNewListings = async ({ quantity }) => {
     try {
         console.log('[Api Call] getNewListings -> start');
@@ -79,6 +109,34 @@ export const getNewListings = async ({ quantity }) => {
     }
 };
 
+export const getNewListingsPaginated = async ({ quantity = 20, pageParam = null }) => {
+    try {
+        console.log('[Api Call] getNewListingsPaginated -> start');
+
+        let q = query(listingRef, orderBy("createdAt", "desc"), limit(quantity));
+        if (pageParam) q = query(listingRef, orderBy("createdAt", "desc"), startAfter(pageParam), limit(quantity));
+
+        const snap = await getDocs(q);
+        const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
+
+        console.log('[Api Call] getNewListingsPaginated -> end');
+
+        return { 
+            listings: formatData(snap), 
+            lastDoc, 
+            hasMore: snap.docs.length === quantity 
+        };
+
+    } catch (error) {
+        console.error("Error fetching listings:", error);
+        return { 
+            listings: [], 
+            lastDoc: null, 
+            hasMore: false 
+        };
+    }
+};
+
 export const getRecommendedListings = async ({ quantity }) => {
     try {
         console.log('[Api Call] getRecommendedListings -> start');
@@ -93,5 +151,33 @@ export const getRecommendedListings = async ({ quantity }) => {
     } catch(error) {
         console.error("Error fetching listings:", error);
         return [];
+    }
+};
+
+export const getRecommendedListingsPaginated = async ({ quantity = 20, pageParam = null }) => {
+    try {
+        console.log('[Api Call] getRecommendedListingsPaginated -> start');
+
+        let q = query(listingRef, where("tags", "array-contains", "recommended"), limit(quantity));
+        if (pageParam) q = query(listingRef, where("tags", "array-contains", "recommended"), startAfter(pageParam), limit(quantity));
+
+        const snap = await getDocs(q);
+        const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
+
+        console.log('[Api Call] getRecommendedListingsPaginated -> end');
+
+        return { 
+            listings: formatData(snap), 
+            lastDoc, 
+            hasMore: snap.docs.length === quantity 
+        };
+
+    } catch (error) {
+        console.error("Error fetching listings:", error);
+        return { 
+            listings: [], 
+            lastDoc: null, 
+            hasMore: false 
+        };
     }
 };

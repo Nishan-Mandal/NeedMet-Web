@@ -1,6 +1,6 @@
 import { Hero, CategorySection, ListingSection, HomeLoader, SystemState } from '../components'
 import ErrorImg from "../assets/error.png"
-import { getListingByCategory, getNewListings, getRecommendedListings } from '../services/firebase/firestore/listingService.js';
+import { getNewListings, getRecommendedListings } from '../services/firebase/firestore/listingService.js';
 import { useQuery } from '@tanstack/react-query';
 import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
 
@@ -50,9 +50,9 @@ function Home() {
   return (
     <>
       <Hero data={homeData}/>
-      <CategorySection title='Categories' data={homeData} see_all_navigate='/all_categories'/>
-      <ListingSection title="Recommended Listings" listings={recommendedListings} see_all_navigate='/listings/recommended'/>
-      <ListingSection title="Newly Added Listings" listings={newListings} see_all_navigate='/listings/newly_added'/>
+      <CategorySection title='Top Categories' data={homeData} see_all_navigate='/all_categories'/>
+      <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate='/listings/recommended'/>
+      <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added'/>
     </>
   )
 }

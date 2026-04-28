@@ -199,7 +199,7 @@ function ListingDetails() {
       </div>
 
       <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate='/listings/similar' />
-      <ListingSection title="Newly Added Listings" listings={newListings} see_all_navigate='/listings/newly_added' />
+      <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
     </>
   );
 }
