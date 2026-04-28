@@ -32,6 +32,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
   const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 4);
 
   const sentinelRef = useRef(null);
+  const listRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -40,7 +41,11 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
           loadMore();
         }
       },
-      { threshold: 0.1 }
+      { 
+        root: listRef.current,
+        threshold: 0.1, 
+        rootMargin: '50px' 
+      }
     );
 
     const el = sentinelRef.current;
@@ -149,8 +154,6 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
             </div>
           </div>
         </div>
-
-        {/* <button className='share-your-review-btn'>Share Your Review</button> */}
       </div>
 
       <div className="reviews-container">
@@ -164,7 +167,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
                   !loading && !isFetchingMore && !reviews.length ? (
                     <div className="empty-review-text">No Reviews Yet</div>
                   ) : (
-                    <div className="reviews-list">
+                    <div className="reviews-list" ref={listRef}>
                       {
                         reviews.map((review) => (
                           <div className="review-card" key={review.id}>
@@ -198,12 +201,10 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
 
                       
                       {isFetchingMore && <p style={{'textAlign': 'center'}}>Loading more reviews...</p>}
-                      <div ref={sentinelRef} style={{ height: '1px' }} />
+                      <div ref={sentinelRef} style={{ height: '2px' }} />
                     </div>
                   )
                 }
-
-                {/* <div ref={loadMoreRef} style={{ height: "20px" }}></div> */}
               </>
             }
             
