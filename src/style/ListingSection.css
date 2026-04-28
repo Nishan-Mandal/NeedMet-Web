@@ -1,5 +1,5 @@
 .listing-section {
-  padding: 20px 80px 10px 80px;
+  padding: 20px 20px 10px 20px;
 }
 
 /* Header */
@@ -12,7 +12,7 @@
 
 .listing-header-without-see-all {
   display: flex;
-  padding: 10px 0 30px;
+  padding: 0 0 16px;
 }
 
 .listing-header h2,
@@ -47,7 +47,7 @@
 /* ─── Smaller Laptop (1025px – 1279px) — 5 columns ─── */
 @media (min-width: 1025px) and (max-width: 1279px) {
   .listing-section {
-    padding: 20px 48px 10px 48px;
+    padding: 20px 20px 10px 20px;
   }
 
   .listing-grid {
@@ -58,7 +58,7 @@
 /* ─── Tablet (769px – 1024px) — 4 columns ─── */
 @media (min-width: 769px) and (max-width: 1024px) {
   .listing-section {
-    padding: 20px 32px 5px 32px;
+    padding: 20px 20px 5px 20px;
   }
 
   .listing-grid {
@@ -70,16 +70,12 @@
   .listing-header-without-see-all h2 {
     font-size: 1.3rem;
   }
-
-  .listing-header-without-see-all {
-    padding: 8px 0 20px;
-  }
 }
 
 /* ─── Smaller Tablet (481px – 768px) — 3 columns ─── */
 @media (min-width: 481px) and (max-width: 768px) {
   .listing-section {
-    padding: 16px 24px 5px 24px;
+    padding: 16px 20px 5px 20px;
   }
 
   .listing-grid {
@@ -91,10 +87,6 @@
   .listing-header-without-see-all h2 {
     font-size: 1.2rem;
   }
-
-  .listing-header-without-see-all {
-    padding: 6px 0 16px;
-  }
 }
 
 /* ─── Phone (≤ 480px) — 2 columns ─── */
@@ -105,10 +97,6 @@
 
   .listing-header {
     margin: 0 0 0.75rem 0;
-  }
-
-  .listing-header-without-see-all {
-    padding: 6px 0 16px;
   }
 
   .listing-header h2,

@@ -1,5 +1,5 @@
 .category-section {
-  padding: 20px 48px 10px 48px;
+  padding: 20px 20px 10px 20px;
 }
 
 .category-container-top {
@@ -80,7 +80,7 @@
 /* ─── Tablet (481px – 1024px) ─── */
 @media (min-width: 481px) and (max-width: 1024px) {
   .category-section {
-    padding: 10px 24px 5px 24px;
+    padding: 10px 20px 5px 20px;
   }
 
   .category-title {
