@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useListings } from "../hooks/useListings";
 import { getNewListings, getListingByCategory } from "../services/firebase/firestore/listingService";
 import { useLocation } from "react-router-dom";
 import { ListingSection, ListingSectionLoader, SystemState } from "../components";
 import ErrorImg from "../assets/error.png";
+import { useQuery } from "@tanstack/react-query";
 
 const ListingsPage = () => {
   const { state } = useLocation();
@@ -48,7 +48,15 @@ const ListingsPage = () => {
   }
   
   // console.log(params)
-  const { listings: fetchedListings, loading, error } = useListings(fetchFn, params, !data);
+  // const { listings: fetchedListings, loading, error } = useListings(fetchFn, params, !data);
+
+  const { data: fetchedListings = [], isLoading: loading, error } = useQuery({
+    queryKey: ['listings', type, category_name, JSON.stringify(params)],
+    queryFn: () => fetchFn(params),
+    enabled: !data,
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
 
   const listings = data || fetchedListings;
 

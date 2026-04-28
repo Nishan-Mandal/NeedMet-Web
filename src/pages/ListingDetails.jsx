@@ -10,10 +10,10 @@ import {
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
 import { useParams, useLocation } from 'react-router-dom';
-import { useListings } from '../hooks/useListings.js';
-import { useListingById } from '../hooks/useListingById.js';
 import '../style/ListingDetails.css'
-import { getNewListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
+import { getNewListings, getListingByCategory, getListingById } from '../services/firebase/firestore/listingService.js';
+import { useQuery } from '@tanstack/react-query';
+
 
 
 function ListingDetails() {
@@ -22,22 +22,32 @@ function ListingDetails() {
   
   const { listingId } = useParams();
 
-  const { listing: fetchedListing, loading, error } = useListingById(listingId, !stateListing);
+  const { data: fetchedListing, isLoading: loading, error } = useQuery({
+    queryKey: ['listingById', listingId],
+    queryFn: () => getListingById(listingId),
+    enabled: !stateListing,
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
 
   const listing = stateListing || fetchedListing;
-  // console.log(listing)
   const shouldFetch = !!listing;
 
-  const { listings: newListings, loading: newLoading, error: newError} = useListings(
-    getNewListings, 
-    {'quantity':10}, 
-    shouldFetch
-  )
-  const { listings: similarListings, loading: similarLoading, error: similarError} = useListings(
-    getListingByCategory, 
-    { category: [listing?.category], quantity: 10 }, 
-    shouldFetch
-  )
+  const { data: newListings = [], isLoading: newLoading, error: newError } = useQuery({
+    queryKey: ['newListings', 'short'],
+    queryFn: () => getNewListings({ quantity: 10 }),
+    enabled: shouldFetch, 
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
+
+  const { data: similarListings = [], isLoading: similarLoading, error: similarError } = useQuery({
+    queryKey: ['similarListings', listing?.category],
+    queryFn: () => getListingByCategory({ category: [listing?.category], quantity: 10 }),
+    enabled: shouldFetch || !!listing?.category, 
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
 
   if (error) {
     return (

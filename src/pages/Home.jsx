@@ -1,26 +1,34 @@
 import { Hero, CategorySection, ListingSection, HomeLoader, SystemState } from '../components'
 import ErrorImg from "../assets/error.png"
-import { useListings } from '../hooks/useListings.js';
-import { useHomeDetails } from '../hooks/useHomeDetails.js';
 import { getListingByCategory, getNewListings, getRecommendedListings } from '../services/firebase/firestore/listingService.js';
+import { useQuery } from '@tanstack/react-query';
+import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
+
 
 function Home() {
 
-  const { homeData, loading: homeLoading, error: homeError } = useHomeDetails();
+  const { data: homeData, isLoading: homeLoading, error: homeError } = useQuery({
+    queryKey: ['homeDetails'],
+    queryFn: () => getHomeDetails(),
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
 
   const categoryList = homeData?.listings || [];
 
-  const { 
-    listings: recommendedListings, 
-    loading: recommendedLoading, 
-    error: recommendedError
-  } = useListings(getRecommendedListings,{ quantity: 20 })
+  const { data: recommendedListings = [] } = useQuery({
+    queryKey: ['recommendedListings', 'short'],
+    queryFn: () => getRecommendedListings({ quantity: 20 }),
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+    });
 
-  const { 
-    listings: newListings, 
-    loading: newLoading, 
-    error: newError
-  } = useListings(getNewListings, {'quantity': 20})
+  const { data: newListings = [] } = useQuery({
+    queryKey: ['newListings', 'short'],
+    queryFn: () => getNewListings({ quantity: 20 }),
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
 
   if (homeLoading) {
     return <HomeLoader />;

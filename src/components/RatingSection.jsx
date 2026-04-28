@@ -1,6 +1,6 @@
 import '../style/RatingSection.css'
-import { useReviews } from '../hooks/useReviews'
-// import { useEffect, useRef } from "react";
+import { useReviews } from '../hooks/useReviews.js';
+import { useEffect, useRef } from 'react'
 
 function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRatings = {}, listingId }) {
 
@@ -29,36 +29,26 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
   const overall = Math.round(((avgRatings.behaviour) + (avgRatings.quality)+ (avgRatings.value)) / 3)
   const getPercent = (val) => Math.round(((val) / 5) * 100);
 
-  const { reviews, loading, hasMore, loadMore } = useReviews(listingId, 4);
-  // console.log(reviews)
+  const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 4);
 
-  // const loadMoreRef = useRef(null);
-  // const containerRef = useRef(null);
+  const sentinelRef = useRef(null);
 
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       const first = entries[0];
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasMore && !isFetchingMore) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  //       if (first.isIntersecting && hasMore && !loading) {
-  //         loadMore();
-  //       }
-  //     },
-  //     {
-  //       root: containerRef.current, // 🔥 THIS IS THE FIX
-  //       rootMargin: "100px",
-  //       threshold: 0
-  //     }
-  //   );
+    const el = sentinelRef.current;
+    if (el) observer.observe(el);
+    return () => { if (el) observer.unobserve(el); };
 
-  //   const current = loadMoreRef.current;
+  }, [hasMore, isFetchingMore, loadMore]);
 
-  //   if (current) observer.observe(current);
-
-  //   return () => {
-  //     if (current) observer.unobserve(current);
-  //   };
-  // }, [hasMore, loading, loadMore]);
 
   return (
     <div className="rating-review-section">
@@ -171,7 +161,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
             {
               <>
                 {
-                  !loading && !reviews.length ? (
+                  !loading && !isFetchingMore && !reviews.length ? (
                     <div className="empty-review-text">No Reviews Yet</div>
                   ) : (
                     <div className="reviews-list">
@@ -207,11 +197,8 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
                       }
 
                       
-                      {
-                        loading ? 
-                        <p>Loading more reviews...</p> : 
-                        hasMore && ( <button onClick={loadMore} className="review-see-all-btn"> Load More Reviews </button> )
-                      }
+                      {isFetchingMore && <p style={{'textAlign': 'center'}}>Loading more reviews...</p>}
+                      <div ref={sentinelRef} style={{ height: '1px' }} />
                     </div>
                   )
                 }
