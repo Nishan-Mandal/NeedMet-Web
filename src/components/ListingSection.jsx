@@ -31,7 +31,7 @@ function HeaderWithOutSeeAll({title}) {
   )
 }
 
-export default function ListingSection({ title, listings=[], see_all_navigate }) {
+export default function ListingSection({ title, listings=[], showSeeAll = false, see_all_navigate }) {
   const location = useLocation();
   const isListingPage = location.pathname.includes('/listings');
 
@@ -40,9 +40,11 @@ export default function ListingSection({ title, listings=[], see_all_navigate })
       
       {/* Header */}
       {
-        see_all_navigate === 'false' || listings.length === 0 ? 
-          <HeaderWithOutSeeAll title={title}/> : 
+        showSeeAll && see_all_navigate && listings.length !== 0
+        ? 
           <HeaderWithSeeAll title={title} see_all_navigate={see_all_navigate}/>
+        :
+          <HeaderWithOutSeeAll title={title}/> 
       }
 
       {/* Cards Grid */}

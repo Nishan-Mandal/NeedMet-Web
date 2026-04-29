@@ -1,38 +1,38 @@
 import { Hero, CategorySection, ListingSection, HomeLoader, SystemState } from '../components'
 import ErrorImg from "../assets/error.png"
-import { getNewListings, getRecommendedListings } from '../services/firebase/firestore/listingService.js';
-import { useQuery } from '@tanstack/react-query';
+import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
+import { useQuery, useQueries } from '@tanstack/react-query';
 import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
-
 
 function Home() {
 
   const { data: homeData, isLoading: homeLoading, error: homeError } = useQuery({
     queryKey: ['homeDetails'],
     queryFn: () => getHomeDetails(),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error)
   });
 
-  const categoryList = homeData?.listings || [];
+  const categoryList = homeData?.listings ?? [];
 
   const { data: recommendedListings = [] } = useQuery({
-    queryKey: ['recommendedListings', 'short'],
+    queryKey: ['recommendedListings'],
     queryFn: () => getRecommendedListings({ quantity: 20 }),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error)
-    });
-
-  const { data: newListings = [] } = useQuery({
-    queryKey: ['newListings', 'short'],
-    queryFn: () => getNewListings({ quantity: 20 }),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error)
   });
 
-  if (homeLoading) {
+  const { data: newListings = [] } = useQuery({
+    queryKey: ['newListings'],
+    queryFn: () => getNewListings({ quantity: 20 }),
+  });
+
+  const categoryQueries = useQueries({
+    queries: categoryList.map((category) => ({
+      queryKey: ['categoryListings', category],
+      queryFn: () => getListingByCategory({ category: [category], quantity: 20 }),
+      enabled: !!category,
+    })),
+  });
+
+  if(homeLoading) 
     return <HomeLoader />;
-  }
 
   if(homeError) {
     return (
@@ -49,12 +49,22 @@ function Home() {
   
   return (
     <>
-      <Hero data={homeData}/>
-      <CategorySection title='Top Categories' data={homeData} see_all_navigate='/all_categories'/>
-      <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate='/listings/recommended'/>
-      <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added'/>
+      <Hero data={homeData} />
+      <CategorySection title="Top Categories" data={homeData} showSeeAll={true} see_all_navigate="/all_categories" />
+      <ListingSection title="Recommended For You" listings={recommendedListings} showSeeAll={recommendedListings?.length >= 20} see_all_navigate="/listings/recommended" />
+      <ListingSection title="Newly Added" listings={newListings} showSeeAll={newListings?.length >= 20} see_all_navigate="/listings/newly_added" />
+
+      {categoryList.map((category, index) => (
+        <ListingSection
+          key={category}
+          title={category}
+          listings={categoryQueries[index]?.data ?? []}
+          showSeeAll={(categoryQueries[index]?.data?.length ?? 0) >= 20}
+          see_all_navigate={`/listings/${encodeURIComponent(category)}`}
+        />
+      ))}
     </>
-  )
+  );
 }
 
 export default Home;

@@ -91,7 +91,7 @@ const ListingsPage = () => {
 
   return (
     <>
-      <ListingSection title={title} listings={listings} see_all_navigate="false" />
+      <ListingSection title={title} listings={listings} showSeeAll={false} />
 
       <>
         {isFetchingNextPage && (
