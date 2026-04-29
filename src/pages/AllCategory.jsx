@@ -48,9 +48,9 @@ export default function AllCategory() {
           title="No Categories"
           highlight="Found"
           message="Currently, there are no categories available. Be the first to contribute by adding a new store or service!"
-          actionType="navigate"
+          actionType="redirect"
           actionLabel="+ Contribute Now"
-          actionTo=""
+          actionTo="https://play.google.com/store/apps/details?id=com.findon.app"
         />
       );
     }

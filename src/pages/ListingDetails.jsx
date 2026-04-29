@@ -73,9 +73,9 @@ function ListingDetails() {
         title="No Listing"
         highlight="Found"
         message="Be the first to contribute by adding a store or service related to this category!"
-        actionType="navigate"
+        actionType="redirect"
         actionLabel="+ Contribute Now"
-        actionTo=""
+        actionTo="https://play.google.com/store/apps/details?id=com.findon.app"
       />
     );
   }

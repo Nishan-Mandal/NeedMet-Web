@@ -13,20 +13,35 @@ export default function SystemState({
   actionLabel = "+ Contribute Now",
   actionTo = "/",
 }) {
+
   const navigate = useNavigate();
+  
+    const refreshPage = () => {
+      navigate(0);
+    }
+
   const handleNavigate = () => {
     navigate(actionTo);
   }
 
-  const refreshPage = () => {
-    navigate(0);
-  }
+  const handleRedirect = () => {
+    if (actionTo.startsWith("http")) {
+      window.open(actionTo, "_blank", "noopener,noreferrer");
+    } else {
+      navigate(actionTo);
+    }
+  };
 
   let onclickHandle = refreshPage;
+
   if(actionType === "refresh") {
     onclickHandle = refreshPage;
   } else if(actionType === "navigate") {
     onclickHandle = handleNavigate;
+  } else if(actionType === "redirect") {
+    onclickHandle = handleRedirect;
+  } else {
+    navigate('/');
   }
 
   return (
@@ -54,7 +69,17 @@ export default function SystemState({
   );
 }
 
-function InlineNoListingsFound({ onContribute }) {
+function InlineNoListingsFound({ actionType='redirect', actionTo='https://play.google.com/store/apps/details?id=com.findon.app' }) {
+  const navigate = useNavigate();
+  
+  const handleRedirect = () => {
+    if (actionTo.startsWith("http")) {
+      window.open(actionTo, "_blank", "noopener,noreferrer");
+    } else {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="no-listings-row">
       <div className="no-listings-img">
@@ -66,9 +91,9 @@ function InlineNoListingsFound({ onContribute }) {
         <span className="no-listings-sub">Be the first to contribute by adding a store or service related to this category!</span>
       </div>
  
-      <button className="no-listings-btn" onClick={onContribute}>
-        + Contribute Now
-      </button>
+        <button className="no-listings-btn" onClick={handleRedirect}>
+          + Contribute Now
+        </button>
     </div>
   );
 }
