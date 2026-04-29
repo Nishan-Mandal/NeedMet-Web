@@ -36,6 +36,13 @@ const formatData = (snap) => {
   );
 };
 
+const verificationConstraints = import.meta.env.DEV
+  ? []
+  : [
+      where("verifiedBy", "!=", null),
+      orderBy("verifiedBy")
+    ];
+
 const listingRef = collection(firestore, "listings");
 
 export const getListingByCategory = async ({ category, quantity }) => {
@@ -44,7 +51,12 @@ export const getListingByCategory = async ({ category, quantity }) => {
         
         console.log('[Api Call] getListingByCategory -> start');
 
-        const q = query(listingRef, where("category", "in", category), limit(quantity));
+        const q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("category", "in", category),
+            limit(quantity)
+        );
         const snap = await getDocs(q);
 
         console.log('[Api Call] getListingByCategory -> end');
@@ -59,7 +71,7 @@ export const getListingByCategory = async ({ category, quantity }) => {
 
 export const getListingByCategoryPaginated = async ({ category, quantity = 20, pageParam = null }) => {
     try {
-        console.log('[Api Call] getNewListingsPaginated -> start');
+        console.log('[Api Call] getListingByCategoryPaginated -> start');
 
         if (!category || category.length === 0) 
             return { 
@@ -68,13 +80,24 @@ export const getListingByCategoryPaginated = async ({ category, quantity = 20, p
                 hasMore: false 
             };
 
-        let q = query(listingRef, where("category", "in", category), limit(quantity));
-        if (pageParam) q = query(listingRef, where("category", "in", category), startAfter(pageParam), limit(quantity));
+        let q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("category", "in", category),
+            limit(quantity)
+        );
+        if (pageParam) q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("category", "in", category),
+            startAfter(pageParam),
+            limit(quantity)
+        );
 
         const snap = await getDocs(q);
         const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
 
-        console.log('[Api Call] getNewListingsPaginated -> end');
+        console.log('[Api Call] getListingByCategoryPaginated -> end');
 
         return { 
             listings: formatData(snap), 
@@ -96,7 +119,12 @@ export const getNewListings = async ({ quantity }) => {
     try {
         console.log('[Api Call] getNewListings -> start');
 
-        const q = query(listingRef, orderBy("createdAt", "desc"), limit(quantity));
+        const q = query(
+            listingRef,
+            ...verificationConstraints,
+            orderBy("createdAt", "desc"),
+            limit(quantity)
+        );
         const snap = await getDocs(q);
 
         console.log('[Api Call] getNewListings -> end');
@@ -113,8 +141,19 @@ export const getNewListingsPaginated = async ({ quantity = 20, pageParam = null 
     try {
         console.log('[Api Call] getNewListingsPaginated -> start');
 
-        let q = query(listingRef, orderBy("createdAt", "desc"), limit(quantity));
-        if (pageParam) q = query(listingRef, orderBy("createdAt", "desc"), startAfter(pageParam), limit(quantity));
+        let q = query(
+            listingRef,
+            ...verificationConstraints,
+            orderBy("createdAt", "desc"),
+            limit(quantity)
+        );
+        if (pageParam) q = query(
+            listingRef,
+            ...verificationConstraints, 
+            orderBy("createdAt", "desc"),
+            startAfter(pageParam),
+            limit(quantity)
+        );
 
         const snap = await getDocs(q);
         const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
@@ -141,7 +180,12 @@ export const getRecommendedListings = async ({ quantity }) => {
     try {
         console.log('[Api Call] getRecommendedListings -> start');
         
-        const q = query(listingRef, where("tags", "array-contains", "recommended"), limit(quantity));
+        const q = query(
+            listingRef,
+            ...verificationConstraints,
+            where("tags", "array-contains", "recommended"),
+            limit(quantity)
+        );
         const snap = await getDocs(q);
 
         console.log('[Api Call] getRecommendedListings -> end');
@@ -158,8 +202,19 @@ export const getRecommendedListingsPaginated = async ({ quantity = 20, pageParam
     try {
         console.log('[Api Call] getRecommendedListingsPaginated -> start');
 
-        let q = query(listingRef, where("tags", "array-contains", "recommended"), limit(quantity));
-        if (pageParam) q = query(listingRef, where("tags", "array-contains", "recommended"), startAfter(pageParam), limit(quantity));
+        let q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("tags", "array-contains", "recommended"),
+            limit(quantity)
+        );
+        if (pageParam) q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("tags", "array-contains", "recommended"),
+            startAfter(pageParam),
+            limit(quantity)
+        );
 
         const snap = await getDocs(q);
         const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
