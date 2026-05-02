@@ -21,6 +21,7 @@ const router = createBrowserRouter(
     <Route path='/' element={<App />}>
       <Route path='' element={<Home />} /> 
       <Route path='listing/:listingId' element={<ListingDetails />} />
+      <Route path="/listings/similar/:listingId" element={<ListingsPage />} />
       <Route path="/listings/:type" element={<ListingsPage />} />
       <Route path="/listings/category/:category_name" element={<ListingsPage />} />
       <Route path="/all_categories" element={<AllCategory />} />

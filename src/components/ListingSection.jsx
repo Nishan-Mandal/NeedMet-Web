@@ -31,7 +31,7 @@ function HeaderWithOutSeeAll({title}) {
   )
 }
 
-export default function ListingSection({ title, listings=[], showSeeAll = false, see_all_navigate }) {
+export default function ListingSection({ title, listings=[], showSeeAll = true, see_all_navigate }) {
   const location = useLocation();
   const isListingPage = location.pathname.includes('/listings');
 

@@ -1,10 +1,12 @@
 import { useParams, useLocation } from "react-router-dom";
 import { useEffect, useRef, useCallback } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   getNewListingsPaginated,
   getListingByCategoryPaginated,
-  getRecommendedListingsPaginated,   // ← was missing
+  getRecommendedListingsPaginated,
+  getSimilarListingsPaginated,
+  getListingById,
 } from "../services/firebase/firestore/listingService";
 import { ListingSection, ListingSectionLoader, SystemState } from "../components";
 import ErrorImg from "../assets/error.png";
@@ -18,16 +20,35 @@ const title_decide = (type, category_name) => {
   return "All Listings";
 };
 
+const generateKey = (type, category_name, listingId) => {
+  if (category_name) return ['listings-infinite', 'category', category_name];
+  if (listingId) return ['listings-infinite', 'similar', listingId];
+  return ['listings-infinite', type || 'all'];
+}
+
 
 const ListingsPage = () => {
   const { state } = useLocation();
-  const { type, category_name } = useParams();
+  const { category_name, listingId } = useParams();
+  let { type } = useParams();
 
+  type = listingId ? "similar" : type; 
   const title = state?.title || title_decide(type, category_name);
-
   const sentinelRef = useRef(null);
 
-  const { fetchFn, params } = resolveQuery({ type, category_name });
+  const { 
+    data: listingData, 
+    isLoading: listingIsLoading, 
+    error: listingError 
+  }  = useQuery({
+    queryKey: ['listingById', listingId],
+    queryFn: () => getListingById(listingId),
+    enabled: type === "similar" && !!listingId,
+  });
+
+  const similar_category = listingData?.category ?? "";
+
+  const { fetchFn, params } = resolveQuery({ type, category_name, listingId, similar_category });
 
   const {
     data,
@@ -37,18 +58,17 @@ const ListingsPage = () => {
     hasNextPage,
     error,
   } = useInfiniteQuery({
-    queryKey: ["listings-infinite", type, category_name],
+    queryKey: generateKey(type, category_name, listingId),
     queryFn: ({ pageParam = null }) => fetchFn({ ...params, quantity: QUANTITY, pageParam }),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.lastDoc : undefined,
-    enabled: !!fetchFn,
+    enabled: !!fetchFn && (type === "similar" ? similar_category !== '' : true),
     onSuccess: (data) => console.log(data),
     onError: (error) => console.log(error),
   });
 
   const listings = data?.pages.flatMap((p) => p.listings) ?? [];
 
-  // ── Observer callback is stable; re-runs only when these change ──
   const handleObserver = useCallback(
     (entries) => {
       const [entry] = entries;
@@ -59,7 +79,6 @@ const ListingsPage = () => {
     [hasNextPage, isFetchingNextPage, fetchNextPage]
   );
 
-  // ── Re-observe whenever the callback or sentinel changes ──
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
@@ -74,7 +93,7 @@ const ListingsPage = () => {
     return () => observer.disconnect();
   }, [handleObserver]);
 
-  if (isLoading) return <ListingSectionLoader count={QUANTITY} showSeeAll={false} />;
+  if (isLoading || listingIsLoading) return <ListingSectionLoader count={QUANTITY} showSeeAll={false} />;
 
   if(error) {
     return (
@@ -108,21 +127,24 @@ const ListingsPage = () => {
   );
 };
 
-function resolveQuery({ type, category_name }) {
+function resolveQuery({ type, category_name, listingId, similar_category }) {
   if (category_name) {
     return {
       fetchFn: getListingByCategoryPaginated,
       params: { category: [decodeURIComponent(category_name)] },
     };
   }
-  if (type === "recommended") {
+  else if (type === "recommended") {
     return { fetchFn: getRecommendedListingsPaginated, params: {} };
   }
-  if (type === "newly_added") {
+  else if (type === "newly_added") {
     return { fetchFn: getNewListingsPaginated, params: {} };
   }
-  if (type === "similar") {
-    return { fetchFn: getListingByCategoryPaginated, params: { category: [] } };
+  else if (type === "similar") {
+    return {
+      fetchFn: getSimilarListingsPaginated,
+      params: { listingId, category: similar_category },
+    };
   }
   return { fetchFn: getNewListingsPaginated, params: {} };
 }

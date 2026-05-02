@@ -11,7 +11,7 @@ import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
 import { useParams, useLocation } from 'react-router-dom';
 import '../style/ListingDetails.css'
-import { getNewListings, getListingByCategory, getListingById } from '../services/firebase/firestore/listingService.js';
+import { getNewListings, getListingByCategory, getListingById, getSimilarListings } from '../services/firebase/firestore/listingService.js';
 import { useQuery } from '@tanstack/react-query';
 
 
@@ -35,7 +35,7 @@ function ListingDetails() {
 
   const { data: newListings = [], isLoading: newLoading, error: newError } = useQuery({
     queryKey: ['newListings', 'short'],
-    queryFn: () => getNewListings({ quantity: 10 }),
+    queryFn: () => getNewListings({ quantity: 20 }),
     enabled: shouldFetch, 
     onSuccess: (data) => console.log(data),
     onError: (error) => console.log(error)
@@ -43,7 +43,7 @@ function ListingDetails() {
 
   const { data: similarListings = [], isLoading: similarLoading, error: similarError } = useQuery({
     queryKey: ['similarListings', listing?.category],
-    queryFn: () => getListingByCategory({ category: [listing?.category], quantity: 10 }),
+    queryFn: () => getSimilarListings({ category: listing?.category, listingId: listing?.listingId }),
     enabled: shouldFetch || !!listing?.category, 
     onSuccess: (data) => console.log(data),
     onError: (error) => console.log(error)
@@ -198,7 +198,7 @@ function ListingDetails() {
 
       </div>
 
-      <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate='/listings/similar' />
+      <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
       <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
     </>
   );

@@ -50,17 +50,16 @@ function Home() {
   return (
     <>
       <Hero data={homeData} />
-      <CategorySection title="Top Categories" data={homeData} showSeeAll={true} see_all_navigate="/all_categories" />
-      <ListingSection title="Recommended For You" listings={recommendedListings} showSeeAll={recommendedListings?.length >= 20} see_all_navigate="/listings/recommended" />
-      <ListingSection title="Newly Added" listings={newListings} showSeeAll={newListings?.length >= 20} see_all_navigate="/listings/newly_added" />
+      <CategorySection title="Top Categories" data={homeData} see_all_navigate="/all_categories" />
+      <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />
+      <ListingSection title="Newly Added" listings={newListings} see_all_navigate="/listings/newly_added" />
 
       {categoryList.map((category, index) => (
         <ListingSection
           key={category}
           title={category}
           listings={categoryQueries[index]?.data ?? []}
-          showSeeAll={(categoryQueries[index]?.data?.length ?? 0) >= 20}
-          see_all_navigate={`/listings/${encodeURIComponent(category)}`}
+          see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
         />
       ))}
     </>
