@@ -1,7 +1,7 @@
 .listing-card {
   max-width: 100%;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 7px;
   overflow: hidden;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
   border: 1px solid rgba(0, 0, 0, 0.075);
@@ -19,8 +19,6 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
 }
 
 .listing-image img {
@@ -98,12 +96,7 @@
 @media (min-width: 481px) and (max-width: 768px) {
   .listing-card {
     max-width: 100%;
-    border-radius: 12px;
-  }
-
-  .listing-image {
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    /* border-radius: 12px; */
   }
 
   .listing-content {
@@ -124,7 +117,6 @@
 /* ─── Mobile (≤ 480px) ─── */
 @media (max-width: 480px) {
   .listing-card {
-    border-radius: 12px;
     transition: none;
   }
 
@@ -143,8 +135,6 @@
 
   .listing-image img {
     aspect-ratio: 16/9;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
   }
 
   .listing-content {
