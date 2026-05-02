@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import empty_thumb from "../assets/empty_thumb.png"
+import premiumImg from "../assets/premium.png";
 import "../style/PreviewImage.css";
 
-export default function PreviewImage({ width="100%", images = [empty_thumb] }) {
+export default function PreviewImage({ width="100%", images = [empty_thumb], isPremium = false }) {
   const previewRef = useRef(null);
 
   const [isLeftDisabled, setIsLeftDisabled] = useState(true);
@@ -56,6 +57,13 @@ const checkScrollPosition = () => {
         backgroundPosition: "center"
       }}
     >
+      {isPremium && (
+        <div className="preview-img-premium-badge">
+          <img src={premiumImg} alt="premium" /> 
+          <span>Premium</span>
+        </div>
+      )}
+
       <div className="preview-container">
 
         <div>

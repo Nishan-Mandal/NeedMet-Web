@@ -1,6 +1,7 @@
 import "../style/ListingCard.css";
 import { useNavigate } from "react-router-dom";
 import empty_thumb from "../assets/empty_thumb.png"
+import premiumImg from "../assets/premium.png";
 
 
 export default function ListingCard({listing}) {
@@ -17,8 +18,19 @@ export default function ListingCard({listing}) {
   return (
     <div className="listing-card" onClick={navigateToListingDetails}>
       {/* Image */}
-      <div className="listing-image">
-        <img src={imageUrl} alt={listing.name} onError={(e) => (e.target.src = empty_thumb)}/>
+      <div 
+        className="listing-image" 
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center"
+        }}>
+        {listing?.isPremium && (
+            <div className="premium-badge">
+              <img src={premiumImg} alt="premium" /> 
+              <span>Premium</span>
+            </div>
+          )}
       </div>
 
       {/* Content */}

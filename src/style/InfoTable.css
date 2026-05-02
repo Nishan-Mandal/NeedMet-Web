@@ -66,6 +66,11 @@
 
 /* ─── Phone (≤ 480px) ─────────────────────────────────────────────── */
 @media (max-width: 480px) {
+  .info-table-container-mobile-reset {
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  
   .info-section {
     padding: 14px;
     border-radius: 6px;

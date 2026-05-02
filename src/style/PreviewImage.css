@@ -6,6 +6,33 @@
   aspect-ratio: 16 / 9;
 }
 
+.preview-img-premium-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: rgb(255, 0, 0);
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-bottom-left-radius: 5px;
+  border-top-right-radius: 5px;
+  letter-spacing: 0.4px;
+  z-index: 1;
+}
+
+.preview-img-premium-badge img {
+  background-color: white;
+  border-radius: 50%;
+  padding: 2px;
+  width: 23px;
+  height: 23px;
+  object-fit: contain;
+}
+
 /* ─── Arrow Buttons ─── */
 .preview-image-arrow {
   background: rgba(0, 0, 0, 0.5);
@@ -94,6 +121,15 @@
 
 /* ─── Tablet (481px – 1024px) ─── */
 @media (min-width: 481px) and (max-width: 1024px) {
+  .preview-img-premium-badge {
+    font-size: 1rem;
+  }
+
+  .preview-img-premium-badge img {
+    width: 20px;
+    height: 20px;
+  }
+
   .preview-image-arrow {
     height: 2.5rem;
     width: 2.5rem;
@@ -122,6 +158,15 @@
     border-radius: 10px;
     /* Taller crop on mobile for better visual */
     aspect-ratio: 4 / 3;
+  }
+
+  .preview-img-premium-badge {
+    font-size: 0.8rem;
+  }
+
+  .preview-img-premium-badge img {
+    width: 17px;
+    height: 17px;
   }
 
   .preview-image-arrow {

@@ -12,12 +12,16 @@ import {
 } from './pages'
 import { SystemState } from './components'
 import MaintenanceImg from "./assets/maintenance.jpg"
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
       <Route path='' element={<Home />} /> 
       <Route path='listing/:listingId' element={<ListingDetails />} />
+      <Route path="/listings/similar/:listingId" element={<ListingsPage />} />
       <Route path="/listings/:type" element={<ListingsPage />} />
       <Route path="/listings/category/:category_name" element={<ListingsPage />} />
       <Route path="/all_categories" element={<AllCategory />} />
@@ -68,10 +72,22 @@ const router = createBrowserRouter(
 
 )
 
+const queryClient = new QueryClient({
+ defaultOptions: {
+   queries: {
+      staleTime: 5 * 60 * 1000,
+      gcTime: 10 * 60 * 1000
+   }
+ }
+});
+
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
-  <>
+  <QueryClientProvider client={queryClient}>
     <RouterProvider router={router}/>
-  </>
+    {import.meta.env.DEV && (
+      <ReactQueryDevtools initialIsOpen={false} />
+    )}
+  </QueryClientProvider>
   // </StrictMode>,
 )
