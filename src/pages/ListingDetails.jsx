@@ -146,7 +146,7 @@ function ListingDetails() {
       <div className="listing-details">
 
         <div className="listing-details-left">
-          <PreviewImage images={imageList} />
+          <PreviewImage images={imageList} isPremium={listing?.isPremium}/>
 
           <div className="likes-contact">
             <div className="likes">
