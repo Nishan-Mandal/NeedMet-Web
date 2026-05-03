@@ -3,6 +3,8 @@ import ErrorImg from "../assets/error.png"
 import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
+import { useEffect } from 'react';
+import useInfo from '../contexts/infoContext.jsx';
 
 function Home() {
 
@@ -10,6 +12,13 @@ function Home() {
     queryKey: ['homeDetails'],
     queryFn: () => getHomeDetails(),
   });
+  
+  const { setContactNo } = useInfo();
+  useEffect(() => {
+    if (homeData?.whatsappSupport) {
+      setContactNo(homeData.whatsappSupport);
+    }
+  }, [homeData]);
 
   const categoryList = homeData?.listings ?? [];
 

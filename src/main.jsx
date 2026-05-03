@@ -14,6 +14,7 @@ import { SystemState } from './components'
 import MaintenanceImg from "./assets/maintenance.jpg"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { AppProvider } from './contexts/AppProvider.jsx'
 
 
 const router = createBrowserRouter(
@@ -82,12 +83,14 @@ const queryClient = new QueryClient({
 });
 
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>
-  <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router}/>
-    {import.meta.env.DEV && (
-      <ReactQueryDevtools initialIsOpen={false} />
-    )}
-  </QueryClientProvider>
-  // </StrictMode>,
+  <>
+    <AppProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router}/>
+        {import.meta.env.DEV && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </QueryClientProvider>
+    </AppProvider>
+  </>
 )
