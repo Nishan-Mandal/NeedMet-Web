@@ -1,30 +1,38 @@
 import { Hero, CategorySection, ListingSection, HomeLoader, SystemState } from '../components'
 import ErrorImg from "../assets/error.png"
-import { useListings } from '../hooks/useListings.js';
-import { useHomeDetails } from '../hooks/useHomeDetails.js';
-import { getListingByCategory, getNewListings, getRecommendedListings } from '../services/firebase/firestore/listingService.js';
+import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
+import { useQuery, useQueries } from '@tanstack/react-query';
+import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
 
 function Home() {
 
-  const { homeData, loading: homeLoading, error: homeError } = useHomeDetails();
+  const { data: homeData, isLoading: homeLoading, error: homeError } = useQuery({
+    queryKey: ['homeDetails'],
+    queryFn: () => getHomeDetails(),
+  });
 
-  const categoryList = homeData?.listings || [];
+  const categoryList = homeData?.listings ?? [];
 
-  const { 
-    listings: recommendedListings, 
-    loading: recommendedLoading, 
-    error: recommendedError
-  } = useListings(getRecommendedListings,{ quantity: 20 })
+  const { data: recommendedListings = [] } = useQuery({
+    queryKey: ['recommendedListings'],
+    queryFn: () => getRecommendedListings({ quantity: 20 }),
+  });
 
-  const { 
-    listings: newListings, 
-    loading: newLoading, 
-    error: newError
-  } = useListings(getNewListings, {'quantity': 20})
+  const { data: newListings = [] } = useQuery({
+    queryKey: ['newListings'],
+    queryFn: () => getNewListings({ quantity: 20 }),
+  });
 
-  if (homeLoading) {
+  const categoryQueries = useQueries({
+    queries: categoryList.map((category) => ({
+      queryKey: ['categoryListings', category],
+      queryFn: () => getListingByCategory({ category: [category], quantity: 20 }),
+      enabled: !!category,
+    })),
+  });
+
+  if(homeLoading) 
     return <HomeLoader />;
-  }
 
   if(homeError) {
     return (
@@ -41,12 +49,21 @@ function Home() {
   
   return (
     <>
-      <Hero data={homeData}/>
-      <CategorySection title='Categories' data={homeData} see_all_navigate='/all_categories'/>
-      <ListingSection title="Recommended Listings" listings={recommendedListings} see_all_navigate='/listings/recommended'/>
-      <ListingSection title="Newly Added Listings" listings={newListings} see_all_navigate='/listings/newly_added'/>
+      <Hero data={homeData} />
+      <CategorySection title="Top Categories" data={homeData} see_all_navigate="/all_categories" />
+      <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />
+      <ListingSection title="Newly Added" listings={newListings} see_all_navigate="/listings/newly_added" />
+
+      {categoryList.map((category, index) => (
+        <ListingSection
+          key={category}
+          title={category}
+          listings={categoryQueries[index]?.data ?? []}
+          see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
+        />
+      ))}
     </>
-  )
+  );
 }
 
 export default Home;

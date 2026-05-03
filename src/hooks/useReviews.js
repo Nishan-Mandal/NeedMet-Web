@@ -1,51 +1,32 @@
-import { useState, useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReviews } from "../services/firebase/firestore/reviewService";
 
-export const useReviews = (listingId, pageSize = 5) => {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [lastDoc, setLastDoc] = useState(null);
-  const [hasMore, setHasMore] = useState(true);
+export const useReviews = (listingId, pageSize = 4) => {
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ["reviews", listingId],
+    queryFn: ({ pageParam = null }) =>
+      getReviews({ listingId, pageSize, lastDoc: pageParam }),
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.lastDoc : undefined,
+    initialPageParam: null,
+    enabled: !!listingId, // don't fetch if listingId is undefined
+  });
 
-  const fetchReviews = async (isLoadMore = false) => {
-    if (!listingId || loading) return;
-
-    try {
-      setLoading(true);
-
-      const { reviews: newReviews, lastDoc: newLastDoc, hasMore } =
-        await getReviews({
-          listingId,
-          pageSize,
-          lastDoc: isLoadMore ? lastDoc : null
-        });
-
-      setReviews((prev) =>
-        isLoadMore ? [...prev, ...newReviews] : newReviews
-      );
-
-      setLastDoc(newLastDoc);
-      setHasMore(hasMore);
-
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    setReviews([]);
-    setLastDoc(null);
-    setHasMore(true);
-
-    fetchReviews(false);
-  }, [listingId]);
+  const reviews = data?.pages.flatMap((page) => page.reviews) ?? [];
 
   return {
     reviews,
-    loading,
-    hasMore,
-    loadMore: () => fetchReviews(true)
+    loading: isLoading,
+    isFetchingMore: isFetchingNextPage,
+    hasMore: !!hasNextPage,
+    loadMore: fetchNextPage,
+    isError,
   };
 };

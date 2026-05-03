@@ -10,10 +10,10 @@ import {
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
 import { useParams, useLocation } from 'react-router-dom';
-import { useListings } from '../hooks/useListings.js';
-import { useListingById } from '../hooks/useListingById.js';
 import '../style/ListingDetails.css'
-import { getNewListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
+import { getNewListings, getListingByCategory, getListingById, getSimilarListings } from '../services/firebase/firestore/listingService.js';
+import { useQuery } from '@tanstack/react-query';
+
 
 
 function ListingDetails() {
@@ -22,22 +22,32 @@ function ListingDetails() {
   
   const { listingId } = useParams();
 
-  const { listing: fetchedListing, loading, error } = useListingById(listingId, !stateListing);
+  const { data: fetchedListing, isLoading: loading, error } = useQuery({
+    queryKey: ['listingById', listingId],
+    queryFn: () => getListingById(listingId),
+    enabled: !stateListing,
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
 
   const listing = stateListing || fetchedListing;
-  // console.log(listing)
   const shouldFetch = !!listing;
 
-  const { listings: newListings, loading: newLoading, error: newError} = useListings(
-    getNewListings, 
-    {'quantity':10}, 
-    shouldFetch
-  )
-  const { listings: similarListings, loading: similarLoading, error: similarError} = useListings(
-    getListingByCategory, 
-    { category: [listing?.category], quantity: 10 }, 
-    shouldFetch
-  )
+  const { data: newListings = [], isLoading: newLoading, error: newError } = useQuery({
+    queryKey: ['newListings', 'short'],
+    queryFn: () => getNewListings({ quantity: 20 }),
+    enabled: shouldFetch, 
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
+
+  const { data: similarListings = [], isLoading: similarLoading, error: similarError } = useQuery({
+    queryKey: ['similarListings', listing?.category],
+    queryFn: () => getSimilarListings({ category: listing?.category, listingId: listing?.listingId }),
+    enabled: shouldFetch || !!listing?.category, 
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
 
   if (error) {
     return (
@@ -63,9 +73,9 @@ function ListingDetails() {
         title="No Listing"
         highlight="Found"
         message="Be the first to contribute by adding a store or service related to this category!"
-        actionType="navigate"
+        actionType="redirect"
         actionLabel="+ Contribute Now"
-        actionTo=""
+        actionTo="https://play.google.com/store/apps/details?id=com.findon.app"
       />
     );
   }
@@ -136,7 +146,7 @@ function ListingDetails() {
       <div className="listing-details">
 
         <div className="listing-details-left">
-          <PreviewImage images={imageList} />
+          <PreviewImage images={imageList} isPremium={listing?.isPremium}/>
 
           <div className="likes-contact">
             <div className="likes">
@@ -188,8 +198,8 @@ function ListingDetails() {
 
       </div>
 
-      <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate='/listings/similar' />
-      <ListingSection title="Newly Added Listings" listings={newListings} see_all_navigate='/listings/newly_added' />
+      <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
+      <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
     </>
   );
 }

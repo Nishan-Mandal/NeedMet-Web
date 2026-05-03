@@ -18,7 +18,7 @@ function InfoTable({ title, columns, rows , style, fixHeight}) {
       <h2>{title}</h2>
 
       <div 
-        className="table-container"
+        className={`table-container ${fixHeight ? "info-table-container-mobile-reset" : ""}`}
         style={fixHeight ? { maxHeight: fixHeight, overflowY: "auto" } : {}}
       >
         <table className="info-table">

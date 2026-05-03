@@ -1,12 +1,19 @@
-import { useCategories } from "../hooks/useCategories";
 import { CategorySection, AllCategoryLoader, SystemState } from "../components";
 import { useMemo } from "react";
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategory } from "../services/firebase/firestore/categoryService.js";
 
 export default function AllCategory() {
 
-  const { categories, loading, error } = useCategories();
+  // const { categories, loading, error } = useCategories();
+  const { data: categories = [], isLoading: loading, error } = useQuery({
+    queryKey: ['allCategories'],
+    queryFn: () => getAllCategory(),
+    onSuccess: (data) => console.log(data),
+    onError: (error) => console.log(error)
+  });
 
   const groupedCategories = useMemo(() => {
     return categories.reduce((acc, cat) => {
@@ -41,9 +48,9 @@ export default function AllCategory() {
           title="No Categories"
           highlight="Found"
           message="Currently, there are no categories available. Be the first to contribute by adding a new store or service!"
-          actionType="navigate"
+          actionType="redirect"
           actionLabel="+ Contribute Now"
-          actionTo=""
+          actionTo="https://play.google.com/store/apps/details?id=com.findon.app"
         />
       );
     }

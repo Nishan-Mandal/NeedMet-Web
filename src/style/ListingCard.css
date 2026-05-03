@@ -1,7 +1,7 @@
 .listing-card {
   max-width: 100%;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 7px;
   overflow: hidden;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
   border: 1px solid rgba(0, 0, 0, 0.075);
@@ -19,8 +19,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  position: relative;
 }
 
 .listing-image img {
@@ -43,6 +42,33 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.premium-badge {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background-color: rgb(255, 0, 0);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-bottom-left-radius: 5px;
+  border-top-right-radius: 5px;
+  letter-spacing: 0.4px;
+  z-index: 1;
+}
+
+.premium-badge img {
+  background-color: white;
+  border-radius: 50%;
+  padding: 2px;
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
 }
 
 /* Title */
@@ -98,12 +124,7 @@
 @media (min-width: 481px) and (max-width: 768px) {
   .listing-card {
     max-width: 100%;
-    border-radius: 12px;
-  }
-
-  .listing-image {
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    /* border-radius: 12px; */
   }
 
   .listing-content {
@@ -124,7 +145,6 @@
 /* ─── Mobile (≤ 480px) ─── */
 @media (max-width: 480px) {
   .listing-card {
-    border-radius: 12px;
     transition: none;
   }
 
@@ -143,12 +163,19 @@
 
   .listing-image img {
     aspect-ratio: 16/9;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
   }
 
   .listing-content {
     padding: 8px 10px;
+  }
+
+  .premium-badge {
+    font-size: 9px;
+  }
+
+  .premium-badge img {
+    height: 13px;
+    width: 13px;
   }
 
   .listing-category {

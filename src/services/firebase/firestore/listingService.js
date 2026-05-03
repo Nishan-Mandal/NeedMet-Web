@@ -1,5 +1,5 @@
 import { firestore } from "../../../firebase/firebaseConfig";
-import { collection, getDocs, query, where, orderBy, limit, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy, limit, doc, getDoc, startAfter, documentId } from "firebase/firestore";
 import { Listing } from "../../../data/model/listingModel";
 
 
@@ -14,11 +14,6 @@ export const getListingById = async (listingId) => {
     if (!snap.exists()) return null;
 
     console.log('[Api Call] getListingById -> end');
-
-    // return {
-    //   id: snap.id,
-    //   ...snap.data()
-    // };
 
     return Listing.fromJson({
         listingId: snap.id,
@@ -41,6 +36,13 @@ const formatData = (snap) => {
   );
 };
 
+const verificationConstraints = import.meta.env.DEV
+  ? []
+  : [
+      where("verifiedBy", "!=", null),
+      orderBy("verifiedBy")
+    ];
+
 const listingRef = collection(firestore, "listings");
 
 export const getListingByCategory = async ({ category, quantity }) => {
@@ -49,7 +51,12 @@ export const getListingByCategory = async ({ category, quantity }) => {
         
         console.log('[Api Call] getListingByCategory -> start');
 
-        const q = query(listingRef, where("category", "in", category), limit(quantity));
+        const q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("category", "in", category),
+            limit(quantity)
+        );
         const snap = await getDocs(q);
 
         console.log('[Api Call] getListingByCategory -> end');
@@ -62,11 +69,62 @@ export const getListingByCategory = async ({ category, quantity }) => {
     }
 }
 
+export const getListingByCategoryPaginated = async ({ category, quantity = 20, pageParam = null }) => {
+    try {
+        console.log('[Api Call] getListingByCategoryPaginated -> start');
+
+        if (!category || category.length === 0) 
+            return { 
+                listings: [], 
+                lastDoc: null, 
+                hasMore: false 
+            };
+
+        let q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("category", "in", category),
+            limit(quantity)
+        );
+        if (pageParam) q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("category", "in", category),
+            startAfter(pageParam),
+            limit(quantity)
+        );
+
+        const snap = await getDocs(q);
+        const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
+
+        console.log('[Api Call] getListingByCategoryPaginated -> end');
+
+        return { 
+            listings: formatData(snap), 
+            lastDoc, 
+            hasMore: snap.docs.length === quantity 
+        };
+
+    } catch (error) {
+        console.error("Error fetching listings:", error);
+        return { 
+            listings: [], 
+            lastDoc: null, 
+            hasMore: false 
+        };
+    }
+};
+
 export const getNewListings = async ({ quantity }) => {
     try {
         console.log('[Api Call] getNewListings -> start');
 
-        const q = query(listingRef, orderBy("createdAt", "desc"), limit(quantity));
+        const q = query(
+            listingRef,
+            ...verificationConstraints,
+            orderBy("createdAt", "desc"),
+            limit(quantity)
+        );
         const snap = await getDocs(q);
 
         console.log('[Api Call] getNewListings -> end');
@@ -79,11 +137,55 @@ export const getNewListings = async ({ quantity }) => {
     }
 };
 
+export const getNewListingsPaginated = async ({ quantity = 20, pageParam = null }) => {
+    try {
+        console.log('[Api Call] getNewListingsPaginated -> start');
+
+        let q = query(
+            listingRef,
+            ...verificationConstraints,
+            orderBy("createdAt", "desc"),
+            limit(quantity)
+        );
+        if (pageParam) q = query(
+            listingRef,
+            ...verificationConstraints, 
+            orderBy("createdAt", "desc"),
+            startAfter(pageParam),
+            limit(quantity)
+        );
+
+        const snap = await getDocs(q);
+        const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
+
+        console.log('[Api Call] getNewListingsPaginated -> end');
+
+        return { 
+            listings: formatData(snap), 
+            lastDoc, 
+            hasMore: snap.docs.length === quantity 
+        };
+
+    } catch (error) {
+        console.error("Error fetching listings:", error);
+        return { 
+            listings: [], 
+            lastDoc: null, 
+            hasMore: false 
+        };
+    }
+};
+
 export const getRecommendedListings = async ({ quantity }) => {
     try {
         console.log('[Api Call] getRecommendedListings -> start');
         
-        const q = query(listingRef, where("tags", "array-contains", "recommended"), limit(quantity));
+        const q = query(
+            listingRef,
+            ...verificationConstraints,
+            where("tags", "array-contains", "recommended"),
+            limit(quantity)
+        );
         const snap = await getDocs(q);
 
         console.log('[Api Call] getRecommendedListings -> end');
@@ -93,5 +195,117 @@ export const getRecommendedListings = async ({ quantity }) => {
     } catch(error) {
         console.error("Error fetching listings:", error);
         return [];
+    }
+};
+
+export const getRecommendedListingsPaginated = async ({ quantity = 20, pageParam = null }) => {
+    try {
+        console.log('[Api Call] getRecommendedListingsPaginated -> start');
+
+        let q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("tags", "array-contains", "recommended"),
+            limit(quantity)
+        );
+        if (pageParam) q = query(
+            listingRef,
+            ...verificationConstraints, 
+            where("tags", "array-contains", "recommended"),
+            startAfter(pageParam),
+            limit(quantity)
+        );
+
+        const snap = await getDocs(q);
+        const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
+
+        console.log('[Api Call] getRecommendedListingsPaginated -> end');
+
+        return { 
+            listings: formatData(snap), 
+            lastDoc, 
+            hasMore: snap.docs.length === quantity 
+        };
+
+    } catch (error) {
+        console.error("Error fetching listings:", error);
+        return { 
+            listings: [], 
+            lastDoc: null, 
+            hasMore: false 
+        };
+    }
+};
+
+export const getSimilarListings = async ({ listingId, category, quantity }) => {
+    try {
+        console.log('[Api Call] getSimilarListings -> start');
+
+        if (!category || category.length === 0) return [];
+
+        const q = query(
+            listingRef,
+            ...verificationConstraints,
+            where("category", "==", category),
+            where(documentId(), "!=", listingId),
+            limit(quantity)
+        );
+        const snap = await getDocs(q);
+
+        console.log('[Api Call] getSimilarListings -> end');
+
+        return formatData(snap);
+
+    } catch (error) {
+        console.error("Error fetching similar listings:", error);
+        return [];
+    }
+};
+
+export const getSimilarListingsPaginated = async ({ listingId, category, quantity = 20, pageParam = null }) => {
+    try {
+        console.log('[Api Call] getSimilarListingsPaginated -> start');
+
+        if (!category || category.length === 0)
+            return {
+                listings: [],
+                lastDoc: null,
+                hasMore: false
+            };
+
+        let q = query(
+            listingRef, 
+            ...verificationConstraints,
+            where("category", "==", category),
+            where(documentId(), "!=", listingId),
+            limit(quantity)
+        );
+        if (pageParam) q = query(
+            listingRef,
+            ...verificationConstraints,
+            where("category", "==", category),
+            where(documentId(), "!=", listingId),
+            startAfter(pageParam),
+            limit(quantity)
+        );
+
+        const snap = await getDocs(q);
+        const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
+
+        console.log('[Api Call] getSimilarListingsPaginated -> end');
+
+        return {
+            listings: formatData(snap),
+            lastDoc,
+            hasMore: snap.docs.length === quantity
+        };
+
+    } catch (error) {
+        console.error("Error fetching similar listings:", error);
+        return {
+            listings: [],
+            lastDoc: null,
+            hasMore: false
+        };
     }
 };

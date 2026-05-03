@@ -147,6 +147,7 @@ class Listing {
     addedBy = "",
     updatedBy = "",
     isClaimed = false,
+    isPremium = false,
     ownerId = "",
     ownerName = "Unknown",
     claimStatus = "unclaimed",
@@ -181,6 +182,7 @@ class Listing {
     this.addedBy = addedBy;
     this.updatedBy = updatedBy;
     this.isClaimed = isClaimed;
+    this.isPremium = isPremium;
     this.ownerId = ownerId;
     this.ownerName = ownerName;
     this.claimStatus = claimStatus;
@@ -225,6 +227,7 @@ class Listing {
       addedBy: json.addedBy || "",
       updatedBy: json.updatedBy || "",
       isClaimed: json.isClaimed || false,
+      isPremium: json.isPremium || false,
 
       ownerId: json.ownerId || "",
       ownerName: capitalizeWords(json.ownerName) || "Unknown",
@@ -298,6 +301,7 @@ class Listing {
       tags: this.tags,
       addedBy: this.addedBy,
       isClaimed: this.isClaimed,
+      isPremium: this.isPremium,
       ownerId: this.ownerId,
       ownerName: this.ownerName,
       claimStatus: this.claimStatus,

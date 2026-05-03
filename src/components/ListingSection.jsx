@@ -13,10 +13,7 @@ function HeaderWithSeeAll({title, listings, see_all_navigate}) {
       <Link 
         to={see_all_navigate} 
         state={{ 
-          title,
-          listings,
-          type: see_all_navigate, 
-          params: { quantity: 20 } 
+          title
         }} 
         className="see-all"
       >
@@ -34,7 +31,7 @@ function HeaderWithOutSeeAll({title}) {
   )
 }
 
-export default function ListingSection({ title, listings=[], see_all_navigate }) {
+export default function ListingSection({ title, listings=[], showSeeAll = true, see_all_navigate }) {
   const location = useLocation();
   const isListingPage = location.pathname.includes('/listings');
 
@@ -43,9 +40,11 @@ export default function ListingSection({ title, listings=[], see_all_navigate })
       
       {/* Header */}
       {
-        see_all_navigate === 'false' || listings.length === 0 ? 
-          <HeaderWithOutSeeAll title={title}/> : 
-          <HeaderWithSeeAll title={title} listings={listings} see_all_navigate={see_all_navigate}/>
+        showSeeAll && see_all_navigate && listings.length !== 0
+        ? 
+          <HeaderWithSeeAll title={title} see_all_navigate={see_all_navigate}/>
+        :
+          <HeaderWithOutSeeAll title={title}/> 
       }
 
       {/* Cards Grid */}
@@ -58,9 +57,9 @@ export default function ListingSection({ title, listings=[], see_all_navigate })
                 title="No Listings"
                 highlight="Found"
                 message="Be the first to contribute by adding a store or service related to this category!"
-                actionType="navigate"
+                actionType="redirect"
                 actionLabel="+ Contribute Now"
-                actionTo=""
+                actionTo="https://play.google.com/store/apps/details?id=com.findon.app"
               /> : 
               <InlineNoListingsFound />
           ) :
