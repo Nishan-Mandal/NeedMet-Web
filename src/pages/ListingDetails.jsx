@@ -111,7 +111,7 @@ function ListingDetails() {
       <div className="hours-cell">
         {slots.map((slot, index) => (
           <div key={index}>
-            {slot.open} - {slot.close}
+            {slot}
           </div>
         ))}
       </div>

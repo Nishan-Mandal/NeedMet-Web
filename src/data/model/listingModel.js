@@ -75,6 +75,22 @@ class TimeSlot {
     this.close = close;
   }
 
+  to12Hour() {
+    return `${TimeSlot.to12(this.open)} - ${TimeSlot.to12(this.close)}`;
+  }
+
+  static to12(time24) {
+    if (!time24) return "";
+
+    const [h, m] = time24.split(":");
+    let hour = parseInt(h, 10);
+
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+
+    return `${hour}:${m} ${ampm}`;
+  }
+
   static fromJson(json = {}) {
     return new TimeSlot({
       open: json.open || "00:00",
@@ -99,6 +115,11 @@ class DaySchedule {
     this.slots = slots;
   }
 
+  toReadable() {
+    if (this.isClosed) return "Closed";
+    return this.slots;
+  }
+
   static fromJson(json) {
     if (!json) {
       return new DaySchedule({ isClosed: true, slots: [] });
@@ -106,14 +127,17 @@ class DaySchedule {
 
     return new DaySchedule({
       isClosed: json.isClosed || false,
-      slots: (json.slots || []).map((e) => TimeSlot.fromJson(e)),
+      slots: (json.slots || []).map((e) => {
+        const slot = TimeSlot.fromJson(e);
+        return slot.to12Hour();
+      }),
     });
   }
 
   toJson() {
     return {
       isClosed: this.isClosed,
-      slots: this.slots.map((e) => e.toJson()),
+      slots: this.slots,
     };
   }
 }
@@ -202,9 +226,6 @@ class Listing {
     this.businessHours = businessHours;
   }
 
-  /* =========================
-     fromJson
-  ========================= */
   static fromJson(json = {}) {
     return new Listing({
       listingId: json.listingId || "",
@@ -281,9 +302,6 @@ class Listing {
     });
   }
 
-  /* =========================
-     toJson
-  ========================= */
   toJson() {
     return {
       listingId: this.listingId,
