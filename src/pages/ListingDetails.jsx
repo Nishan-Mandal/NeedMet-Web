@@ -42,7 +42,7 @@ function ListingDetails() {
   });
 
   const { data: similarListings = [], isLoading: similarLoading, error: similarError } = useQuery({
-    queryKey: ['similarListings', listing?.category],
+    queryKey: ['similarListings', 'short', listing?.category],
     queryFn: () => getSimilarListings({ category: listing?.category, listingId: listing?.listingId }),
     enabled: shouldFetch || !!listing?.category, 
     onSuccess: (data) => console.log(data),

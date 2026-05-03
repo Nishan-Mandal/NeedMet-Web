@@ -23,12 +23,12 @@ function Home() {
   const categoryList = homeData?.listings ?? [];
 
   const { data: recommendedListings = [] } = useQuery({
-    queryKey: ['recommendedListings'],
+    queryKey: ['recommendedListings', 'short'],
     queryFn: () => getRecommendedListings({ quantity: 20 }),
   });
 
   const { data: newListings = [] } = useQuery({
-    queryKey: ['newListings'],
+    queryKey: ['newListings', 'short'],
     queryFn: () => getNewListings({ quantity: 20 }),
   });
 
