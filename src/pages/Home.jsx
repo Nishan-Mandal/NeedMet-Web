@@ -3,6 +3,8 @@ import ErrorImg from "../assets/error.png"
 import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
+import { useEffect } from 'react';
+import useInfo from '../contexts/infoContext.jsx';
 
 function Home() {
 
@@ -10,16 +12,23 @@ function Home() {
     queryKey: ['homeDetails'],
     queryFn: () => getHomeDetails(),
   });
+  
+  const { setContactNo } = useInfo();
+  useEffect(() => {
+    if (homeData?.whatsappSupport) {
+      setContactNo(homeData.whatsappSupport);
+    }
+  }, [homeData]);
 
   const categoryList = homeData?.listings ?? [];
 
   const { data: recommendedListings = [] } = useQuery({
-    queryKey: ['recommendedListings'],
+    queryKey: ['recommendedListings', 'short'],
     queryFn: () => getRecommendedListings({ quantity: 20 }),
   });
 
   const { data: newListings = [] } = useQuery({
-    queryKey: ['newListings'],
+    queryKey: ['newListings', 'short'],
     queryFn: () => getNewListings({ quantity: 20 }),
   });
 
@@ -51,17 +60,31 @@ function Home() {
     <>
       <Hero data={homeData} />
       <CategorySection title="Top Categories" data={homeData} see_all_navigate="/all_categories" />
-      <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />
-      <ListingSection title="Newly Added" listings={newListings} see_all_navigate="/listings/newly_added" />
+      {
+        recommendedListings.length > 0
+          ? <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />
+          : null
+      }
+      {
+        newListings.length > 0
+          ? <ListingSection title="Newly Added" listings={newListings} see_all_navigate="/listings/newly_added" />
+          : null
+      }
 
-      {categoryList.map((category, index) => (
-        <ListingSection
-          key={category}
-          title={category}
-          listings={categoryQueries[index]?.data ?? []}
-          see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
-        />
-      ))}
+      {categoryList.map((category, index) => {
+        const listings = categoryQueries[index]?.data ?? [];
+
+        if (!listings || listings.length === 0) return null;
+
+        return (
+          <ListingSection
+            key={category}
+            title={category}
+            listings={listings}
+            see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
+          />
+        );
+      })}
     </>
   );
 }

@@ -9,11 +9,13 @@ import {
   ListingDetails, 
   ListingsPage, 
   AllCategory, 
+  LegalPage,
 } from './pages'
 import { SystemState } from './components'
 import MaintenanceImg from "./assets/maintenance.jpg"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { AppProvider } from './contexts/AppProvider.jsx'
 
 
 const router = createBrowserRouter(
@@ -25,34 +27,7 @@ const router = createBrowserRouter(
       <Route path="/listings/:type" element={<ListingsPage />} />
       <Route path="/listings/category/:category_name" element={<ListingsPage />} />
       <Route path="/all_categories" element={<AllCategory />} />
-      <Route 
-        path="/about_us" 
-        element={
-          <SystemState 
-            imageSrc={MaintenanceImg} 
-            title='Feature in' 
-            highlight='Progress' 
-            message="We're crafting something exceptional behind the scenes.This experience will be ready for you very soon." 
-            actionType='navigate' 
-            actionLabel='Back to Home' 
-            actionTo='/' 
-          />
-        } 
-      />
-      <Route 
-        path="/contact" 
-        element={
-          <SystemState 
-            imageSrc={MaintenanceImg} 
-            title='Feature in' 
-            highlight='Progress' 
-            message="We're crafting something exceptional behind the scenes.This experience will be ready for you very soon." 
-            actionType='navigate' 
-            actionLabel='Back to Home' 
-            actionTo='/' 
-          />
-        } 
-      />
+      <Route path="/page/:legalDocument" element={<LegalPage />} />
       <Route 
         path="/search" 
         element={
@@ -82,12 +57,14 @@ const queryClient = new QueryClient({
 });
 
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>
-  <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router}/>
-    {import.meta.env.DEV && (
-      <ReactQueryDevtools initialIsOpen={false} />
-    )}
-  </QueryClientProvider>
-  // </StrictMode>,
+  <>
+    <AppProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router}/>
+        {import.meta.env.DEV && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </QueryClientProvider>
+    </AppProvider>
+  </>
 )

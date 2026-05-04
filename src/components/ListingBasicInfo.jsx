@@ -5,6 +5,10 @@ import linkedin from '../assets/linkedin.svg'
 import website from '../assets/website.svg'
 import whatsapp from '../assets/whatsapp.svg'
 import '../style/ListingBasicInfo.css'
+import useInfo from '../contexts/infoContext.jsx';
+import { getHomeDetails } from '../services/firebase/firestore/homeService.js'
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react'
 
 export default function ListingBasicInfo({ listing, className = '' }) {
 
@@ -65,6 +69,27 @@ export default function ListingBasicInfo({ listing, className = '' }) {
             : "";
 
         return (firstChar + lastChar).toUpperCase();
+    };
+
+    const { contactNo, setContactNo } = useInfo();
+
+    const {data: homeData} = useQuery({
+        queryKey: ['homeDetails'],
+        queryFn: () => getHomeDetails(),
+        enabled: !contactNo,
+    });
+
+    useEffect (() => {
+        if (homeData?.whatsappSupport) {
+            setContactNo(homeData.whatsappSupport);
+        }
+    }, [homeData]);
+
+    const handleHelp = () => {
+        if (contactNo) {
+            const whatsappLink = `https://wa.me/${contactNo.replace(/[^\d]/g, "")}`;
+            window.open(whatsappLink, "_blank");
+        }
     };
 
     return (
@@ -134,7 +159,7 @@ export default function ListingBasicInfo({ listing, className = '' }) {
                     </div>
                 </div>
 
-                <button className="help-btn">
+                <button className="help-btn" onClick={handleHelp}>
                     <i className="fa-regular fa-circle-question"></i>
                     <span>Need Help</span>
                 </button>
