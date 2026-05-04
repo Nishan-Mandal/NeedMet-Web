@@ -40,7 +40,6 @@ const verificationConstraints = import.meta.env.DEV
   ? []
   : [
       where("verifiedBy", "!=", null),
-      orderBy("verifiedBy")
     ];
 
 const listingRef = collection(firestore, "listings");
