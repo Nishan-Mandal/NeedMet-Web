@@ -247,14 +247,19 @@ export const getSimilarListings = async ({ listingId, category, quantity }) => {
             listingRef,
             ...verificationConstraints,
             where("category", "==", category),
-            where(documentId(), "!=", listingId),
             limit(quantity)
         );
         const snap = await getDocs(q);
 
         console.log('[Api Call] getSimilarListings -> end');
+        
+        let totalListings = formatData(snap);
+        totalListings = totalListings
+            .filter(listing => 
+                listing.listingId !== listingId
+        );
 
-        return formatData(snap);
+        return totalListings;
 
     } catch (error) {
         console.error("Error fetching similar listings:", error);
@@ -277,7 +282,6 @@ export const getSimilarListingsPaginated = async ({ listingId, category, quantit
             listingRef, 
             ...verificationConstraints,
             where("category", "==", category),
-            where(documentId(), "!=", listingId),
             limit(quantity)
         );
         if (pageParam) q = query(
