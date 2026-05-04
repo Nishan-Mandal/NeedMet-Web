@@ -27,8 +27,8 @@ export default function Header() {
             <nav className="nav">
               <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
               <NavLink to="/all_categories" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Categories</NavLink>
-              <NavLink to="/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
-              <NavLink to="/contact" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink>
+              <NavLink to="/page/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
+              <NavLink to="/page/contact_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink>
             </nav>
 
             <a
@@ -98,7 +98,7 @@ export default function Header() {
           <span>About</span>
         </NavLink>
 
-        <NavLink to="/contact" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
+        <NavLink to="/contact_us" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
