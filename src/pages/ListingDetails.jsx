@@ -42,7 +42,7 @@ function ListingDetails() {
   });
 
   const { data: similarListings = [], isLoading: similarLoading, error: similarError } = useQuery({
-    queryKey: ['similarListings', listing?.category],
+    queryKey: ['similarListings', 'short', listing?.category],
     queryFn: () => getSimilarListings({ category: listing?.category, listingId: listing?.listingId }),
     enabled: shouldFetch || !!listing?.category, 
     onSuccess: (data) => console.log(data),
@@ -111,7 +111,7 @@ function ListingDetails() {
       <div className="hours-cell">
         {slots.map((slot, index) => (
           <div key={index}>
-            {slot.open} - {slot.close}
+            {slot}
           </div>
         ))}
       </div>
@@ -198,8 +198,17 @@ function ListingDetails() {
 
       </div>
 
-      <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
-      <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
+      {
+        similarListings.length > 0
+          ? <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
+          : null
+      }
+
+      {
+        newListings.length > 0
+          ? <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
+          : null
+      }
     </>
   );
 }
