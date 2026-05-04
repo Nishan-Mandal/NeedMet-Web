@@ -60,17 +60,31 @@ function Home() {
     <>
       <Hero data={homeData} />
       <CategorySection title="Top Categories" data={homeData} see_all_navigate="/all_categories" />
-      <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />
-      <ListingSection title="Newly Added" listings={newListings} see_all_navigate="/listings/newly_added" />
+      {
+        recommendedListings.length > 0
+          ? <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />
+          : null
+      }
+      {
+        newListings.length > 0
+          ? <ListingSection title="Newly Added" listings={newListings} see_all_navigate="/listings/newly_added" />
+          : null
+      }
 
-      {categoryList.map((category, index) => (
-        <ListingSection
-          key={category}
-          title={category}
-          listings={categoryQueries[index]?.data ?? []}
-          see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
-        />
-      ))}
+      {categoryList.map((category, index) => {
+        const listings = categoryQueries[index]?.data ?? [];
+
+        if (!listings || listings.length === 0) return null;
+
+        return (
+          <ListingSection
+            key={category}
+            title={category}
+            listings={listings}
+            see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
+          />
+        );
+      })}
     </>
   );
 }

@@ -198,8 +198,17 @@ function ListingDetails() {
 
       </div>
 
-      <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
-      <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
+      {
+        similarListings.length > 0
+          ? <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
+          : null
+      }
+
+      {
+        newListings.length > 0
+          ? <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
+          : null
+      }
     </>
   );
 }
