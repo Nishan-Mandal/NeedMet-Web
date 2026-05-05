@@ -119,11 +119,17 @@
   z-index: 500;
 }
 
-/* ─── Zoom Button ─── */
-.zoom-btn {
+.image-top-actions {
   position: absolute;
   top: 10px;
   left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+
+.img-action-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -134,19 +140,43 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 2;
   transition: background 0.2s ease, transform 0.15s ease;
-  padding: 8px;
+  flex-shrink: 0;
+  position: relative;
 }
 
-.zoom-btn svg {
-  width: 25px;
-  height: 25px;
+.img-action-btn i {
+  font-size: 16px;
+  line-height: 1;
 }
 
-.zoom-btn:hover {
+.img-action-btn:hover {
   background: #1c8c8c;
   transform: scale(1.08);
+}
+
+.share-btn-fs {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.share-btn-fs:hover {
+  background: #1c8c8c;
+  border-color: #1c8c8c;
+}
+
+.share-btn-tooltip {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 /* ─── Fullscreen Overlay ─── */
@@ -299,6 +329,16 @@
     font-size: 1rem;
   }
 
+  .img-action-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .img-action-btn i{
+    font-size: 12px;
+    line-height: 1;
+  }
+
   .preview-img-premium-badge img {
     width: 20px;
     height: 20px;
@@ -330,7 +370,6 @@
 @media (max-width: 480px) {
   .main-image {
     border-radius: 10px;
-    /* Taller crop on mobile for better visual */
     aspect-ratio: 4 / 3;
   }
 
@@ -372,7 +411,7 @@
   }
 
   .fs-main-img {
-    max-width: 100%; /* let image fill full width since arrows overlay it */
+    max-width: 100%;
     width: 100%;
   }
 
@@ -400,15 +439,14 @@
     pointer-events: none;
   }
 
-  .zoom-btn {
+  .img-action-btn {
     width: 35px;
     height: 35px;
-    padding: 6px;
   }
 
-  .zoom-btn svg {
-    width: 20px;
-    height: 20px;
+  .img-action-btn i {
+    font-size: 12px;
+    line-height: 1;
   }
 
   .fs-close-btn {

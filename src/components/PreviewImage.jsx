@@ -52,10 +52,39 @@ function ThumbnailStrip({ images, currentIndex, onSelect, scroll }) {
   );
 }
 
+function useShare() {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: document.title, url });
+      } catch (_) {}
+    } else {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return { handleShare, copied };
+}
+
+function ShareButton({ onClick, copied, className = "" }) {
+  return (
+    <button className={`img-action-btn ${className}`} onClick={onClick} aria-label="Share listing">
+      <i class="fa-solid fa-share"></i>
+      {copied && <span className="share-btn-tooltip">Copied!</span>}
+    </button>
+  );
+}
+
 // ─── Fullscreen Viewer ─────────────────────────────────────────
 function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const scroll = useThumbScroll(images);
+  const { handleShare, copied } = useShare();
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -99,6 +128,7 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const scroll = useThumbScroll(images);
+  const { handleShare, copied } = useShare(); // [ADDED] share hook
 
   const imageList = images.length === 0 ? [empty_thumb] : images;
 
@@ -112,14 +142,12 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
           </div>
         )}
 
-        <button className="zoom-btn" onClick={() => setIsFullscreen(true)} aria-label="View fullscreen">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 3 21 3 21 9" />
-            <polyline points="9 21 3 21 3 15" />
-            <line x1="21" y1="3" x2="14" y2="10" />
-            <line x1="3" y1="21" x2="10" y2="14" />
-          </svg>
-        </button>
+        <div className="image-top-actions">
+          <button className="img-action-btn" onClick={() => setIsFullscreen(true)} aria-label="View fullscreen">
+            <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+          </button>
+          <ShareButton onClick={handleShare} copied={copied} />
+        </div>
 
         <div className="preview-container">
           <ThumbnailStrip images={imageList} currentIndex={currentIndex} onSelect={setCurrentIndex} scroll={scroll} />
