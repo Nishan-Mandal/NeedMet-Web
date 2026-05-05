@@ -27,8 +27,8 @@ export default function Header() {
             <nav className="nav">
               <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
               <NavLink to="/all_categories" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Categories</NavLink>
-              <NavLink to="/page/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
-              <NavLink to="/page/contact_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink>
+              <NavLink to="/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
+              <NavLink to="/contact_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink>
             </nav>
 
             <a

@@ -25,14 +25,12 @@ function LegalPage() {
         actionLabel="Try Again"
       />
     );
-  console.log('Page data:', page);
 
   return (
     <>
       <p style={{
           textAlign: 'center', 
-          fontSize: '2rem', 
-          marginBottom: '1rem', 
+          fontSize: '1.7rem', 
           marginTop: '1rem', 
           fontWeight: 'bold'
         }}
