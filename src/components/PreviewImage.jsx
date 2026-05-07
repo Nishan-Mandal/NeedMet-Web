@@ -74,7 +74,7 @@ function useShare() {
 function ShareButton({ onClick, copied, className = "" }) {
   return (
     <button className={`img-action-btn ${className}`} onClick={onClick} aria-label="Share listing">
-      <i class="fa-solid fa-share"></i>
+      <i className="fa-solid fa-share"></i>
       {copied && <span className="share-btn-tooltip">Copied!</span>}
     </button>
   );
@@ -144,7 +144,7 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
 
         <div className="image-top-actions">
           <button className="img-action-btn" onClick={() => setIsFullscreen(true)} aria-label="View fullscreen">
-            <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+            <i className="fa-solid fa-up-right-and-down-left-from-center"></i>
           </button>
           <ShareButton onClick={handleShare} copied={copied} />
         </div>
