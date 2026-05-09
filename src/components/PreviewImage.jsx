@@ -106,7 +106,6 @@ function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
       <div className="fs-inner" onClick={(e) => e.stopPropagation()}>
 
         <div className="fs-topbar">
-          <span className="fs-counter">{currentIndex + 1} / {images.length}</span>
           <button className="fs-close-btn" onClick={onClose} aria-label="Close fullscreen">✕</button>
         </div>
 
@@ -116,7 +115,7 @@ function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
           <button className={`fs-nav-btn fs-nav-right ${currentIndex === images.length - 1 ? "fs-nav-disabled" : ""}`} onClick={() => setCurrentIndex(i => Math.min(images.length - 1, i + 1))} disabled={currentIndex === images.length - 1} aria-label="Next image">❯</button>
         </div>
 
-        {images.length > 1 && <ThumbnailStrip images={images} currentIndex={currentIndex} onSelect={setCurrentIndex} scroll={scroll} />}
+        <span className="fs-counter">{currentIndex + 1} / {images.length}</span>
       </div>
     </div>,
     document.body
@@ -134,7 +133,7 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
 
   return (
     <>
-      <div className="main-image" style={{ width, backgroundImage: `url(${imageList[currentIndex]})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+      <div onClick={() => setIsFullscreen(true)} className="main-image" style={{ width, backgroundImage: `url(${imageList[currentIndex]})`, backgroundSize: "cover", backgroundPosition: "center" }}>
         {isPremium && (
           <div className="preview-img-premium-badge">
             <img src={premiumImg} alt="premium" />

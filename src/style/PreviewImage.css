@@ -4,6 +4,7 @@
   overflow: hidden;
   border-radius: 12px;
   aspect-ratio: 16 / 9;
+  cursor: pointer;
 }
 
 .preview-img-premium-badge {
@@ -35,7 +36,7 @@
 
 /* ─── Arrow Buttons ─── */
 .preview-image-arrow {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgb(0, 0, 0);
   color: white;
   border: none;
   padding: 0.5rem;
@@ -133,7 +134,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.716);
+  background: rgb(0, 0, 0);
   border: none;
   color: white;
   display: flex;
@@ -213,7 +214,7 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-shrink: 0;
 }
 
@@ -261,7 +262,7 @@
 .fs-main-img {
   max-width: calc(100% - 120px);
   width: 80%;
-  max-height: 90%;
+  max-height: 100%;
   object-fit: contain;
   border-radius: 8px;
   display: block;
@@ -278,7 +279,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
+  background: #1c8c8c;
   border: 1.5px solid rgba(255, 255, 255, 0.2);
   color: white;
   font-size: 1.2rem;
@@ -291,12 +292,14 @@
 }
 
 .fs-nav-btn:hover {
-  background: #1c8c8c;
-  border-color: #1c8c8c;
+  background: rgba(0, 0, 0, 0.212);
 }
 
 .fs-nav-disabled {
-  visibility: hidden;
+  background-color: #ffffff3a;
+  color: white;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ─── Thumbnail Strip ─── */
@@ -426,17 +429,25 @@
     width: 34px;
     height: 34px;
     font-size: 0.9rem;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgb(0, 0, 0);
     border: none;
     z-index: 10;
+  }
+
+  .fs-nav-btn:active {
+    background-color: white;
+  }
+
+  .fs-nav-btn:hover {
+    background-color: black;
+    color: white;
   }
 
   .fs-nav-left  { left: 8px; }
   .fs-nav-right { right: 8px; }
 
   .fs-nav-disabled {
-    visibility: hidden;
-    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.39);
   }
 
   .img-action-btn {
