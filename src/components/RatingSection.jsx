@@ -30,7 +30,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
   };
 
 
-  const overall = Math.round(((avgRatings.behaviour) + (avgRatings.quality)+ (avgRatings.value)) / 3)
+  const overall = ((avgRatings.behaviour) + (avgRatings.quality)+ (avgRatings.value)) / 3;
   const getPercent = (val) => Math.round(((val) / 5) * 100);
 
   const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 4);
