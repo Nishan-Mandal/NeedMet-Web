@@ -174,32 +174,34 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
                     <div className="reviews-list" ref={listRef}>
                       {
                         reviews.map((review) => (
-                          <div className="review-card" key={review.id}>
-                            <div className="review-user">
-                              <div className="review-avatar">
-                                {review.userName[0]}
-                              </div>
-
-                              <div className="review-user-info">
-                                <p className="review-username">{review.userName}</p>
-                                <p className="review-text">{review.comment}</p>
-                              </div>
-
-                              <div className="review-date">
-                                <div className="review-stars">
-                                  {renderStars(review.rating)}
+                          review.comment && (
+                            <div className="review-card" key={review.id}>
+                              <div className="review-user">
+                                <div className="review-avatar">
+                                  {review.userName[0]}
                                 </div>
 
-                                <span className="review-date">
-                                  {
-                                    review.createdAt?.seconds
-                                      ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
-                                      : "N/A"
-                                  }
-                                </span>
+                                <div className="review-user-info">
+                                  <p className="review-username">{review.userName}</p>
+                                  <p className="review-text">{review.comment}</p>
+                                </div>
+
+                                <div className="review-date">
+                                  <div className="review-stars">
+                                    {renderStars(review.rating)}
+                                  </div>
+
+                                  <span className="review-date">
+                                    {
+                                      review.createdAt?.seconds
+                                        ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
+                                        : "N/A"
+                                    }
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          )
                         ))
                       }
 
