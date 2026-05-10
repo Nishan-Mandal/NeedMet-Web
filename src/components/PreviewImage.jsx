@@ -141,14 +141,14 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
           </div>
         )}
 
-        <div className="image-top-actions">
+        <div onClick={(e) => e.stopPropagation()} className="image-top-actions">
           <button className="img-action-btn" onClick={() => setIsFullscreen(true)} aria-label="View fullscreen">
             <i className="fa-solid fa-up-right-and-down-left-from-center"></i>
           </button>
           <ShareButton onClick={handleShare} copied={copied} />
         </div>
 
-        <div className="preview-container">
+        <div onClick={(e) => e.stopPropagation()} className="preview-container">
           <ThumbnailStrip images={imageList} currentIndex={currentIndex} onSelect={setCurrentIndex} scroll={scroll} />
         </div>
       </div>
