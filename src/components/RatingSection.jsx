@@ -3,6 +3,10 @@ import { useReviews } from '../hooks/useReviews.js';
 import { useEffect, useRef } from 'react'
 
 function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRatings = {}, listingId }) {
+  let maxRating = 0;
+  ['5', '4', '3','2', '1'].map((star) => {
+    maxRating = Math.max(maxRating || 0, ratingStats[star] || 0);
+  })
 
   const renderStars = (count) => {
     const stars = []
@@ -82,8 +86,8 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
               {['5', '4', '3','2', '1'].map((star) => {
                 const count = ratingStats[star] || 0;
                 const percentage =
-                  ratingCount > 0
-                    ? (count / ratingCount) * 100
+                  maxRating > 0
+                    ? (count / maxRating) * 100
                     : 0;
 
                 return (

@@ -27,7 +27,7 @@ const router = createBrowserRouter(
       <Route path="/listings/:type" element={<ListingsPage />} />
       <Route path="/listings/category/:category_name" element={<ListingsPage />} />
       <Route path="/all_categories" element={<AllCategory />} />
-      <Route path="/page/:legalDocument" element={<LegalPage />} />
+      <Route path="/:legalDocument" element={<LegalPage />} />
       <Route 
         path="/search" 
         element={

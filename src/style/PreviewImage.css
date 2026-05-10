@@ -4,6 +4,7 @@
   overflow: hidden;
   border-radius: 12px;
   aspect-ratio: 16 / 9;
+  cursor: pointer;
 }
 
 .preview-img-premium-badge {
@@ -35,7 +36,7 @@
 
 /* ─── Arrow Buttons ─── */
 .preview-image-arrow {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgb(0, 0, 0);
   color: white;
   border: none;
   padding: 0.5rem;
@@ -119,10 +120,226 @@
   z-index: 500;
 }
 
+.image-top-actions {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+
+.img-action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgb(0, 0, 0);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.img-action-btn i {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.img-action-btn:hover {
+  background: #1c8c8c;
+  transform: scale(1.08);
+}
+
+.share-btn-fs {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.share-btn-fs:hover {
+  background: #1c8c8c;
+  border-color: #1c8c8c;
+}
+
+.share-btn-tooltip {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ─── Fullscreen Overlay ─── */
+.fs-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.845);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fs-fade-in 0.2s ease;
+}
+
+@keyframes fs-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.fs-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  box-sizing: border-box;
+  gap: 12px;
+}
+
+/* ─── Top Bar ─── */
+.fs-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.fs-counter {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.fs-close-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgb(255, 255, 255);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  color: black;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.fs-close-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  transform: scale(1.08);
+}
+
+/* ─── Main Image Area ─── */
+.fs-main-image-wrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 0;
+  position: relative;
+}
+
+.fs-main-img {
+  max-width: calc(100% - 120px);
+  width: 80%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+  animation: fs-img-in 0.18s ease;
+}
+
+@keyframes fs-img-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ─── Fullscreen Nav Buttons ─── */
+.fs-nav-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1c8c8c;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.fs-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.212);
+}
+
+.fs-nav-disabled {
+  background-color: #ffffff3a;
+  color: white;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ─── Thumbnail Strip ─── */
+.fs-strip-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  padding: 8px 0;
+}
+
+.fs-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  overflow-x: scroll;
+  scrollbar-width: none;
+  height: 5rem;
+}
+
+.fs-strip::-webkit-scrollbar {
+  display: none;
+}
+
 /* ─── Tablet (481px – 1024px) ─── */
 @media (min-width: 481px) and (max-width: 1024px) {
   .preview-img-premium-badge {
     font-size: 1rem;
+  }
+
+  .img-action-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .img-action-btn i{
+    font-size: 12px;
+    line-height: 1;
   }
 
   .preview-img-premium-badge img {
@@ -156,7 +373,6 @@
 @media (max-width: 480px) {
   .main-image {
     border-radius: 10px;
-    /* Taller crop on mobile for better visual */
     aspect-ratio: 4 / 3;
   }
 
@@ -195,5 +411,57 @@
   .preview-container {
     gap: 0.5rem;
     padding: 14px 6px 8px;
+  }
+
+  .fs-main-img {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .fs-main-image-wrap {
+    gap: 0;
+  }
+
+  .fs-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+    background: rgb(0, 0, 0);
+    border: none;
+    z-index: 10;
+  }
+
+  .fs-nav-btn:active {
+    background-color: white;
+  }
+
+  .fs-nav-btn:hover {
+    background-color: black;
+    color: white;
+  }
+
+  .fs-nav-left  { left: 8px; }
+  .fs-nav-right { right: 8px; }
+
+  .fs-nav-disabled {
+    background-color: rgba(0, 0, 0, 0.39);
+  }
+
+  .img-action-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .img-action-btn i {
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .fs-close-btn {
+    width: 40px;
+    height: 40px;
   }
 }
