@@ -35,6 +35,8 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
 
   const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 4);
 
+  const validReviews = reviews.filter((review) => review.comment && review.comment.trim() !== "");
+
   const sentinelRef = useRef(null);
   const listRef = useRef(null);
 
@@ -168,40 +170,38 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
             {
               <>
                 {
-                  !loading && !isFetchingMore && !reviews.length ? (
+                  !loading && !isFetchingMore && !validReviews.length ? (
                     <div className="empty-review-text">No Reviews Yet</div>
                   ) : (
                     <div className="reviews-list" ref={listRef}>
                       {
-                        reviews.map((review) => (
-                          review.comment && (
-                            <div className="review-card" key={review.id}>
-                              <div className="review-user">
-                                <div className="review-avatar">
-                                  {review.userName[0]}
-                                </div>
+                        validReviews.map((review) => (
+                          <div className="review-card" key={review.id}>
+                            <div className="review-card-left">
+                              <div className="review-avatar">
+                                {review.userName[0]}
+                              </div>
 
-                                <div className="review-user-info">
-                                  <p className="review-username">{review.userName}</p>
-                                  <p className="review-text">{review.comment}</p>
-                                </div>
-
-                                <div className="review-date">
-                                  <div className="review-stars">
-                                    {renderStars(review.rating)}
-                                  </div>
-
-                                  <span className="review-date">
-                                    {
-                                      review.createdAt?.seconds
-                                        ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
-                                        : "N/A"
-                                    }
-                                  </span>
-                                </div>
+                              <div className="review-user-info">
+                                <p className="review-username">{review.userName}</p>
+                                <p className="review-text">{review.comment}</p>
                               </div>
                             </div>
-                          )
+
+                            <div className="review-date">
+                              <div className="review-stars">
+                                {renderStars(review.rating)}
+                              </div>
+
+                              <span className="review-date">
+                                {
+                                  review.createdAt?.seconds
+                                    ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
+                                    : "N/A"
+                                }
+                              </span>
+                            </div>
+                          </div>
                         ))
                       }
 
