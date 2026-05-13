@@ -1,8 +1,37 @@
 import '../style/RatingSection.css'
 import { useReviews } from '../hooks/useReviews.js';
-import { useEffect, useRef } from 'react'
+import { submitListingReview } from '../services/firebase/firestore/reviewService.js';
+import { useEffect, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query';
 
 function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRatings = {}, listingId }) {
+  const [showReviewModal, setShowReviewModal] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const handleSubmitReview = async (factorRatings, comment) => {
+    const response = await submitListingReview({
+      listingId,
+      factorRatings,
+      comment,
+    });
+
+    console.log(response);
+
+    if (response.success) {
+
+      await queryClient.invalidateQueries({
+        queryKey: ["reviews", listingId],
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["listingById", listingId],
+      });
+      
+      setShowReviewModal(false);
+    }
+  };
+  
   let maxRating = 0;
   ['5', '4', '3','2', '1'].map((star) => {
     maxRating = Math.max(maxRating || 0, ratingStats[star] || 0);
@@ -33,8 +62,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
   const overall = ((avgRatings.behaviour) + (avgRatings.quality)+ (avgRatings.value)) / 3;
   const getPercent = (val) => Math.round(((val) / 5) * 100);
 
-  const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 4);
-
+  const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 10);
   const validReviews = reviews.filter((review) => review.comment && review.comment.trim() !== "");
 
   const sentinelRef = useRef(null);
@@ -213,7 +241,20 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
                 }
               </>
             }
-            
+
+            <button
+              className="share-your-review-btn"
+              onClick={() => setShowReviewModal(true)}
+            >
+              Share Your Review
+            </button>
+
+            <AddReviewModal
+              isOpen={showReviewModal}
+              onClose={() => setShowReviewModal(false)}
+              listingName={"This Listing"}
+              onSubmit={handleSubmitReview}
+            />
         </div>
     </div>
     
@@ -221,3 +262,107 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
 }
 
 export default RatingSection;
+
+export function AddReviewModal({ isOpen, onClose, onSubmit, listingName }) {
+  const [factorRatings, setFactorRatings] = useState({behaviour: 0, quality: 0, value: 0});
+  const [comment, setComment] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleRating = (factor, value) => {
+    setFactorRatings((prev) => ({
+      ...prev,
+      [factor]: value,
+    }));
+  };
+
+  const renderStars = (factor) => {
+    return [...Array(5)].map((_, i) => {
+      const value = i + 1;
+
+      return (
+        <i
+          key={value}
+          className={`fa-star ${
+            value <= factorRatings[factor]
+              ? "fa-solid active"
+              : "fa-regular"
+          }`}
+          onClick={() => handleRating(factor, value)}
+        />
+      );
+    });
+  };
+
+  const submitReview = async () => {
+    try {
+      setIsSubmitting(true);
+
+      await onSubmit(factorRatings, comment);
+
+    } catch (error) {
+      console.error(error);
+
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const isFormValid =
+    factorRatings.behaviour > 0 ||
+    factorRatings.quality > 0 ||
+    factorRatings.value > 0 ||
+    comment.trim() !== "";
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="review-modal-overlay">
+      <div className="review-modal">
+        <div className="review-modal-header">
+          <h2>Rate {listingName}</h2>
+          <button onClick={onClose} className='review-modal-close'>
+            <i className="fa-regular fa-circle-xmark"></i>
+          </button>
+        </div>
+
+        <div className="rating-factor">
+          <p>Owner's Behaviour</p>
+          <div>{renderStars("behaviour")}</div>
+        </div>
+
+        <div className="rating-factor">
+          <p>Service / Product Quality</p>
+          <div>{renderStars("quality")}</div>
+        </div>
+
+        <div className="rating-factor">
+          <p>Value for Money</p>
+          <div>{renderStars("value")}</div>
+        </div>
+
+        <textarea
+          placeholder="Write your experience (optional)"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+
+        <button
+          onClick={submitReview}
+          disabled={!isFormValid || isSubmitting}
+          className="submit-review-btn"
+        >
+          {
+            isSubmitting ? (
+              <>
+                <i className="fa-solid fa-spinner fa-spin"></i>
+                {" "}Submitting...
+              </>
+            ) : (
+              "Submit Review"
+            )
+          }
+        </button>
+      </div>
+    </div>
+  );
+}
