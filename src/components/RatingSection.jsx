@@ -264,9 +264,16 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
 export default RatingSection;
 
 export function AddReviewModal({ isOpen, onClose, onSubmit, listingName }) {
-  const [factorRatings, setFactorRatings] = useState({behaviour: 0, quality: 0, value: 0});
+  const [factorRatings, setFactorRatings] = useState({
+    behaviour: 0,
+    quality: 0,
+    value: 0
+  });
+
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const modalRef = useRef(null);
 
   const handleRating = (factor, value) => {
     setFactorRatings((prev) => ({
@@ -313,14 +320,28 @@ export function AddReviewModal({ isOpen, onClose, onSubmit, listingName }) {
     factorRatings.value > 0 ||
     comment.trim() !== "";
 
+  // CLOSE MODAL WHEN CLICKING OUTSIDE
+  const handleOverlayClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      onClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
-    <div className="review-modal-overlay">
-      <div className="review-modal">
+    <div
+      className="review-modal-overlay"
+      onClick={handleOverlayClick}
+    >
+      <div className="review-modal" ref={modalRef}>
         <div className="review-modal-header">
           <h2>Rate {listingName}</h2>
-          <button onClick={onClose} className='review-modal-close'>
+
+          <button
+            onClick={onClose}
+            className='review-modal-close'
+          >
             <i className="fa-regular fa-circle-xmark"></i>
           </button>
         </div>
