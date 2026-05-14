@@ -185,7 +185,7 @@
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.845);
+  background: rgba(0, 0, 0, 0.904);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -220,9 +220,14 @@
 
 .fs-counter {
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.819);
   font-weight: 500;
   min-width: 60px;
+  text-align: center;
+  background-color: #1c8c8c14;
+  border: 1px solid #1c8c8c3e;
+  border-radius: 5rem;
+  padding: 0.2rem 1rem;
 }
 
 .fs-close-btn {
@@ -244,16 +249,17 @@
 .fs-close-btn:hover {
   background: rgba(255, 255, 255, 0.25);
   color: white;
-  transform: scale(1.08);
+  transform: rotate(90deg);
 }
 
 /* ─── Main Image Area ─── */
 .fs-main-image-wrap {
+  padding: 0 3rem;
   flex: 1;
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 1rem;
   min-height: 0;
   position: relative;
@@ -261,7 +267,6 @@
 
 .fs-main-img {
   max-width: calc(100% - 120px);
-  width: 80%;
   max-height: 100%;
   object-fit: contain;
   border-radius: 8px;
@@ -367,6 +372,59 @@
     gap: 1rem;
     padding: 16px 8px 8px;
   }
+
+  .fs-main-img {
+    max-width: 100%;
+    width: 100%;
+  }
+  
+  .fs-main-image-wrap {
+    padding: 0;
+    gap: 0;
+  }
+
+  .fs-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
+    background: rgb(0, 0, 0);
+    border: none;
+    z-index: 10;
+  }
+
+  .fs-nav-btn:active {
+    background-color: white;
+  }
+
+  .fs-nav-btn:hover {
+    background-color: black;
+    color: white;
+  }
+
+  .fs-nav-left  { left: 8px; }
+  .fs-nav-right { right: 8px; }
+
+  .fs-nav-disabled {
+    background-color: rgba(0, 0, 0, 0.39);
+  }
+
+  .img-action-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .img-action-btn i {
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .fs-close-btn {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 /* ─── Mobile (≤ 480px) ─── */
@@ -417,8 +475,9 @@
     max-width: 100%;
     width: 100%;
   }
-
+  
   .fs-main-image-wrap {
+    padding: 0;
     gap: 0;
   }
 
@@ -426,9 +485,9 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 34px;
-    height: 34px;
-    font-size: 0.9rem;
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
     background: rgb(0, 0, 0);
     border: none;
     z-index: 10;
