@@ -1,4 +1,4 @@
-import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection } from '../components'
+import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal } from '../components'
 import ErrorImg from "../assets/error.png"
 import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
 import { useQuery, useQueries } from '@tanstack/react-query';
@@ -85,6 +85,8 @@ function Home() {
           />
         );
       })}
+
+      <Hyperlocal />
 
       <TestimonialSection />
     </>

@@ -19,6 +19,7 @@ import { InlineNoListingsFound } from './SystemState.jsx'
 import SearchPageLoader from './Loader/SearchPageLoader.jsx'
 import TestimonialCard from './Testimonial/TestimonialCard.jsx'
 import TestimonialSection from './Testimonial/TestimonialSection.jsx'
+import Hyperlocal from './Hyperlocal.jsx'
 
 export {
     Header, 
@@ -41,5 +42,6 @@ export {
     InlineNoListingsFound, 
     SearchPageLoader,
     TestimonialCard, 
-    TestimonialSection
+    TestimonialSection, 
+    Hyperlocal
 }
