@@ -17,6 +17,8 @@ import ListingDetailsLoader from './Loader/ListingDetailsLoader.jsx'
 import SystemState from './SystemState.jsx'
 import { InlineNoListingsFound } from './SystemState.jsx'
 import SearchPageLoader from './Loader/SearchPageLoader.jsx'
+import TestimonialCard from './Testimonial/TestimonialCard.jsx'
+import TestimonialSection from './Testimonial/TestimonialSection.jsx'
 
 export {
     Header, 
@@ -38,4 +40,6 @@ export {
     SystemState, 
     InlineNoListingsFound, 
     SearchPageLoader,
+    TestimonialCard, 
+    TestimonialSection
 }
