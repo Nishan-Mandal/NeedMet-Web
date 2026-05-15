@@ -18,29 +18,17 @@ function ImageSlider({
 
   const navigate = useNavigate()
 
-  const startAutoSlide = () => {
-    if(!slide) return;
+  useEffect(() => {
+    if (!slide || !images.length) return;
 
     intervalRef.current = setInterval(() => {
       setCurrentIndex((prev) =>
         prev === images.length - 1 ? 0 : prev + 1
       );
-    }, 2000);
-  };
+    }, 4000);
 
-  const stopAutoSlide = () => {
-    if(!slide) return;
-
-    clearInterval(intervalRef.current);
-  };
-
-  useEffect(() => {
-    if (!images.length) return;
-
-    startAutoSlide();
-
-    return () => stopAutoSlide();
-  }, [images.length]);
+    return () => clearInterval(intervalRef.current);
+  }, [slide, images.length]);
 
   const nextSlide = () => {
     setCurrentIndex((prev) =>
@@ -60,8 +48,14 @@ function ImageSlider({
     <div
       className="carousel-container"
       style={{ width }}
-      onMouseEnter={stopAutoSlide}
-      onMouseLeave={startAutoSlide}
+      onMouseEnter={() => clearInterval(intervalRef.current)}
+      onMouseLeave={() => {
+        intervalRef.current = setInterval(() => {
+          setCurrentIndex((prev) =>
+            prev === images.length - 1 ? 0 : prev + 1
+          );
+        }, 4000);
+      }}
     >
       <div
         className="carousel-track"
