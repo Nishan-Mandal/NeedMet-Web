@@ -1,0 +1,225 @@
+/* ─────────────────────────────────────────────
+   SEARCH PAGE SKELETON LOADER
+───────────────────────────────────────────── */
+
+.search-page-skeleton-loader {
+  padding: 20px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  background: #fff;
+}
+
+/* ─────────────────────────────────────────────
+   SHIMMER BASE
+───────────────────────────────────────────── */
+
+.search-skeleton-loader-base {
+  background: linear-gradient(
+    90deg,
+    #e5e7eb 25%,
+    #f3f4f6 50%,
+    #e5e7eb 75%
+  );
+  background-size: 200% 100%;
+  animation: search-skeleton-loader-shimmer 1.2s infinite linear;
+  border-radius: 8px;
+}
+
+@keyframes search-skeleton-loader-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   SECTION
+───────────────────────────────────────────── */
+
+.search-skeleton-loader-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.search-skeleton-loader-title {
+  width: 180px;
+  height: 28px;
+  border-radius: 10px;
+}
+
+/* ─────────────────────────────────────────────
+   CATEGORY GRID
+───────────────────────────────────────────── */
+
+.search-skeleton-loader-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+  gap: 1rem;
+}
+
+.search-skeleton-loader-category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-skeleton-loader-category-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+}
+
+.search-skeleton-loader-category-text {
+  width: 60px;
+  height: 12px;
+  border-radius: 6px;
+}
+
+/* ─────────────────────────────────────────────
+   LISTING GRID
+───────────────────────────────────────────── */
+
+.search-skeleton-loader-listing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.search-skeleton-loader-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.search-skeleton-loader-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.search-skeleton-loader-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search-skeleton-loader-line {
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+}
+
+.search-skeleton-loader-line.short {
+  width: 40%;
+}
+
+.search-skeleton-loader-line.medium {
+  width: 75%;
+}
+
+.search-skeleton-loader-line.small {
+  width: 55%;
+}
+
+/* ─────────────────────────────────────────────
+   TABLET
+───────────────────────────────────────────── */
+
+@media (min-width: 481px) and (max-width: 1024px) {
+
+  .search-page-skeleton-loader {
+    padding: 20px 32px;
+    gap: 24px;
+  }
+
+  .search-skeleton-loader-title {
+    width: 150px;
+    height: 24px;
+  }
+
+  .search-skeleton-loader-category-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .search-skeleton-loader-category-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+
+  .search-skeleton-loader-listing-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+}
+
+/* ─────────────────────────────────────────────
+   MOBILE
+───────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+
+  .search-page-skeleton-loader {
+    padding: 16px;
+    gap: 22px;
+  }
+
+  .search-skeleton-loader-input-wrapper {
+    height: 46px;
+    border-radius: 12px;
+  }
+
+  .search-skeleton-loader-title {
+    width: 120px;
+    height: 22px;
+  }
+
+  .search-skeleton-loader-category-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .search-skeleton-loader-category-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    margin-bottom: 6px;
+  }
+
+  .search-skeleton-loader-category-text {
+    width: 50px;
+    height: 10px;
+  }
+
+  .search-skeleton-loader-listing-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .search-skeleton-loader-card {
+    border-radius: 10px;
+  }
+
+  .search-skeleton-loader-image {
+    aspect-ratio: 4 / 3;
+    border-radius: 10px;
+  }
+
+  .search-skeleton-loader-content {
+    gap: 8px;
+  }
+
+  .search-skeleton-loader-line {
+    height: 10px;
+  }
+
+}

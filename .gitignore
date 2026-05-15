@@ -24,4 +24,5 @@ dist-ssr
 *.sw?
 
 .env
-draft.txt
+draft.dart
+search_screen.dart

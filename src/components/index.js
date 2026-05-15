@@ -16,6 +16,7 @@ import AllCategoryLoader from './Loader/AllCategoryLoader.jsx'
 import ListingDetailsLoader from './Loader/ListingDetailsLoader.jsx'
 import SystemState from './SystemState.jsx'
 import { InlineNoListingsFound } from './SystemState.jsx'
+import SearchPageLoader from './Loader/SearchPageLoader.jsx'
 
 export {
     Header, 
@@ -35,5 +36,6 @@ export {
     AllCategoryLoader, 
     ListingDetailsLoader, 
     SystemState, 
-    InlineNoListingsFound
+    InlineNoListingsFound, 
+    SearchPageLoader,
 }
