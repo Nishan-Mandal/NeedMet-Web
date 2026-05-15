@@ -103,16 +103,49 @@ function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
 
   return createPortal(
     <div className="fs-overlay" onClick={onClose}>
-      <div className="fs-inner" onClick={(e) => e.stopPropagation()}>
+      <div className="fs-inner">
 
         <div className="fs-topbar">
-          <button className="fs-close-btn" onClick={onClose} aria-label="Close fullscreen">✕</button>
+          <button className="fs-close-btn" onClick={onClose} aria-label="Close fullscreen">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
 
         <div className="fs-main-image-wrap">
-          <button className={`fs-nav-btn fs-nav-left ${currentIndex === 0 ? "fs-nav-disabled" : ""}`} onClick={() => setCurrentIndex(i => Math.max(0, i - 1))} disabled={currentIndex === 0} aria-label="Previous image">❮</button>
-          <img className="fs-main-img" src={images[currentIndex]} alt={`Image ${currentIndex + 1}`} />
-          <button className={`fs-nav-btn fs-nav-right ${currentIndex === images.length - 1 ? "fs-nav-disabled" : ""}`} onClick={() => setCurrentIndex(i => Math.min(images.length - 1, i + 1))} disabled={currentIndex === images.length - 1} aria-label="Next image">❯</button>
+          <button 
+            className={`fs-nav-btn fs-nav-left ${currentIndex === 0 ? "fs-nav-disabled" : ""}`} 
+            onClick={(e) => {
+              e.stopPropagation();
+
+              setCurrentIndex((i) =>
+                Math.max(0, i - 1)
+              );
+            }}
+            disabled={currentIndex === 0} aria-label="Previous image"
+          >
+            ❮
+          </button>
+
+          <img 
+            onClick={(e) => e.stopPropagation()}
+            className="fs-main-img" 
+            src={images[currentIndex]} 
+            alt={`Image ${currentIndex + 1}`} 
+          />
+          
+          <button 
+            className={`fs-nav-btn fs-nav-right ${currentIndex === images.length - 1 ? "fs-nav-disabled" : ""}`} 
+            onClick={(e) => {
+              e.stopPropagation();
+
+              setCurrentIndex((i) =>
+                Math.min(images.length - 1, i + 1)
+              );
+            }}
+            disabled={currentIndex === images.length - 1} aria-label="Next image"
+          >
+            ❯
+          </button>
         </div>
 
         <span className="fs-counter">{currentIndex + 1} / {images.length}</span>
@@ -141,14 +174,14 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
           </div>
         )}
 
-        <div className="image-top-actions">
+        <div onClick={(e) => e.stopPropagation()} className="image-top-actions">
           <button className="img-action-btn" onClick={() => setIsFullscreen(true)} aria-label="View fullscreen">
             <i className="fa-solid fa-up-right-and-down-left-from-center"></i>
           </button>
           <ShareButton onClick={handleShare} copied={copied} />
         </div>
 
-        <div className="preview-container">
+        <div onClick={(e) => e.stopPropagation()} className="preview-container">
           <ThumbnailStrip images={imageList} currentIndex={currentIndex} onSelect={setCurrentIndex} scroll={scroll} />
         </div>
       </div>

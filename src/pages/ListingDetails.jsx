@@ -25,12 +25,13 @@ function ListingDetails() {
   const { data: fetchedListing, isLoading: loading, error } = useQuery({
     queryKey: ['listingById', listingId],
     queryFn: () => getListingById(listingId),
-    enabled: !stateListing,
+    initialData: stateListing,
+    enabled: !!listingId,
     onSuccess: (data) => console.log(data),
     onError: (error) => console.log(error)
   });
 
-  const listing = stateListing || fetchedListing;
+  const listing = fetchedListing || stateListing;
   const shouldFetch = !!listing;
 
   const { data: newListings = [], isLoading: newLoading, error: newError } = useQuery({

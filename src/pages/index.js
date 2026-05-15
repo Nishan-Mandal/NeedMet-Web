@@ -3,6 +3,7 @@ import ListingDetails from "./ListingDetails";
 import ListingsPage from "./ListingsPage";
 import AllCategory from "./AllCategory";
 import LegalPage from "./LegalPage";
+import SearchPage from "./SearchPage";
 
 export {
     Home, 
@@ -10,4 +11,5 @@ export {
     ListingsPage, 
     AllCategory, 
     LegalPage,
+    SearchPage, 
 }

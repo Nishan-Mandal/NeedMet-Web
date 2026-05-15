@@ -4,6 +4,25 @@ import { Listing } from "../../../data/model/listingModel";
 
 
 
+const formatData = (snap) => {
+  return snap.docs.map((doc) =>
+    Listing.fromJson({
+      listingId: doc.id,
+      ...doc.data(),
+    })
+  );
+};
+
+
+const verificationConstraints = import.meta.env.DEV
+  ? []
+  : [
+      where("verifiedBy", "!=", null),
+    ];
+
+const listingRef = collection(firestore, "listings");
+
+
 export const getListingById = async (listingId) => {
   try {
     console.log('[Api Call] getListingById -> start');
@@ -26,23 +45,39 @@ export const getListingById = async (listingId) => {
   }
 };
 
+export const getListingByIds = async (ids) => {
+  try{
+    console.log('[Api Call] getListingByIds -> start');
 
-const formatData = (snap) => {
-  return snap.docs.map((doc) =>
-    Listing.fromJson({
-      listingId: doc.id,
-      ...doc.data(),
-    })
-  );
-};
+    if (!ids.length) return [];
 
-const verificationConstraints = import.meta.env.DEV
-  ? []
-  : [
-      where("verifiedBy", "!=", null),
-    ];
+    let fetchedListings = [];
 
-const listingRef = collection(firestore, "listings");
+    // Firestore allows max 10 IDs
+    for (let i = 0; i < ids.length; i += 10) {
+
+      const chunk = ids.slice(i, i + 10);
+
+      const q = query(
+        listingRef,
+        where(documentId(), "in", chunk)
+      );
+
+      const snap = await getDocs(q);
+
+      const listingsChunk = formatData(snap);
+
+      fetchedListings.push(...listingsChunk);
+    }
+
+    console.log('[Api Call] getListingByIds -> end');
+
+    return fetchedListings;
+  } catch (error) {
+    console.error("Error fetching listing:", error);
+    return [];
+  }
+}
 
 export const getListingByCategory = async ({ category, quantity }) => {
     try {
