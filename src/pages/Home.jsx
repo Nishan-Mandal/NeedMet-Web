@@ -1,4 +1,4 @@
-import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal } from '../components'
+import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal, TrendingSearches } from '../components'
 import ErrorImg from "../assets/error.png"
 import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
 import { useQuery, useQueries } from '@tanstack/react-query';
@@ -59,7 +59,8 @@ function Home() {
   return (
     <>
       <Hero data={homeData} />
-      <CategorySection title="Top Categories" data={homeData} see_all_navigate="/all_categories" />
+      <TrendingSearches />
+      <CategorySection title="Browse By Categories" data={homeData} see_all_navigate="/all_categories" />
       {
         recommendedListings.length > 0
           ? <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />

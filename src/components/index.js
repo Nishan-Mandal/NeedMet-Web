@@ -20,6 +20,7 @@ import SearchPageLoader from './Loader/SearchPageLoader.jsx'
 import TestimonialCard from './Testimonial/TestimonialCard.jsx'
 import TestimonialSection from './Testimonial/TestimonialSection.jsx'
 import Hyperlocal from './Hyperlocal.jsx'
+import TrendingSearches from './TrendingSearches.jsx'
 
 export {
     Header, 
@@ -43,5 +44,6 @@ export {
     SearchPageLoader,
     TestimonialCard, 
     TestimonialSection, 
-    Hyperlocal
+    Hyperlocal, 
+    TrendingSearches
 }

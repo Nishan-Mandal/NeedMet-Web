@@ -1,0 +1,266 @@
+/* TrendingSearches.css */
+
+/* ===================================
+   SECTION
+=================================== */
+
+.trending-section {
+  padding: 20px 35px;
+}
+
+.trending-container {
+  background: var(--background-secondary);
+  border-radius: 20px;
+  padding: 28px 35px;
+  overflow: hidden;
+}
+
+/* ===================================
+   HEADER
+=================================== */
+
+.trending-header {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.trending-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  margin-bottom: 6px;
+}
+
+.trending-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--text-accent);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* ===================================
+   SCROLL WRAPPER
+=================================== */
+
+.trending-scroll-wrapper {
+  width: 100%;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ===================================
+   TRACK
+=================================== */
+
+.trending-scroll-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: max-content;
+
+  animation: trendingInfiniteScroll 32s linear infinite;
+}
+
+.trending-scroll-track-reverse {
+  animation-direction: reverse;
+}
+
+.trending-scroll-wrapper:hover .trending-scroll-track {
+  animation-play-state: paused;
+}
+
+/* ===================================
+   INFINITE ANIMATION
+=================================== */
+
+@keyframes trendingInfiniteScroll {
+
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 5px));
+  }
+}
+
+/* ===================================
+   PILL
+=================================== */
+
+.trending-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 9px 16px;
+
+  border-radius: 999px;
+
+  border: 1.5px solid var(--border);
+
+  background: var(--surface);
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  font-family: var(--font-primary);
+
+  flex-shrink: 0;
+
+  white-space: nowrap;
+}
+
+.trending-pill:hover {
+  border-color: var(--primary-light);
+  background: var(--primary-surface);
+  transform: translateY(-2px);
+}
+
+.trending-pill:active {
+  transform: scale(0.97);
+}
+
+.trending-pill-emoji {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.trending-pill-label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.trending-pill-count {
+  font-size: 11.5px;
+  font-weight: 600;
+
+  background: var(--primary-surface);
+
+  color: var(--text-accent);
+
+  padding: 2px 8px;
+
+  border-radius: 999px;
+
+  line-height: 1.4;
+
+  min-width: 32px;
+
+  text-align: center;
+}
+
+.trending-pill:hover .trending-pill-count {
+  background: var(--primary);
+  color: var(--text-on-dark);
+}
+
+/* ===================================
+   TABLET (481px – 1024px)
+=================================== */
+
+@media (min-width: 481px) and (max-width: 1024px) {
+
+  .trending-section {
+    padding: 30px 12px 30px 12px;
+  }
+
+  .trending-container {
+    padding: 22px 20px 22px;
+    border-radius: 16px;
+  }
+
+  .trending-title {
+    font-size: 1.4rem;
+  }
+
+  .trending-pill {
+    padding: 8px 14px;
+  }
+
+  .trending-pill-label {
+    font-size: 13px;
+  }
+
+  .trending-scroll-track {
+    animation-duration: 28s;
+  }
+}
+
+/* ===================================
+   MOBILE (≤ 480px)
+=================================== */
+
+@media (max-width: 480px) {
+
+  .trending-section {
+    padding: 25px 16px 5px 16px;
+  }
+
+  .trending-container {
+    padding: 18px 16px 20px;
+    border-radius: 14px;
+  }
+
+  .trending-header {
+    margin-bottom: 14px;
+    gap: 4px;
+  }
+
+  .trending-title {
+    font-size: 1.2rem;
+  }
+
+  .trending-scroll-wrapper {
+    gap: 8px;
+  }
+
+  .trending-scroll-track {
+    gap: 8px;
+    animation-duration: 22s;
+  }
+
+  .trending-pill {
+    padding: 7px 12px;
+    gap: 6px;
+  }
+
+  .trending-pill:hover {
+    transform: none;
+  }
+
+  .trending-pill:active {
+    opacity: 0.8;
+    transform: scale(0.96);
+  }
+
+  .trending-pill-emoji {
+    font-size: 14px;
+  }
+
+  .trending-pill-label {
+    font-size: 12px;
+  }
+
+  .trending-pill-count {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+}
