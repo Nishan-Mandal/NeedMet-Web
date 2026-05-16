@@ -5,15 +5,15 @@ const DEFAULT_SEARCHES = [
   { id: 1, emoji: "🏠", label: "Room Rent", count: "2.4k" },
   { id: 2, emoji: "💈", label: "Salons", count: "1.8k" },
   { id: 3, emoji: "🍽️", label: "Restaurants", count: "3.1k" },
-  { id: 4, emoji: "🚗", label: "Automobile", count: "940" },
+  { id: 4, emoji: "🚗", label: "Electronics & Mobile Shops", count: "940" },
   { id: 5, emoji: "💊", label: "Pharmacies", count: "1.2k" },
-  { id: 6, emoji: "🏋️", label: "Fitness & Yoga", count: "780" },
-  { id: 7, emoji: "👗", label: "Clothing & Fashion", count: "1.5k" },
-  { id: 8, emoji: "🔧", label: "Repair Services", count: "620" },
-  { id: 9, emoji: "📚", label: "Tutors", count: "510" },
-  { id: 10, emoji: "💧", label: "Water Delivery", count: "430" },
-  { id: 11, emoji: "🛒", label: "Grocery Stores", count: "890" },
-  { id: 12, emoji: "🎵", label: "Music Classes", count: "290" },
+  { id: 6, emoji: "🏋️", label: "Fitness/Yoga Instructors", count: "780" },
+  { id: 7, emoji: "👗", label: "Tailors & Laundry", count: "1.5k" },
+  { id: 8, emoji: "🔧", label: "Mechanics & Vehicle Repair", count: "620" },
+  { id: 9, emoji: "📚", label: "Tutors/Coaching Classes", count: "510" },
+  { id: 10, emoji: "💧", label: "Water Supply & Bottled Water", count: "430" },
+  { id: 11, emoji: "🛒", label: "Grocery & Supermarkets", count: "890" },
+  { id: 12, emoji: "🎵", label: "Makeup Artists/Beauty Services", count: "290" },
 ];
 
 export default function TrendingSearches({
