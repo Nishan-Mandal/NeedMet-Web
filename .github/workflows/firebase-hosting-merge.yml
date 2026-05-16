@@ -31,6 +31,10 @@ jobs:
           VITE_ALGOLIA_APP_ID: ${{ secrets.VITE_ALGOLIA_APP_ID }}
           VITE_ALGOLIA_SEARCH_KEY: ${{ secrets.VITE_ALGOLIA_SEARCH_KEY }}
 
+      # Clear npm cache
+      - name: Clear npm cache
+        run: npm cache clean --force
+
       # Install Firebase CLI
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
