@@ -175,7 +175,7 @@
    TABLET (481px – 1024px)
 =================================== */
 
-@media (min-width: 481px) and (max-width: 1024px) {
+@media (min-width: 677px) and (max-width: 1024px) {
 
   .trending-section {
     padding: 30px 12px 30px 12px;
@@ -207,14 +207,14 @@
    MOBILE (≤ 480px)
 =================================== */
 
-@media (max-width: 480px) {
+@media (max-width: 576px) {
 
   .trending-section {
-    padding: 25px 16px 5px 16px;
+    padding: 25px 6px 5px;
   }
 
   .trending-container {
-    padding: 18px 16px 20px;
+    padding: 18px 12px 20px;
     border-radius: 14px;
   }
 

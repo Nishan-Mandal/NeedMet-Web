@@ -55,6 +55,11 @@ function Home() {
       />
     );
   }
+
+  const sectionBgColors = [
+    '#f7faf8', // light gray
+    'white',   // white
+  ];
   
   return (
     <>
@@ -63,12 +68,15 @@ function Home() {
       <CategorySection title="Browse By Categories" data={homeData} see_all_navigate="/all_categories" />
       {
         recommendedListings.length > 0
-          ? <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />
+          ? <ListingSection title="Recommended For You"  subTitle={"Handpicked For You"} listings={recommendedListings} see_all_navigate="/listings/recommended" bgColor={'#f7faf8'}/>
           : null
       }
+
+      <Hyperlocal />
+
       {
         newListings.length > 0
-          ? <ListingSection title="Newly Added" listings={newListings} see_all_navigate="/listings/newly_added" />
+          ? <ListingSection title="Newly Added" subTitle={"Fresh on NeedMet"}listings={newListings} see_all_navigate="/listings/newly_added" />
           : null
       }
 
@@ -81,13 +89,13 @@ function Home() {
           <ListingSection
             key={category}
             title={category}
+            subTitle='Specially For You'
             listings={listings}
             see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
+            bgColor={sectionBgColors[index % sectionBgColors.length]}
           />
         );
       })}
-
-      <Hyperlocal />
 
       <TestimonialSection />
       <BusinessCTA />

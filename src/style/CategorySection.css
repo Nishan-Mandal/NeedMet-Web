@@ -126,16 +126,16 @@
   }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 577px) and (max-width: 768px) {
   .category-title {
     font-size: 1.2rem;
   }
 }
 
 /* ─── Mobile (≤ 480px) ─── */
-@media (max-width: 480px) {
+@media (max-width: 576px) {
   .category-section {
-    padding: 30px;
+    padding: 18px;
   }
 
   .category-container-top {
