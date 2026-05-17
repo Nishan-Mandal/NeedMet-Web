@@ -129,7 +129,6 @@
 .trending-pill:hover {
   border-color: var(--primary-light);
   background: var(--primary-surface);
-  transform: translateY(-2px);
 }
 
 .trending-pill:active {

@@ -13,7 +13,7 @@ function LegalPage() {
     enabled: !!legalDocument,
   });
 
-  if (loading) return <p style={{textAlign: 'center', height: '5rem', marginTop: '2rem'}}>Loading...</p>;
+  if (loading) return <p style={{minHeight: '100vh', textAlign: 'center', height: '5rem', marginTop: '2rem'}}>Loading...</p>;
   if (!page) 
     return (
       <SystemState
@@ -28,20 +28,22 @@ function LegalPage() {
 
   return (
     <>
-      <p style={{
-          textAlign: 'center', 
-          fontSize: '1.7rem', 
-          marginTop: '1rem', 
-          fontWeight: 'bold'
-        }}
-      >
-        {page.title}
-      </p>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: page?.content || "",
-        }}
-      />
+      <div className="legal-page-body" style={{minHeight: '100vh'}}>
+        <p style={{
+            textAlign: 'center', 
+            fontSize: '1.7rem', 
+            marginTop: '1rem', 
+            fontWeight: 'bold'
+          }}
+        >
+          {page.title}
+        </p>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: page?.content || "",
+          }}
+        />
+      </div>
     </>
   );
 }

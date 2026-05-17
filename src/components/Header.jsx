@@ -83,7 +83,7 @@ export default function Header() {
 
         <NavLink to="/search" className="bnav-fab">
           <div className="bnav-fab-inner">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="white">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.2">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
