@@ -22,6 +22,7 @@ import TestimonialSection from './Testimonial/TestimonialSection.jsx'
 import Hyperlocal from './Hyperlocal.jsx'
 import TrendingSearches from './TrendingSearches.jsx'
 import BusinessCTA from './BusinessCTA.jsx'
+import Banner from './Banner.jsx'
 
 export {
     Header, 
@@ -47,5 +48,6 @@ export {
     TestimonialSection, 
     Hyperlocal, 
     TrendingSearches, 
-    BusinessCTA
+    BusinessCTA, 
+    Banner
 }

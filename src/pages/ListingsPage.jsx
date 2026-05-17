@@ -110,7 +110,7 @@ const ListingsPage = () => {
 
   return (
     <>
-      <div className="listing-page-body" style={{ minHeight: "100vh" }}>
+      <div className="listing-page-body" style={{ minHeight: "100vh", backgroundColor: '#f7faf8'}}>
         <ListingSection title={title} listings={listings} showSeeAll={false} />
 
         <>

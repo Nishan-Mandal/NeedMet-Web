@@ -1,9 +1,9 @@
-import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal, TrendingSearches, BusinessCTA } from '../components'
+import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal, TrendingSearches, BusinessCTA, Banner } from '../components'
 import ErrorImg from "../assets/error.png"
 import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
-import { useEffect } from 'react';
+import { useEffect, Fragment } from 'react';
 import useInfo from '../contexts/infoContext.jsx';
 
 function Home() {
@@ -80,20 +80,30 @@ function Home() {
           : null
       }
 
+      <Banner imageUrl={homeData?.banners?.[0]?.imageUrl}/>
+
       {categoryList.map((category, index) => {
         const listings = categoryQueries[index]?.data ?? [];
 
         if (!listings || listings.length === 0) return null;
 
+        const bannerIndex = (index+1) % homeData?.banners?.length;
+
         return (
-          <ListingSection
-            key={category}
-            title={category}
-            subTitle='Specially For You'
-            listings={listings}
-            see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
-            bgColor={sectionBgColors[index % sectionBgColors.length]}
-          />
+          <Fragment key={category}>
+            <ListingSection
+              title={category}
+              subTitle='Specially For You'
+              listings={listings}
+              see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
+              bgColor={sectionBgColors[index % sectionBgColors.length]}
+            />
+
+            <Banner
+              imageUrl={homeData?.banners?.[bannerIndex]?.imageUrl}
+            />
+
+          </Fragment>
         );
       })}
 

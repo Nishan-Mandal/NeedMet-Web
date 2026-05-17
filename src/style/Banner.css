@@ -1,0 +1,33 @@
+.banner-section {
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.banner-image {
+  width: 100%;
+  aspect-ratio: 16/3;
+  display: block;
+  object-fit: cover;
+}
+
+/* ─── Tablet (769px – 1024px) ─── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .banner-image {
+    height: 240px;
+  }
+}
+
+/* ─── Smaller Tablet (481px – 768px) ─── */
+@media (min-width: 481px) and (max-width: 768px) {
+  .banner-image {
+    aspect-ratio: 14/4;
+  }
+}
+
+/* ─── Phone (≤ 480px) ─── */
+@media (max-width: 480px) {
+  .banner-image {
+    aspect-ratio: 16/5
+  }
+}
