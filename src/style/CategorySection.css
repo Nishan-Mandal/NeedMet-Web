@@ -170,9 +170,10 @@
 ========================= */
 
 .category-name {
+  font-family: var(--font-primary);
   font-size: 15px;
   color: #222;
-  font-weight: 600;
+  font-weight: 548;
   line-height: 1.3;
   text-align: left;
   word-break: break-word;
