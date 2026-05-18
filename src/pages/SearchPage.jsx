@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getListingByIds } from "../services/firebase/firestore/listingService";
 import { AlgoliaService } from "../services/algolia/searchService";
-import { CategorySection, ListingSection, SearchPageLoader } from "../components";
+import { CategorySection, ListingSection, SearchPageLoader, TrendingSearches } from "../components";
 import searchImg from "../assets/search.png";
 import useDebounce from "../hooks/useDebounce";
 import "../style/SearchPage.css";
@@ -148,44 +148,60 @@ export default function SearchPage() {
       {
         recentSearches.length > 0 &&
         query === "" && (
-          <div className="recent-search-section">
-            <div className="recent-search-header">
-              <h3>Recent Searches</h3>
-              <button
-                className="clear-btn"
-                onClick={() => {
-                  setRecentSearches([]);
-                  localStorage.removeItem("recentSearches");
-                }}
-              >
-                Clear All
-              </button>
+          <>
+            <div className="recent-search-wrapper">
+              <div className="recent-search-section">
+                <div className="recent-search-container">
+                  <div className="recent-search-header">
+                    <div className="recent-search-title-group">
+                      <span className="recent-search-tag">
+                        CONTINUE EXPLORING
+                      </span>
+                      <h3>Recent Searches</h3>
+                    </div>
+                    <button
+                      className="clear-btn"
+                      onClick={() => {
+                        setRecentSearches([]);
+                        localStorage.removeItem("recentSearches");
+                      }}
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                  <div className="recent-search-list">
+                    {recentSearches.map((item) => (
+                      <button
+                        key={item}
+                        className="recent-search-item"
+                        onClick={() => {
+                          setQuery(item);
+                          setSearchParams({q: item});
+                        }}
+                      >
+                        <span>{item}</span>
+                        <span
+                          className="remove-icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeRecentSearch(item);
+                          }}
+                        >
+                          <i className="fa-solid fa-xmark"></i>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
+          </>
+        )
+      }
 
-            <div className="recent-search-list">
-              {recentSearches.map((item) => (
-                <button
-                  key={item}
-                  className="recent-search-item"
-                  onClick={() => {
-                    setQuery(item);
-                    setSearchParams({q: item});
-                  }}
-                >
-                  <span>{item}</span>
-                  <span
-                    className="remove-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeRecentSearch(item);
-                    }}
-                  >
-                    <i className="fa-solid fa-xmark"></i>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+      {
+        query === "" && (
+          <TrendingSearches />
         )
       }
 

@@ -32,7 +32,7 @@ export default function CategorySection({ title, categories, data, style = {}, s
 
         {
           categoryList.length === 0 ? (
-            <p style={{"textAlign": 'center'}}>No categories available.</p>
+            <p style={{"paddingLeft": "2rem"}}>No categories available.</p>
           ) : (
             <div className="category-grid">
               {categoryList.map((category, index) => {
