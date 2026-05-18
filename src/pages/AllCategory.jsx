@@ -68,7 +68,7 @@ export default function AllCategory() {
         <CategorySection
           key={section}
           title={section}
-          fontSz="1.5rem"
+          fontSz="1.1rem"
           categories={items}
           style={{
             backgroundColor:
