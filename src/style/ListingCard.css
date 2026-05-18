@@ -1,149 +1,203 @@
 .listing-card {
-  max-width: 100%;
-  background: #ffffff;
-  border-radius: 7px;
-  overflow: hidden;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
-  border: 1px solid rgba(0, 0, 0, 0.075);
-  transition: all 0.2s ease;
-  cursor: pointer;
   width: 100%;
+  max-width: 100%;
+  background: var(--surface);
+  border: 0px solid var(--text-accent);
+  border-radius: 10px;
+  overflow: hidden;
+
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+  box-shadow:
+    0 4px 10px rgba(15, 92, 63, 0.226),
+    0 1px 2px rgba(0, 0, 0, 0.11);
+  box-sizing: border-box;
 }
 
 .listing-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
+  border-color: rgba(15, 92, 62, 0.18);
+  box-shadow:
+    0 10px 24px rgba(15, 92, 62, 0.08),
+    0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
-/* Image Section */
+/* ===================================
+   IMAGE
+=================================== */
+
 .listing-image {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
+  aspect-ratio: 16 / 10;
   position: relative;
-}
-
-.listing-image img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-}
-
-/* Body */
-.listing-content {
-  padding: 12px 14px;
-}
-
-/* Category */
-.listing-category {
-  font-size: 11px;
-  color: #9b9b9b;
-  margin-bottom: 4px;
-  text-transform: capitalize;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  background-color: var(--background-secondary);
+  background-size: cover !important;
+  background-position: center !important;
+  transition: transform 0.35s ease;
 }
+
+.listing-card:hover .listing-image {
+  transform: scale(1.015);
+}
+
+/* ===================================
+   PREMIUM BADGE
+=================================== */
 
 .premium-badge {
   position: absolute;
-  top: 3px;
-  right: 3px;
+  top: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
-  gap: 2px;
-  background-color: rgb(255, 0, 0);
+  gap: 5px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-orange),
+    var(--accent-yellow)
+  );
   color: white;
-  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 14px;
   font-weight: 700;
-  padding: 3px 7px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 5px;
-  letter-spacing: 0.4px;
-  z-index: 1;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
+  z-index: 2;
 }
 
 .premium-badge img {
-  background-color: white;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  background: white;
   border-radius: 50%;
   padding: 2px;
-  width: 15px;
-  height: 15px;
-  object-fit: contain;
 }
 
-/* Title */
-.listing-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 6px 0;
+/* ===================================
+   CONTENT
+=================================== */
+
+.listing-content {
+  padding: 14px;
+}
+
+/* ===================================
+   CATEGORY
+=================================== */
+
+.listing-category {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary);
+  opacity: 0.8;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
   text-transform: capitalize;
-  white-space: nowrap;
+  display: inline-block;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Location */
+/* ===================================
+   TITLE
+=================================== */
+
+.listing-title {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-accent);
+  line-height: 1.35;
+  margin: 0 0 10px;
+  text-transform: capitalize;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* ===================================
+   LOCATION
+=================================== */
+
 .listing-location {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #6b6b6b;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-secondary);
   margin-bottom: 4px;
 }
 
 .listing-location i {
-  font-size: 12px;
-  color: #1c8c8c;
+  color: var(--primary-light);
+  font-size: 13px;
   flex-shrink: 0;
 }
 
 .listing-location span {
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Rating */
+/* ===================================
+   RATING
+=================================== */
+
 .listing-card-rating {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: #6b6b6b;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .listing-card-rating i {
-  font-size: 12px;
-  color: #1c8c8c;
+  color: var(--accent-yellow);
+  font-size: 13px;
   flex-shrink: 0;
 }
 
-/* ─── Tablet (481px – 768px) ─── */
+/* ===================================
+   TABLET
+=================================== */
+
 @media (min-width: 481px) and (max-width: 768px) {
-  .listing-card {
-    max-width: 100%;
-    /* border-radius: 12px; */
-  }
 
   .listing-content {
-    padding: 10px 12px;
+    padding: 12px;
   }
 
   .listing-title {
-    font-size: 13px;
+    font-size: 15px;
   }
 
-  .listing-category,
+  .listing-category {
+    font-size: 10px;
+  }
+
   .listing-location,
   .listing-card-rating {
-    font-size: 11px;
+    font-size: 12px;
   }
 }
 
-/* ─── Mobile (≤ 480px) ─── */
+/* ===================================
+   MOBILE
+=================================== */
+
 @media (max-width: 480px) {
+
   .listing-card {
     transition: none;
   }
@@ -153,39 +207,38 @@
   }
 
   .listing-card:active {
-    opacity: 0.85;
-    transform: scale(0.98);
+    transform: scale(0.985);
+    opacity: 0.92;
   }
 
   .listing-image {
-    aspect-ratio: 16/9;
-  }
-
-  .listing-image img {
-    aspect-ratio: 16/9;
+    aspect-ratio: 16 / 10;
   }
 
   .listing-content {
-    padding: 8px 10px;
+    padding: 11px;
   }
 
   .premium-badge {
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+
     font-size: 9px;
   }
 
   .premium-badge img {
-    height: 13px;
-    width: 13px;
+    width: 12px;
+    height: 12px;
   }
 
   .listing-category {
-    font-size: 10px;
-    margin-bottom: 3px;
+    font-size: 9px;
   }
 
   .listing-title {
-    font-size: 13px;
-    margin-bottom: 5px;
+    font-size: 14px;
+    margin-bottom: 8px;
   }
 
   .listing-location,

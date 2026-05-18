@@ -8,7 +8,7 @@ import {
   getSimilarListingsPaginated,
   getListingById,
 } from "../services/firebase/firestore/listingService";
-import { ListingSection, ListingSectionLoader, SystemState } from "../components";
+import { BusinessCTA, ListingSection, ListingSectionLoader, SystemState } from "../components";
 import ErrorImg from "../assets/error.png";
 
 const QUANTITY = 20;
@@ -125,6 +125,8 @@ const ListingsPage = () => {
           />
         </>
       </div>
+
+      <BusinessCTA />
     </>
   );
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getPageById } from "../services/firebase/firestore/pageService";
 import { useQuery } from "@tanstack/react-query";
-import { SystemState } from "../components";
+import { BusinessCTA, SystemState } from "../components";
 import ErrorImg from '../assets/error.png'
 
 function LegalPage() {
@@ -47,6 +47,8 @@ function LegalPage() {
           }}
         />
       </div>
+
+      <BusinessCTA />
     </>
   );
 }

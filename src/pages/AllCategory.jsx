@@ -1,4 +1,4 @@
-import { CategorySection, AllCategoryLoader, SystemState } from "../components";
+import { CategorySection, AllCategoryLoader, SystemState, BusinessCTA } from "../components";
 import { useMemo } from "react";
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
@@ -59,7 +59,7 @@ export default function AllCategory() {
     <div>
       <h1 style={{
         textAlign: 'center', 
-        margin: '1rem 0 1rem', 
+        margin: '1rem 0 0rem', 
         fontFamily: 'var(--font-heading)', 
         color: 'var(--text-accent)', 
         fontSize: '1.6rem'
@@ -70,15 +70,11 @@ export default function AllCategory() {
           title={section}
           fontSz="1.1rem"
           categories={items}
-          style={{
-            backgroundColor:
-              index % 2 === 0
-              ? "var(--background-secondary)"
-              : "var(--background)"
-          }}
           showSeeAll={false}
         />
       ))}
+
+      <BusinessCTA />
     </div>
   );
 }

@@ -5,7 +5,9 @@ import {
   RatingSection, 
   PreviewImage, 
   ListingDetailsLoader,
-  SystemState
+  SystemState,
+  BusinessCTA,
+  Hyperlocal
 } from '../components'
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
@@ -201,15 +203,19 @@ function ListingDetails() {
 
       {
         similarListings.length > 0
-          ? <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
+          ? <ListingSection title="Similar Listings" subTitle='YOU MAY ALSO LIKE' listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
           : null
       }
 
+      <Hyperlocal />
+
       {
         newListings.length > 0
-          ? <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
+          ? <ListingSection title="Newly Added" subTitle='FRESH ON NEEDMET' listings={newListings} see_all_navigate='/listings/newly_added' />
           : null
       }
+
+      <BusinessCTA />
     </>
   );
 }

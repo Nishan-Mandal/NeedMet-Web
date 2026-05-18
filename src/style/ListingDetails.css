@@ -28,46 +28,53 @@
 .likes-contact {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
   border-radius: 10px;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem;
   margin-top: 1rem;
   width: 100%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-between;
+  gap: 1rem;
+  box-sizing: border-box;
 }
 
 .likes {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: rgba(0, 0, 0, 0.824);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.likes-count {
-  font-weight: 550;
-}
-
-.likes-count i {
+.likes i {
   color: #1c8c8c;
-  margin-right: 5px;
 }
 
 /* ─── Contact Buttons ─── */
 .contact {
   display: flex;
   gap: 0.5rem;
+  flex: 1; 
+  min-width: 0;
 }
 
 .contact a {
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  border-radius: 15px;
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 12px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   transition: 0.2s ease;
   cursor: pointer;
   text-decoration: none;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .call {

@@ -1,5 +1,5 @@
 .category-section {
-  padding: 20px 70px;
+  padding: 50px 70px 50px;
 }
 
 .category-container-top {
@@ -185,7 +185,7 @@
 
 @media (min-width: 577px) and (max-width: 1024px) {
   .category-section {
-    padding: 30px 28px;
+    padding: 35px 32px;
   }
 
   .category-grid {
@@ -220,7 +220,7 @@
 @media (max-width: 576px) {
 
   .category-section {
-    padding: 18px;
+    padding: 30px 18px;
   }
 
   .category-container-top {

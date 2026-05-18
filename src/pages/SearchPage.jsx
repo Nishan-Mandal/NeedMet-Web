@@ -34,7 +34,7 @@ export default function SearchPage() {
         { replace: true }
       );
     }
-  }, [debouncedQuery, setSearchParams]);
+  }, [debouncedQuery]);
 
   // Load Recent Searches
   useEffect(() => {

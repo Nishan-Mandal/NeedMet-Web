@@ -9,29 +9,33 @@
 
 .preview-img-premium-badge {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  background-color: rgb(255, 0, 0);
+  gap: 5px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-orange),
+    var(--accent-yellow)
+  );
   color: white;
-  font-size: 18px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 14px;
   font-weight: 700;
-  padding: 3px 7px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 5px;
-  letter-spacing: 0.4px;
-  z-index: 1;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
+  z-index: 2;
 }
 
 .preview-img-premium-badge img {
-  background-color: white;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  background: white;
   border-radius: 50%;
   padding: 2px;
-  width: 23px;
-  height: 23px;
-  object-fit: contain;
 }
 
 /* ─── Arrow Buttons ─── */
