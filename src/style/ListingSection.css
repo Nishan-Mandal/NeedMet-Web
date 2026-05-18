@@ -31,7 +31,7 @@
 
 .listing-header h2,
 .listing-header-without-see-all h2 {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
   font-weight: 700;
   color: var(--text-accent);
   margin: 0;

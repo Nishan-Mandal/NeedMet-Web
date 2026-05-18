@@ -65,7 +65,7 @@ function Home() {
     <>
       <Hero data={homeData} />
       <TrendingSearches />
-      <CategorySection title="Browse By Categories" data={homeData} see_all_navigate="/all_categories" />
+      <CategorySection title="Browse By Categories" subTitle='DISCOVER LOCAL SERVICES' data={homeData} see_all_navigate="/all_categories" />
       {
         recommendedListings.length > 0
           ? <ListingSection title="Recommended For You"  subTitle={"Handpicked For You"} listings={recommendedListings} see_all_navigate="/listings/recommended" bgColor={'#f7faf8'}/>

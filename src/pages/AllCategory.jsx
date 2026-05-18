@@ -57,12 +57,25 @@ export default function AllCategory() {
     
   return (
     <div>
-      {Object.entries(groupedCategories).map(([section, items]) => (
+      <h1 style={{
+        textAlign: 'center', 
+        margin: '1rem 0 1rem', 
+        fontFamily: 'var(--font-heading)', 
+        color: 'var(--text-accent)', 
+        fontSize: '1.6rem'
+      }}>All Categories</h1>
+      {Object.entries(groupedCategories).map(([section, items], index) => (
         <CategorySection
           key={section}
           title={section}
+          fontSz="1.5rem"
           categories={items}
-          style={{ textAlign: "center" }}
+          style={{
+            backgroundColor:
+              index % 2 === 0
+              ? "var(--background-secondary)"
+              : "var(--background)"
+          }}
           showSeeAll={false}
         />
       ))}
