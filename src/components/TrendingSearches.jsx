@@ -23,8 +23,8 @@ export default function TrendingSearches({
 
   const navigate = useNavigate();
 
-  const handleClick = (label) => {
-    navigate(`/listings/category/${encodeURIComponent(label)}`);
+  const navigateToSearch = (query) => {
+    navigate(`/search?q=${query}`);
   };
 
   const infiniteSearches = [...searches, ...searches];
@@ -55,7 +55,7 @@ export default function TrendingSearches({
               <button
                 key={`${item.id}-${index}`}
                 className="trending-pill"
-                onClick={() => handleClick(item.label)}
+                onClick={() => navigateToSearch(item.label)}
               >
                 <span className="trending-pill-emoji">
                   {item.emoji}
@@ -80,7 +80,7 @@ export default function TrendingSearches({
               <button
                 key={`reverse-${item.id}-${index}`}
                 className="trending-pill"
-                onClick={() => handleClick(item.label)}
+                onClick={() => navigateToSearch(item.label)}
               >
                 <span className="trending-pill-emoji">
                   {item.emoji}

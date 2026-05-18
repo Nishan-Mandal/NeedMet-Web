@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ImageSlider from "./ImageSlider";
 import "../style/Hero.css";
 
@@ -36,6 +37,11 @@ const Stats = () => (
 
 export default function Hero({ data }) {
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const navigateToSearch = (query) => {
+    navigate(`/search?q=${query}`);
+  };
 
   const placeholders = [
   "Rooms near me",
@@ -128,15 +134,20 @@ const [placeholder, setPlaceholder] = useState("");
               placeholder={`Try "${placeholder}"`}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-            />
-            <button className="hero-search__btn">Search Now</button>
+              onClick={() => navigateToSearch(query)}
+              />
+            <button onClick={() => navigateToSearch(query)} className="hero-search__btn">Search Now</button>
           </div>
 
           {/* Chips */}
           <div className="hero-chips">
             {CHIPS.map((c) => (
-              <button key={c.label} className="hero-chip">
-                <span>{c.emoji}</span> {c.label}
+              <button 
+                key={c.label} 
+                onClick={() => navigateToSearch(c.label)} 
+                className="hero-chip"
+              >
+                  <span>{c.emoji}</span> {c.label}
               </button>
             ))}
           </div>

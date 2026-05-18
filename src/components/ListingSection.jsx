@@ -24,10 +24,13 @@ function HeaderWithSeeAll({ title, subTitle = "", listings, see_all_navigate }) 
   );
 }
 
-function HeaderWithOutSeeAll({ title }) {
+function HeaderWithOutSeeAll({ title, subTitle }) {
   return (
     <div className="listing-header-without-see-all">
-      <h2>{title}</h2>
+      <div className="listing-header-text">
+        <span className="listing-eyebrow">{subTitle}</span>
+        <h2>{title}</h2>
+      </div>
     </div>
   );
 }
@@ -45,7 +48,7 @@ export default function ListingSection({ title, subTitle = "", listings=[], show
         ? 
           <HeaderWithSeeAll title={title} subTitle={subTitle} see_all_navigate={see_all_navigate}/>
         :
-          <HeaderWithOutSeeAll title={title}/> 
+          <HeaderWithOutSeeAll title={title} subTitle={subTitle}/> 
       }
 
       {/* Cards Grid */}

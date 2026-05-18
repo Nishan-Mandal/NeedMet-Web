@@ -24,11 +24,17 @@ export default function SearchPage() {
 
   useEffect(() => {
     if (debouncedQuery.trim()) {
-      setSearchParams({q: debouncedQuery});
+      setSearchParams(
+        { q: debouncedQuery },
+        { replace: true }
+      );
     } else {
-      setSearchParams({});
+      setSearchParams(
+        {},
+        { replace: true }
+      );
     }
-  }, [debouncedQuery]);
+  }, [debouncedQuery, setSearchParams]);
 
   // Load Recent Searches
   useEffect(() => {
@@ -236,11 +242,14 @@ export default function SearchPage() {
           <div className="search-results">
             <CategorySection
               title="Searched Categories"
+              subTitle="DISCOVER RELEVANT SERVICES"
               categories={categoryResults}
               showSeeAll={false}
+              style={{backgroundColor: 'var(--background-secondary)'}}
             />
             <ListingSection
               title="Searched Listings"
+              subTitle="EXPLORE LOCAL LISTINGS"
               listings={listingResults}
               showSeeAll={false}
             />

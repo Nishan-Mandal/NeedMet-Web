@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getPageById } from "../services/firebase/firestore/pageService";
 import { useQuery } from "@tanstack/react-query";
 import { SystemState } from "../components";
+import ErrorImg from '../assets/error.png'
 
 function LegalPage() {
   const { legalDocument } = useParams();
@@ -16,14 +17,16 @@ function LegalPage() {
   if (loading) return <p style={{minHeight: '100vh', textAlign: 'center', height: '5rem', marginTop: '2rem'}}>Loading...</p>;
   if (!page) 
     return (
-      <SystemState
-        imageSrc={ErrorImg}
-        title="OOPS! Something Went"
-        highlight="Wrong"
-        message="We couldn't load the content right now. Please check your connection and try again later."
-        actionType="refresh"
-        actionLabel="Try Again"
-      />
+      <div className="legal-page-body" style={{minHeight: '100vh'}}>
+        <SystemState
+          imageSrc={ErrorImg}
+          title="OOPS! Something Went"
+          highlight="Wrong"
+          message="We couldn't load the content right now. Please check your connection and try again later."
+          actionType="refresh"
+          actionLabel="Try Again"
+        />
+      </div>
     );
 
   return (
