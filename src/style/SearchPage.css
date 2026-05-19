@@ -16,7 +16,7 @@
 .search-header {
   width: 100%;
   padding: 20px 35px 0;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .search-input-wrapper {
@@ -68,6 +68,10 @@
    RECENT SEARCHES
 ========================= */
 
+.recent-search-wrapper {
+  /* margin-bottom: 20px; */
+}
+
 .recent-search-section {
   padding: 0 35px;
 }
@@ -77,7 +81,7 @@
 
   padding: 28px 35px;
   background: var(--background-secondary);
-  border-radius: 20px;
+  border-radius: 24px;
   box-sizing: border-box;
 }
 
@@ -85,9 +89,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--text-accent);
 
-  margin-bottom: 14px;
+  margin-bottom: 20px;
 }
 
 .recent-search-title-group {
@@ -98,9 +101,8 @@
 
 .recent-search-tag {
   font-size: 11px;
-  padding: 0 0 6px 0;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-accent);
 }
@@ -108,10 +110,9 @@
 .recent-search-header h3 {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 700;
   color: var(--text-accent);
-  letter-spacing: -0.02em;
   line-height: 1.15;
 }
 
@@ -121,10 +122,13 @@
   cursor: pointer;
   color: var(--text-accent);
   font-size: 14px;
+  font-weight: 500;
+  transition: 0.2s ease;
 }
 
 .clear-btn:hover {
   text-decoration: underline;
+  opacity: 0.8;
 }
 
 .recent-search-list {
@@ -133,39 +137,99 @@
   gap: 12px;
 }
 
-.recent-search-item {
+/* =========================
+   RECENT SEARCH PILL
+========================= */
+
+.recent-search-pill {
   display: flex;
   align-items: center;
-  gap: 10px;
 
-  border: none;
-  cursor: pointer;
+  justify-content: space-between;
 
-  background: #dadada50;
+  gap: 14px;
 
-  padding: 10px 16px;
+  padding: 3px 16px;
 
   border-radius: 999px;
 
+  border: 1.5px solid #d5e2db;
+  background: #f7faf8;
+  cursor: pointer;
+  transition:
+    background 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.18s ease,
+    box-shadow 0.22s ease;
+  min-height: 40px;
+}
+
+.recent-search-pill:hover {
+  background: #ffffff;
+  border-color: #b8d3c4;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.recent-pill-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.recent-clock-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.recent-clock-icon i {
+  font-size: 15px;
+  color: #16684c;
+}
+
+.recent-pill-text {
   font-size: 14px;
 
-  transition: 0.2s;
+  font-weight: 500;
+  color: #16684c;
+  white-space: nowrap;
 }
 
-.recent-search-item:hover {
-  background: white;
+.recent-pill-remove {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #97aaa0;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.18s ease;
 }
 
-.remove-icon {
-  font-size: 13px;
-  opacity: 0.7;
-  transition: 0.1s ease-in;
-  cursor: pointer;
+.recent-pill-remove:hover {
+  background: rgba(22, 104, 76, 0.08);
+  color: #16684c;
+  transform: scale(1.08);
 }
 
-.remove-icon:hover {
-  opacity: 1;
-  transform: scale(1.1);
+.recent-pill-remove i {
+  font-size: 11px;
+}
+
+/* =========================
+   SEARCH LOADING
+========================= */
+
+.search-loading {
+  width: 100%;
 }
 
 /* =========================
@@ -174,8 +238,8 @@
 
 .search-empty-state {
   width: 100%;
-  height: 50vh;
-  padding: 1rem;
+  min-height: 300px;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -215,7 +279,7 @@
 @media (min-width: 677px) and (max-width: 1024px) {
 
   .search-header {
-    padding: 30px 12px 0;
+    padding: 26px 12px 0;
   }
 
   .recent-search-section {
@@ -223,8 +287,44 @@
   }
 
   .recent-search-container {
-    padding: 22px 20px 22px;
-    border-radius: 16px;
+    padding: 20px 18px;
+    border-radius: 18px;
+  }
+
+  .recent-search-list {
+    gap: 10px;
+  }
+
+  .recent-search-pill {
+    padding: 2px 14px;
+    min-height: 36px;
+    gap: 10px;
+  }
+
+  .recent-pill-left {
+    gap: 8px;
+  }
+
+  .recent-clock-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .recent-clock-icon i {
+    font-size: 13px;
+  }
+
+  .recent-pill-text {
+    font-size: 13px;
+  }
+
+  .recent-pill-remove {
+    width: 18px;
+    height: 18px;
+  }
+
+  .recent-pill-remove i {
+    font-size: 10px;
   }
 
   .search-empty-state h2 {
@@ -257,12 +357,12 @@
   }
 
   .recent-search-container {
-    padding: 18px 12px 20px;
-    border-radius: 14px;
+    padding: 16px 12px 18px;
+    border-radius: 16px;
   }
 
   .recent-search-header {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .recent-search-title-group {
@@ -270,21 +370,57 @@
   }
 
   .recent-search-header h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .clear-btn {
-    font-size: 13px;
+    font-size: 12px;
   }
 
+  /* GRID LAYOUT */
+
   .recent-search-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
   }
 
-  .recent-search-item {
-    padding: 8px 12px;
+  .recent-search-pill {
+    width: 100%;
+    min-height: 34px;
+    padding: 2px 10px;
     gap: 8px;
-    font-size: 13px;
+    overflow: hidden;
+  }
+
+  .recent-pill-left {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .recent-clock-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .recent-clock-icon i {
+    font-size: 11px;
+  }
+
+  .recent-pill-text {
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .recent-pill-remove {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .recent-pill-remove i {
+    font-size: 9px;
   }
 
   .search-empty-state img {

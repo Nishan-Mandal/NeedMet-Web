@@ -81,7 +81,7 @@
 /* ─── Tablet (769px – 1024px) — 4 columns ─── */
 @media (min-width: 769px) and (max-width: 1024px) {
   .listing-section {
-    padding: 30px 32px;
+    padding: 35px 32px;
   }
 
   .listing-grid {
@@ -104,7 +104,7 @@
 /* ─── Smaller Tablet (576px – 768px) — 3 columns ─── */
 @media (min-width: 576px) and (max-width: 768px) {
   .listing-section {
-    padding: 30px 18px;
+    padding: 35px 32px;
   }
 
   .listing-grid {

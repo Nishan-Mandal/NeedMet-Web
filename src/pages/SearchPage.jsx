@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getListingByIds } from "../services/firebase/firestore/listingService";
 import { AlgoliaService } from "../services/algolia/searchService";
-import { CategorySection, ListingSection, SearchPageLoader, TrendingSearches } from "../components";
+import { BusinessCTA, CategorySection, ListingSection, SearchPageLoader, TrendingSearches } from "../components";
 import searchImg from "../assets/search.png";
 import useDebounce from "../hooks/useDebounce";
 import "../style/SearchPage.css";
@@ -179,15 +179,24 @@ export default function SearchPage() {
                     {recentSearches.map((item) => (
                       <button
                         key={item}
-                        className="recent-search-item"
+                        className="recent-search-pill"
                         onClick={() => {
                           setQuery(item);
-                          setSearchParams({q: item});
+                          setSearchParams({ q: item });
                         }}
                       >
-                        <span>{item}</span>
+                        <div className="recent-pill-left">
+                          <div className="recent-clock-icon">
+                            <i className="fa-regular fa-clock"></i>
+                          </div>
+
+                          <span className="recent-pill-text">
+                            {item}
+                          </span>
+                        </div>
+
                         <span
-                          className="remove-icon"
+                          className="recent-pill-remove"
                           onClick={(e) => {
                             e.stopPropagation();
                             removeRecentSearch(item);
@@ -253,6 +262,7 @@ export default function SearchPage() {
               listings={listingResults}
               showSeeAll={false}
             />
+          <BusinessCTA />
           </div>
         )
       }

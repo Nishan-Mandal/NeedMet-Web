@@ -3,7 +3,7 @@
   max-width: 100%;
   background: var(--surface);
   border: 0px solid var(--text-accent);
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
 
   cursor: pointer;
