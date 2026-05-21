@@ -1,8 +1,8 @@
 import "../style/CategorySection.css";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-export default function CategorySection({ title, categories, data, style = {}, showSeeAll = true, see_all_navigate}) {
+export default function CategorySection({ title, subTitle="", fontSz, categories, data, style = {}, showSeeAll = true, see_all_navigate}) {
 
   const categoryList = categories || data?.categories || [];
 
@@ -12,22 +12,24 @@ export default function CategorySection({ title, categories, data, style = {}, s
     navigate(`/listings/category/${encodeURIComponent(name)}`);
   };
 
-
   return (
     <section className="category-section" style={style}>
       <div className="category-container">
 
         <div className="category-container-top">
-          <h2 className="category-title">{title}</h2>
+          <span className="category-tag">{subTitle}</span>
+          <div className="category-title-section">
+            <h2 className="category-title" style={{fontSize: fontSz}}>{title}</h2>
 
-          {showSeeAll && see_all_navigate && (
-            <Link to={see_all_navigate} className="see-all">See All ❯</Link>
-          )}
+            {showSeeAll && see_all_navigate && (
+              <Link to={see_all_navigate} className="see-all">See All ❯</Link>
+            )}
+          </div>
         </div>
 
         {
           categoryList.length === 0 ? (
-            <p style={{"textAlign": 'center'}}>No categories available.</p>
+            <p style={{"paddingLeft": "2rem"}}>No categories available.</p>
           ) : (
             <div className="category-grid">
               {categoryList.map((category, index) => {

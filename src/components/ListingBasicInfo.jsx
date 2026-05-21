@@ -161,7 +161,6 @@ export default function ListingBasicInfo({ listing, className = '' }) {
 
                 <button className="help-btn" onClick={handleHelp}>
                     <i className="fa-regular fa-circle-question"></i>
-                    <span>Need Help</span>
                 </button>
             </div>
 

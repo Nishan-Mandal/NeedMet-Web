@@ -1,4 +1,4 @@
-import { CategorySection, AllCategoryLoader, SystemState } from "../components";
+import { CategorySection, AllCategoryLoader, SystemState, BusinessCTA } from "../components";
 import { useMemo } from "react";
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
@@ -57,15 +57,24 @@ export default function AllCategory() {
     
   return (
     <div>
-      {Object.entries(groupedCategories).map(([section, items]) => (
+      <h1 style={{
+        textAlign: 'center', 
+        margin: '1rem 0 0rem', 
+        fontFamily: 'var(--font-heading)', 
+        color: 'var(--text-accent)', 
+        fontSize: '1.6rem'
+      }}>All Categories</h1>
+      {Object.entries(groupedCategories).map(([section, items], index) => (
         <CategorySection
           key={section}
           title={section}
+          fontSz="1.1rem"
           categories={items}
-          style={{ textAlign: "center" }}
           showSeeAll={false}
         />
       ))}
+
+      <BusinessCTA />
     </div>
   );
 }

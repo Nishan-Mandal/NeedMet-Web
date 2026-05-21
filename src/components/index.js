@@ -17,6 +17,14 @@ import ListingDetailsLoader from './Loader/ListingDetailsLoader.jsx'
 import SystemState from './SystemState.jsx'
 import { InlineNoListingsFound } from './SystemState.jsx'
 import SearchPageLoader from './Loader/SearchPageLoader.jsx'
+import TestimonialCard from './Testimonial/TestimonialCard.jsx'
+import TestimonialSection from './Testimonial/TestimonialSection.jsx'
+import Hyperlocal from './Hyperlocal.jsx'
+import TrendingSearches from './TrendingSearches.jsx'
+import BusinessCTA from './BusinessCTA.jsx'
+import Banner from './Banner.jsx'
+import PosterTemplate from './QR/PosterTemplate.jsx'
+import QrPosterModal from './QR/QrPosterModal.jsx'
 
 export {
     Header, 
@@ -38,4 +46,12 @@ export {
     SystemState, 
     InlineNoListingsFound, 
     SearchPageLoader,
+    TestimonialCard, 
+    TestimonialSection, 
+    Hyperlocal, 
+    TrendingSearches, 
+    BusinessCTA, 
+    Banner, 
+    PosterTemplate, 
+    QrPosterModal
 }

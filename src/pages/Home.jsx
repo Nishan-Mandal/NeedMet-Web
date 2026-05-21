@@ -1,9 +1,9 @@
-import { Hero, CategorySection, ListingSection, HomeLoader, SystemState } from '../components'
+import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal, TrendingSearches, BusinessCTA, Banner } from '../components'
 import ErrorImg from "../assets/error.png"
 import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
-import { useEffect } from 'react';
+import { useEffect, Fragment } from 'react';
 import useInfo from '../contexts/infoContext.jsx';
 
 function Home() {
@@ -55,36 +55,77 @@ function Home() {
       />
     );
   }
+
+  const sectionBgColors = [
+    '#f7faf8', // light gray
+    'white',   // white
+  ];
   
   return (
     <>
       <Hero data={homeData} />
-      <CategorySection title="Top Categories" data={homeData} see_all_navigate="/all_categories" />
+      <TrendingSearches />
+      <CategorySection 
+        title="Browse By Categories" 
+        subTitle='DISCOVER LOCAL SERVICES' 
+        data={homeData} 
+        see_all_navigate="/all_categories" 
+      />
       {
         recommendedListings.length > 0
-          ? <ListingSection title="Recommended For You" listings={recommendedListings} see_all_navigate="/listings/recommended" />
+          ? <ListingSection 
+              title="Recommended For You"  
+              subTitle={"Handpicked For You"} 
+              listings={recommendedListings} 
+              see_all_navigate="/listings/recommended" 
+              bgColor={'var(--background-secondary)'}
+            />
           : null
       }
+
+      <Hyperlocal />
+
       {
         newListings.length > 0
-          ? <ListingSection title="Newly Added" listings={newListings} see_all_navigate="/listings/newly_added" />
+          ? <ListingSection 
+              title="Newly Added" 
+              subTitle={"Fresh on NeedMet"}
+              listings={newListings} 
+              see_all_navigate="/listings/newly_added" 
+              bgColor={'var(--background-secondary)'}
+            />
           : null
       }
+
+      <Banner imageUrl={homeData?.banners?.[0]?.imageUrl}/>
 
       {categoryList.map((category, index) => {
         const listings = categoryQueries[index]?.data ?? [];
 
         if (!listings || listings.length === 0) return null;
 
+        const bannerIndex = (index+1) % homeData?.banners?.length;
+
         return (
-          <ListingSection
-            key={category}
-            title={category}
-            listings={listings}
-            see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
-          />
+          <Fragment key={category}>
+            <ListingSection
+              title={category}
+              subTitle='Specially For You'
+              listings={listings}
+              see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
+              bgColor={'var(--background-secondary)'}
+            />
+
+            <Banner
+              imageUrl={homeData?.banners?.[bannerIndex]?.imageUrl}
+            />
+
+          </Fragment>
         );
       })}
+
+      <TestimonialSection />
+      <BusinessCTA />
     </>
   );
 }

@@ -1,10 +1,15 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import '../style/Header.css'
 import companyLogo from '../assets/companyLogo.png';
 import play_store from '../assets/play_store.png';
+import { use } from "react";
 
 export default function Header() {
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  const isSearchPage = location.pathname === '/search';
 
   return (
     <>
@@ -20,9 +25,13 @@ export default function Header() {
           </div>
 
           <div className="header-inner-right">
-            <NavLink to="/search" className={({ isActive }) => isActive ? "search-pill active" : "search-pill"}>
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </NavLink>
+            {
+              !isHomePage && !isSearchPage && (
+                <NavLink to="/search" className={({ isActive }) => isActive ? "search-pill active" : "search-pill"}>
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </NavLink>
+              )
+            }
 
             <nav className="nav">
               <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
@@ -83,7 +92,7 @@ export default function Header() {
 
         <NavLink to="/search" className="bnav-fab">
           <div className="bnav-fab-inner">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="white">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth="2.2">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
