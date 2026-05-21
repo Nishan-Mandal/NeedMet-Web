@@ -1,0 +1,290 @@
+/* ─────────────────────────────
+   OVERLAY
+───────────────────────────── */
+
+.qr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+/* ─────────────────────────────
+   MODAL
+───────────────────────────── */
+
+.qr-modal {
+  width: 100%;
+  height: 90%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: qrModalIn 0.22s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  --poster-preview-scale: 0.32;
+}
+
+@keyframes qrModalIn {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ─────────────────────────────
+   HEADER
+───────────────────────────── */
+
+.qr-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+
+.qr-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qr-modal-title i {
+  font-size: 22px;
+  color: #0f5c3e;
+}
+
+.qr-modal-title h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* ─────────────────────────────
+   CLOSE BUTTON
+───────────────────────────── */
+
+.qr-close-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #f2f2f2;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  transition: background 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.qr-close-btn:hover {
+  background: #e3e3e3;
+  transform: rotate(90deg);
+}
+
+/* ─────────────────────────────
+   PREVIEW AREA
+───────────────────────────── */
+
+.qr-preview-area {
+  flex: 1;
+  width: 100%;
+  background: #f5f5f5;
+  border: 1px solid #e8e8e8;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+/* ─────────────────────────────
+   PREVIEW CONTAINER
+───────────────────────────── */
+
+.qr-poster-preview-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: calc(1754px * var(--poster-preview-scale));
+}
+
+/* ─────────────────────────────
+   POSTER SCALE WRAPPER
+───────────────────────────── */
+
+.qr-poster-scale {
+  width: 1240px;
+  height: 1754px;
+  flex-shrink: 0;
+  transform: scale(var(--poster-preview-scale));
+  transform-origin: top center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* ─────────────────────────────
+   REAL A4 POSTER
+───────────────────────────── */
+
+#needmet-business-poster {
+  width: 1240px;
+  min-height: 1754px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────
+   LOADING
+───────────────────────────── */
+
+.qr-loading {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #555;
+}
+
+.qr-loading i {
+  font-size: 28px;
+  color: #0f5c3e;
+}
+
+/* ─────────────────────────────
+   ERROR
+───────────────────────────── */
+
+.qr-error {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #c0392b;
+  text-align: center;
+}
+
+.qr-error i {
+  font-size: 26px;
+}
+
+/* ─────────────────────────────
+   ACTION BUTTONS
+───────────────────────────── */
+
+.qr-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  flex-shrink: 0;
+}
+
+.qr-btn {
+  flex: 1;
+  height: 52px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.15s, opacity 0.2s;
+}
+
+.qr-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.qr-btn:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.qr-btn-download {
+  background: #0f5c3e;
+  color: white;
+}
+
+.qr-btn-download:hover:not(:disabled) {
+  background: #0a4530;
+}
+
+.qr-btn-share {
+  background: #0f5c3e;
+  color: white;
+}
+
+.qr-btn-share:hover:not(:disabled) {
+  background: #0a4530;
+}
+
+/* ─────────────────────────────
+   TABLET
+───────────────────────────── */
+
+@media (max-width: 768px) {
+  .qr-modal {
+    max-width: 95vw;
+    --poster-preview-scale: 0.24;
+  }
+}
+
+/* ─────────────────────────────
+   MOBILE
+───────────────────────────── */
+
+@media (max-width: 480px) {
+  .qr-modal {
+    padding: 16px;
+    border-radius: 20px;
+    height: 92%;
+    --poster-preview-scale: 0.19;
+  }
+
+  .qr-modal-title h2 {
+    font-size: 17px;
+  }
+
+  .qr-preview-area {
+    padding: 12px;
+  }
+
+  .qr-btn {
+    height: 46px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+}
+
+/* ─────────────────────────────
+   EXTRA SMALL DEVICES
+───────────────────────────── */
+
+@media (max-width: 360px) {
+  .qr-modal {
+    --poster-preview-scale: 0.16;
+  }
+}

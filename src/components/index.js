@@ -23,6 +23,8 @@ import Hyperlocal from './Hyperlocal.jsx'
 import TrendingSearches from './TrendingSearches.jsx'
 import BusinessCTA from './BusinessCTA.jsx'
 import Banner from './Banner.jsx'
+import PosterTemplate from './QR/PosterTemplate.jsx'
+import QrPosterModal from './QR/QrPosterModal.jsx'
 
 export {
     Header, 
@@ -49,5 +51,7 @@ export {
     Hyperlocal, 
     TrendingSearches, 
     BusinessCTA, 
-    Banner
+    Banner, 
+    PosterTemplate, 
+    QrPosterModal
 }

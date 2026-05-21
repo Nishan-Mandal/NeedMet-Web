@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import empty_thumb from "../assets/empty_thumb.png";
 import premiumImg from "../assets/premium.png";
+import { QrPosterModal } from "./index.js";
 import "../style/PreviewImage.css";
 
-// ─── Shared Hook ───────────────────────────────────────────────
 function useThumbScroll(images) {
   const ref = useRef(null);
   const [isLeftDisabled, setIsLeftDisabled] = useState(true);
@@ -28,23 +28,14 @@ function useThumbScroll(images) {
   return { ref, isLeftDisabled, isRightDisabled, hasOverflow, check, scrollLeft, scrollRight };
 }
 
-// ─── Shared Thumbnail Strip ────────────────────────────────────
 function ThumbnailStrip({ images, currentIndex, onSelect, scroll }) {
   const { ref, isLeftDisabled, isRightDisabled, hasOverflow, check, scrollLeft, scrollRight } = scroll;
-
   return (
     <div className="fs-strip-wrapper">
       <button onClick={scrollLeft} disabled={isLeftDisabled} className={`preview-image-arrow prev-img-arrow-left ${isLeftDisabled ? "prev-img-arrow-disabled" : ""}`}>❮</button>
       <div className="fs-strip" ref={ref} onScroll={check} style={hasOverflow ? { justifyContent: "flex-start" } : { justifyContent: "center" }}>
         {images.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt="thumbnail"
-            className={`preview ${currentIndex === index ? "preview-active" : ""}`}
-            onClick={() => onSelect(index)}
-            onLoad={check}
-          />
+          <img key={index} src={img} alt="thumbnail" className={`preview ${currentIndex === index ? "preview-active" : ""}`} onClick={() => onSelect(index)} onLoad={check} />
         ))}
       </div>
       <button onClick={scrollRight} disabled={isRightDisabled} className={`preview-image-arrow prev-img-arrow-right ${isRightDisabled ? "prev-img-arrow-disabled" : ""}`}>❯</button>
@@ -54,20 +45,16 @@ function ThumbnailStrip({ images, currentIndex, onSelect, scroll }) {
 
 function useShare() {
   const [copied, setCopied] = useState(false);
-
   const handleShare = async () => {
     const url = window.location.href;
     if (navigator.share) {
-      try {
-        await navigator.share({ title: document.title, url });
-      } catch (_) {}
+      try { await navigator.share({ title: document.title, url }); } catch (_) {}
     } else {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
-
   return { handleShare, copied };
 }
 
@@ -80,7 +67,6 @@ function ShareButton({ onClick, copied, className = "" }) {
   );
 }
 
-// ─── Fullscreen Viewer ─────────────────────────────────────────
 function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const scroll = useThumbScroll(images);
@@ -104,50 +90,16 @@ function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
   return createPortal(
     <div className="fs-overlay" onClick={onClose}>
       <div className="fs-inner">
-
         <div className="fs-topbar">
           <button className="fs-close-btn" onClick={onClose} aria-label="Close fullscreen">
-            <i class="fa-solid fa-xmark"></i>
+            <i className="fa-solid fa-xmark"></i>
           </button>
         </div>
-
         <div className="fs-main-image-wrap">
-          <button 
-            className={`fs-nav-btn fs-nav-left ${currentIndex === 0 ? "fs-nav-disabled" : ""}`} 
-            onClick={(e) => {
-              e.stopPropagation();
-
-              setCurrentIndex((i) =>
-                Math.max(0, i - 1)
-              );
-            }}
-            disabled={currentIndex === 0} aria-label="Previous image"
-          >
-            ❮
-          </button>
-
-          <img 
-            onClick={(e) => e.stopPropagation()}
-            className="fs-main-img" 
-            src={images[currentIndex]} 
-            alt={`Image ${currentIndex + 1}`} 
-          />
-          
-          <button 
-            className={`fs-nav-btn fs-nav-right ${currentIndex === images.length - 1 ? "fs-nav-disabled" : ""}`} 
-            onClick={(e) => {
-              e.stopPropagation();
-
-              setCurrentIndex((i) =>
-                Math.min(images.length - 1, i + 1)
-              );
-            }}
-            disabled={currentIndex === images.length - 1} aria-label="Next image"
-          >
-            ❯
-          </button>
+          <button className={`fs-nav-btn fs-nav-left ${currentIndex === 0 ? "fs-nav-disabled" : ""}`} onClick={(e) => { e.stopPropagation(); setCurrentIndex((i) => Math.max(0, i - 1)); }} disabled={currentIndex === 0} aria-label="Previous image">❮</button>
+          <img onClick={(e) => e.stopPropagation()} className="fs-main-img" src={images[currentIndex]} alt={`Image ${currentIndex + 1}`} />
+          <button className={`fs-nav-btn fs-nav-right ${currentIndex === images.length - 1 ? "fs-nav-disabled" : ""}`} onClick={(e) => { e.stopPropagation(); setCurrentIndex((i) => Math.min(images.length - 1, i + 1)); }} disabled={currentIndex === images.length - 1} aria-label="Next image">❯</button>
         </div>
-
         <span className="fs-counter">{currentIndex + 1} / {images.length}</span>
       </div>
     </div>,
@@ -156,11 +108,12 @@ function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
 }
 
 // ─── Main Component ────────────────────────────────────────────
-export default function PreviewImage({ width = "100%", images = [empty_thumb], isPremium = false }) {
+export default function PreviewImage({ width = "100%", images = [empty_thumb], isPremium = false, listing = {} }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showQrPoster, setShowQrPoster] = useState(false);   // ← NEW
   const scroll = useThumbScroll(images);
-  const { handleShare, copied } = useShare(); // [ADDED] share hook
+  const { handleShare, copied } = useShare();
 
   const imageList = images.length === 0 ? [empty_thumb] : images;
 
@@ -179,6 +132,14 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
             <i className="fa-solid fa-up-right-and-down-left-from-center"></i>
           </button>
           <ShareButton onClick={handleShare} copied={copied} />
+          
+          <button
+            className="img-action-btn"
+            onClick={(e) => { e.stopPropagation(); setShowQrPoster(true); }}
+            aria-label="Generate QR poster"
+          >
+            <i className="fa-solid fa-qrcode"></i>
+          </button>
         </div>
 
         <div onClick={(e) => e.stopPropagation()} className="preview-container">
@@ -188,6 +149,14 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
 
       {isFullscreen && (
         <FullscreenViewer images={imageList} startIndex={currentIndex} isPremium={isPremium} onClose={() => setIsFullscreen(false)} />
+      )}
+
+      {showQrPoster && (
+        <QrPosterModal
+          open={showQrPoster}
+          onClose={() => setShowQrPoster(false)}
+          listing={listing}
+        />
       )}
     </>
   );
