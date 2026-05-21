@@ -6,6 +6,8 @@ import PosterTemplate from "./PosterTemplate";
 import "../../style/QR/QrPosterModal.css";
 
 export default function QrPosterModal({open, onClose, listing}) {
+  const [downloading, setDownloading] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [mainQr, setMainQr] = useState("");
@@ -165,17 +167,21 @@ export default function QrPosterModal({open, onClose, listing}) {
 
   const handleDownload = async () => {
     try {
-      const canvas = await capturePoster();
+      setDownloading(true);
 
+      const canvas = await capturePoster();
       const link = document.createElement("a");
+
       link.download = `${listing.name
         .replace(/\s+/g, "-")
         .toLowerCase()}-poster.png`;
+
       link.href = canvas.toDataURL("image/png");
       link.click();
-
     } catch (err) {
       console.error(err);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -185,30 +191,53 @@ export default function QrPosterModal({open, onClose, listing}) {
 
   const handleShare = async () => {
     try {
-      const canvas = await capturePoster();
+      setSharing(true);
 
-      canvas.toBlob(async (blob) => {
-        const file = new File([blob], "needmet-poster.png", {
+      const canvas = await capturePoster();
+      const blob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, "image/png")
+      );
+      if (!blob) {
+        throw new Error("Failed to create image blob");
+      }
+
+      const file = new File(
+        [blob],
+        "needmet-poster.png",
+        {
           type: "image/png",
+        }
+      );
+
+      if (
+        navigator.share &&
+        navigator.canShare?.({
+          files: [file],
+        })
+      ) {
+        await navigator.share({
+          title: listing?.name,
+          text: `Check out ${listing?.name} on NeedMet`,
+          files: [file],
         });
 
-        if (navigator.share) {
-          await navigator.share({
-            title: listing?.name,
-            files: [file],
-          });
-        } else {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "needmet-poster.png";
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-      }, "image/png");
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+
+        a.href = url;
+        a.download = "needmet-poster.png";
+
+        a.click();
+        URL.revokeObjectURL(url);
+      }
 
     } catch (err) {
-      console.error(err);
+      if (err.name !== "AbortError") {
+        console.error(err);
+      }
+    } finally {
+      setSharing(false);
     }
   };
 
@@ -277,23 +306,46 @@ export default function QrPosterModal({open, onClose, listing}) {
             className="qr-btn qr-btn-download"
             onClick={handleDownload}
             disabled={
-              loading || !!error
+              loading ||
+              downloading ||
+              sharing ||
+              !!error
             }
           >
-            <i className="fa-solid fa-download"></i>
-            Download
+            {downloading ? (
+              <>
+                <i className="fa-solid fa-spinner fa-spin"></i>
+                Please wait...
+              </>
+            ) : (
+              <>
+                <i className="fa-solid fa-download"></i>
+                Download
+              </>
+            )}
           </button>
 
           <button
             className="qr-btn qr-btn-share"
             onClick={handleShare}
             disabled={
-              loading || !!error
+              loading ||
+              downloading ||
+              sharing ||
+              !!error
             }
           >
-
-            <i className="fa-solid fa-share-nodes"></i>
-            Share
+            {sharing ? (
+              <>
+                <i className="fa-solid fa-spinner fa-spin"></i>
+                Please wait...
+              </>
+            ) : (
+              <>
+                <i className="fa-solid fa-share-nodes"></i>
+                Share
+              </>
+            )}
           </button>
         </div>
       </div>
