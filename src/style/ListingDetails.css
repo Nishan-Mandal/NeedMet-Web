@@ -30,6 +30,22 @@
   flex: 1;
 }
 
+.listing-details-left .rating-review-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.listing-details-left .rating-review-section .reviews-container {
+  flex: 1;
+}
+
+.listing-details-right {
+  position: sticky;
+  top: 20px;
+  align-self: flex-start;
+}
+
 /* ─────────────────────────────
    LIKES + CONTACT BAR
 ───────────────────────────── */

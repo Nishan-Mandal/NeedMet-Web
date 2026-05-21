@@ -334,7 +334,6 @@
 }
 .fs-nav-btn:hover {
   background: var(--primary);
-  transform: scale(1.05);
 }
 .fs-nav-disabled {
   opacity: 0.45;

@@ -252,7 +252,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  overflow: hidden; 
   margin-top: 1.5rem;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -262,6 +263,7 @@
   border-radius: 1rem;
   padding: 1.4rem;
   gap: 1.5rem;
+  flex: 1;
 }
 
 .reviews-header {
@@ -287,7 +289,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  /* max-height: 400px; */
+  overflow-y: auto;
+  max-height: 470px;   
   overflow-y: auto;
   padding-right: 0.2rem;
 }

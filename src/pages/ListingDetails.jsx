@@ -139,7 +139,7 @@ function ListingDetails() {
         columns={["Details", "Info"]}
         rows={detailsRows}
         style={{ width: '100%' }}
-        fixHeight={'280px'}
+        fixHeight={'250px'}
       />
     </>
   );
