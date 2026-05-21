@@ -1,150 +1,216 @@
-/* ─── Page Layout ─── */
+/* ─────────────────────────────
+   PAGE LAYOUT
+───────────────────────────── */
 .listing-details {
-  padding: 20px 80px;
+  padding: 50px 70px;
   display: flex;
   justify-content: space-evenly;
-  align-items: start;
+  align-items: stretch;
   gap: 1.5rem;
+  background: var(--background-secondary);
 }
 
-/* ─── Left Column ─── */
-.listing-details-left {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1.2;
-}
-
-/* ─── Right Column ─── */
+/* ─────────────────────────────
+   LEFT COLUMN
+───────────────────────────── */
+.listing-details-left,
 .listing-details-right {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-self: stretch;
+  min-height: 100%;
   gap: 1.5rem;
+}
+
+.listing-details-left {
+  flex: 1.2;
+}
+
+.listing-details-right {
   flex: 1;
 }
 
-/* ─── Likes & Contact Bar ─── */
+/* ─────────────────────────────
+   LIKES + CONTACT BAR
+───────────────────────────── */
 .likes-contact {
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
-  border-radius: 10px;
-  padding: 0.6rem 1rem;
-  margin-top: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 4px 10px rgba(15, 92, 63, 0.226),
+    0 1px 2px rgba(0, 0, 0, 0.11);
+  border-radius: 1rem;
+  padding: 0.9rem 1rem;
   width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 5rem;
   box-sizing: border-box;
 }
 
+/* ─────────────────────────────
+   LIKES
+───────────────────────────── */
 .likes {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   font-size: 1rem;
-  color: rgba(0, 0, 0, 0.824);
+  font-weight: 600;
+  color: var(--text);
   flex-shrink: 0;
   white-space: nowrap;
+  font-family: var(--font-primary);
 }
 
 .likes i {
-  color: #1c8c8c;
+  color: var(--primary);
 }
 
-/* ─── Contact Buttons ─── */
+.likes span {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ─────────────────────────────
+   CONTACT BUTTONS
+───────────────────────────── */
 .contact {
   display: flex;
-  gap: 0.5rem;
-  flex: 1; 
+  gap: 0.75rem;
+  flex: 1;
   min-width: 0;
 }
 
 .contact a {
   flex: 1;
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-primary);
+  border-radius: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  transition: 0.2s ease;
+  gap: 0.55rem;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.2s ease;
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
   min-width: 0;
 }
 
+/* ─────────────────────────────
+   CALL BUTTON
+───────────────────────────── */
 .call {
-  background-color: transparent;
-  color: black;
-  border: 2px solid rgba(0, 0, 0, 0.32);
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary-light)
+  );
+  color: var(--text-on-dark);
+  border: 1.5px solid var(--border);
 }
 
 .call i {
-  color: #1c8c8c;
-  transition: 0.2s ease;
+  color: var(--text-on-dark);
+  transition: 0.25s ease;
   display: inline-block;
   animation: ring 1.5s infinite;
   transform-origin: 50% 50%;
 }
+
 @keyframes ring {
-  0%   { transform: rotate(0); }
-  10%  { transform: rotate(20deg); }
-  20%  { transform: rotate(-15deg); }
-  30%  { transform: rotate(20deg); }
-  40%  { transform: rotate(-10deg); }
-  50%  { transform: rotate(10deg); }
-  60%  { transform: rotate(0); }
-  100% { transform: rotate(0); }
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(20deg);
+  }
+  20% {
+    transform: rotate(-15deg);
+  }
+  30% {
+    transform: rotate(20deg);
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
 }
 
 .call:hover {
-  background-color: #1c8c8c;
-  border: 2px solid #1c8c8c;
-  color: white;
+  background: var(--primary-surface);
+  color: var(--text);
+  border-color: var(--border);
+  transform: translateY(-2px);
 }
 
 .call:hover i {
-  color: white;
+  color: var(--primary);
 }
 
+/* ─────────────────────────────
+   DIRECTION BUTTON
+───────────────────────────── */
 .direction {
-  background-color: #1c8c8c;
-  color: white;
-  border: 2px solid #1c8c8c;
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary-light)
+  );
+  color: var(--text-on-dark);
+  border: 1.5px solid var(--primary);
 }
 
 .direction i {
-  transition: 0.2s ease;
+  transition: 0.25s ease;
 }
 
 .direction:hover {
-  background-color: white;
-  color: black;
-  border: 2px solid rgba(0, 0, 0, 0.32);
+  background: var(--primary-surface);
+  color: var(--text);
+  border-color: var(--border);
+  transform: translateY(-2px);
 }
 
 .direction:hover i {
-  color: #1c8c8c;
+  color: var(--primary);
 }
 
-/* ─── Mobile-only blocks (hidden on desktop) ─── */
+/* ─────────────────────────────
+   MOBILE-ONLY BLOCKS
+───────────────────────────── */
 .listing-details-right-mobile {
   display: none;
 }
 
-/* ─── Tablet (481px – 1024px) ─── */
-@media (min-width: 481px) and (max-width: 1024px) {
+/* ─────────────────────────────
+   TABLET
+───────────────────────────── */
+@media (min-width: 924px) and (max-width: 1024px) {
   .listing-details {
-    padding: 20px 32px;
+
+    padding: 35px 32px;
     gap: 1.25rem;
   }
 
   .listing-details-left {
-    flex: 1.2 1 0% !important;  /* grow / shrink / basis */
+    flex: 1.2 1 0% !important;
     min-width: 0;
   }
 
@@ -153,53 +219,51 @@
     min-width: 0;
   }
 
-  .main-image {
-    aspect-ratio: 4/3;
-  }
-
   .likes-contact {
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    margin-top: 0.75rem;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
   }
 
   .likes {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .contact {
     width: 100%;
   }
 
-  .contact button {
+  .contact a {
     flex: 1;
     justify-content: center;
-    padding: 0.75rem 1rem;
+    padding: 0.8rem 1rem;
     font-size: 0.9rem;
-    border-radius: 12px;
+    border-radius: 0.8rem;
   }
 }
 
-/* ─── Mobile (≤ 480px) ─── */
-@media (max-width: 480px) {
+/* ─────────────────────────────
+   MOBILE
+───────────────────────────── */
+@media (max-width: 924px) {
   .listing-details {
-    padding: 16px;
+    padding: 35px 32px;
     flex-direction: column;
-    gap: 1rem;
+    gap: 5rem;
   }
 
   .listing-details-left {
     width: 100%;
+    gap: 1rem;
   }
 
-  /* Hide right column on mobile — content moved inline */
+  /* Hide desktop right column */
   .listing-details-right {
     display: none;
   }
 
-  /* Show mobile-only right block */
+  /* Show mobile-only content */
   .listing-details-right-mobile {
     display: flex;
     flex-direction: column;
@@ -210,24 +274,36 @@
   .likes-contact {
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    margin-top: 0.75rem;
+    gap: 0.8rem;
+    padding: 0.85rem 0.9rem;
+    border-radius: 0.9rem;
+    box-shadow:
+      0 4px 10px rgba(15, 92, 63, 0.226),
+      0 1px 2px rgba(0, 0, 0, 0.11);
   }
 
   .likes {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .contact {
     width: 100%;
+    gap: 0.6rem;
   }
 
   .contact a {
     flex: 1;
     justify-content: center;
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-    border-radius: 12px;
+    padding: 0.8rem 0.7rem;
+    font-size: 0.85rem;
+    border-radius: 0.8rem;
+  }
+}
+
+@media (max-width: 478px) {
+  .listing-details {
+    padding: 16px 12px;
+    flex-direction: column;
+    gap: 5rem;
   }
 }

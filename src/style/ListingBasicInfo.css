@@ -1,67 +1,89 @@
 .listing-basic-info {
-    background: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.087);
-    border-radius: 10px;
-    padding: 20px 20px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow:
+    0 4px 10px rgba(15, 92, 63, 0.226),
+    0 1px 2px rgba(0, 0, 0, 0.11);
+    border-radius: 1rem;
+    padding: 1.4rem 1.4rem 0;
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: 0.85rem;
     width: 100%;
+    font-family: var(--font-primary);
 }
 
+/* ─────────────────────────────
+   CATEGORY
+───────────────────────────── */
 .listing-basic-info-category {
-    font-size: 1rem;
-    font-weight: 600;
-    opacity: 0.4;
-    text-transform: capitalize;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--primary);
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: var(--font-heading);
 }
 
-/* Title */
+/* ─────────────────────────────
+   TITLE
+───────────────────────────── */
 .listing-info-title {
     font-size: 2rem;
-    font-weight: 600;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-accent);
     text-transform: capitalize;
+    font-family: var(--font-heading);
 }
 
-/* Rating */
+/* ─────────────────────────────
+   RATING
+───────────────────────────── */
 .listing-rating {
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
-    gap: 10px;
+    gap: 0.7rem;
 }
 
 .five-stars {
     font-size: 1rem;
-    color: rgba(0, 0, 0, 0.338);
+    color: rgba(17, 24, 39, 0.18);
 }
 
 .five-stars .active {
-    color: rgb(255, 204, 0);
+    color: var(--accent-yellow);
 }
 
 .rating-value {
-    font-size: 1rem;
-    color: #555;
+    font-size: 0.96rem;
+    color: var(--text-secondary);
+    font-family: var(--font-primary);
 }
 
 .rating-value span {
     font-weight: 700;
-    color: rgba(0, 0, 0, 0.692);
+    color: var(--text);
 }
 
-/* Location + Social */
+/* ─────────────────────────────
+   LOCATION
+───────────────────────────── */
 .location {
     display: flex;
     align-items: flex-start;
-    gap: 4px;
-    font-size: 1rem;
-    color: #555;
-    margin: 5px 0;
+    gap: 0.35rem;
+    font-size: 0.98rem;
+    color: var(--text-secondary);
+    margin: 0.2rem 0;
+    line-height: 1.5;
 }
 
 .location i {
-    color: #1c8c8c;
+    color: var(--primary);
+    margin-top: 0.15rem;
 }
 
 .location span {
@@ -69,111 +91,147 @@
     align-items: flex-start;
 }
 
+/* ─────────────────────────────
+   SOCIAL ICONS
+───────────────────────────── */
 .social-icons {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 1rem;
 }
 
 .social-icons-img {
-    height: 35px;
-    width: 35px;
-    transition: 0.2s;
+    height: 36px;
+    width: 36px;
+    transition:
+        transform 0.22s ease,
+        opacity 0.22s ease;
 }
 
 .social-icons a.disabled {
-    opacity: 0.15;
+    opacity: 0.18;
     pointer-events: none;
     filter: grayscale(100%);
 }
 
-.social-icons a:hover {
-    color: #1c8c8c;
+.social-icons a:hover .social-icons-img {
+    transform: translateY(-2px) scale(1.06);
 }
 
-/* Description */
+/* ─────────────────────────────
+   DESCRIPTION
+───────────────────────────── */
 .listing-description h4 {
-    border-top: 1px solid #33333324;
-    padding: 15px 0 5px 0;
+    border-top: 1px solid var(--border);
+    padding: 1rem 0 0.45rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--font-heading);
 }
 
 .listing-description p {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-family: var(--font-primary);
 }
 
-/* Owner */
+/* ─────────────────────────────
+   OWNER
+───────────────────────────── */
 .listing-owner {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
-    border-top: 1px solid #33333324;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
 }
 
 .owner-left {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 0.8rem;
 }
 
 .owner-logo {
-    width: 50px;
-    height: 50px;
-    background: #1c8c8c;
-    color: white;
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary-light)
+    );
+    color: var(--text-on-dark);
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    font-weight: 600;
-    font-size: 1.3rem;
+    font-weight: 700;
+    font-size: 1.2rem;
+    font-family: var(--font-heading);
+    flex-shrink: 0;
 }
 
 .owner-name {
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--font-primary);
 }
 
 .owner-role {
-    font-size: 12px;
-    color: #777;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 0.3rem;
+    margin-top: 0.15rem;
 }
 
 .owner-role img {
     width: 14px;
 }
 
-/* Need Help Button */
+/* ─────────────────────────────
+   HELP BUTTON
+───────────────────────────── */
 .help-btn {
-    padding: 6px 12px;
-    border: none;
-    background: transparent;
-    color: #1c8c8c;
-    border-radius: 6px;
+    padding: 0.65rem 1rem;
+    border: 1px solid rgba(15, 92, 62, 0.14);
+    background: var(--primary-surface);
+    color: var(--primary);
+    border-radius: 0.8rem;
     cursor: pointer;
-    transition: 0.2s;
+    transition:
+        background 0.22s ease,
+        color 0.22s ease,
+        transform 0.2s ease,
+        border-color 0.22s ease;
     display: flex;
-    gap: 0.3rem;
-    font-size: 1rem;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: var(--font-primary);
 }
 
 .help-btn:hover {
-    color: black;
+    background: var(--primary);
+    color: var(--text-on-dark);
+    border-color: var(--primary);
+    transform: translateY(-1px);
 }
 
-
-/* ─── Tablet (≤ 768px) ─────────────────────────────────────────── */
+/* ─────────────────────────────
+   TABLET
+───────────────────────────── */
 @media (max-width: 768px) {
     .listing-basic-info {
-        padding: 16px 16px 0;
-        gap: 0.6rem;
-        border-radius: 8px;
+        padding: 1.1rem 1.1rem 0;
+        gap: 0.75rem;
+        border-radius: 0.9rem;
     }
 
     .listing-info-title {
@@ -181,22 +239,22 @@
     }
 
     .listing-basic-info-category {
-        font-size: 0.9rem;
+        font-size: 0.82rem;
     }
 
     .social-icons-img {
-        height: 30px;
-        width: 30px;
+        height: 32px;
+        width: 32px;
     }
 
     .social-icons {
-        gap: 12px;
+        gap: 0.8rem;
     }
 
     .owner-logo {
         width: 48px;
         height: 48px;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
     }
 
     .owner-name {
@@ -204,36 +262,44 @@
     }
 
     .help-btn {
-        font-size: 0.9rem;
-        padding: 5px 10px;
+        font-size: 1rem;
+        padding: 0.55rem 0.9rem;
+    }
+
+    .help-btn span {
+        display: none;
     }
 
     .listing-description p {
-        font-size: 13px;
+        font-size: 0.9rem;
     }
 }
 
-
-/* ─── Phone (≤ 480px) ─────────────────────────────────────────── */
+/* ─────────────────────────────
+   MOBILE
+───────────────────────────── */
 @media (max-width: 480px) {
     .listing-basic-info {
-        padding: 14px 14px 0;
-        gap: 0.55rem;
-        border-radius: 6px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.07);
+        padding: 1rem 1rem 0;
+        gap: 0.65rem;
+        border-radius: 0.85rem;
+        box-shadow:
+            0 4px 10px rgba(15, 92, 63, 0.226),
+            0 1px 2px rgba(0, 0, 0, 0.11);
     }
 
     .listing-basic-info-category {
-        font-size: 0.8rem;
+        font-size: 0.74rem;
     }
 
     .listing-info-title {
-        font-size: 1.3rem;
+        font-size: 1.35rem;
+        line-height: 1.3;
     }
 
     .listing-rating {
         flex-wrap: wrap;
-        gap: 6px;
+        gap: 0.45rem;
     }
 
     .five-stars {
@@ -241,16 +307,16 @@
     }
 
     .rating-value {
-        font-size: 0.85rem;
+        font-size: 0.82rem;
     }
 
     .location {
-        font-size: 0.875rem;
-        margin: 2px 0;
+        font-size: 0.85rem;
+        margin: 0;
     }
 
     .social-icons {
-        gap: 10px;
+        gap: 0.7rem;
         flex-wrap: wrap;
     }
 
@@ -260,49 +326,49 @@
     }
 
     .listing-description h4 {
-        padding: 12px 0 4px 0;
-        font-size: 0.95rem;
+        padding: 0.9rem 0 0.35rem;
+        font-size: 0.92rem;
     }
 
     .listing-description p {
-        font-size: 13px;
-        line-height: 1.55;
+        font-size: 0.84rem;
+        line-height: 1.65;
     }
 
     .listing-owner {
         flex-direction: row;
         align-items: center;
-        gap: 10px;
-        padding: 12px 0;
+        gap: 0.8rem;
+        padding: 0.9rem 0;
     }
 
     .owner-left {
-        gap: 8px;
+        gap: 0.65rem;
     }
 
     .owner-logo {
         width: 42px;
         height: 42px;
-        font-size: 1rem;
-        flex-shrink: 0;
+        font-size: 0.95rem;
     }
 
     .owner-name {
-        font-size: 0.88rem;
+        font-size: 0.85rem;
     }
 
     .owner-role {
-        font-size: 11px;
+        font-size: 0.68rem;
     }
 
     .help-btn {
-        font-size: 0.8rem;
-        padding: 5px 8px;
+        font-size: 1rem;
+        padding: 0.5rem 0.7rem;
         gap: 0.25rem;
         flex-shrink: 0;
+        border-radius: 0.7rem;
     }
 
     .help-btn span {
-        display: none; /* icon only on very small screens */
+        display: none;
     }
 }

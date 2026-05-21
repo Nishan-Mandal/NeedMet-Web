@@ -211,7 +211,7 @@ function ListingDetails() {
 
       {
         newListings.length > 0
-          ? <ListingSection title="Newly Added" subTitle='FRESH ON NEEDMET' listings={newListings} see_all_navigate='/listings/newly_added' />
+          ? <ListingSection title="Newly Added" subTitle='FRESH ON NEEDMET' listings={newListings} see_all_navigate='/listings/newly_added' bgColor={'var(--background-secondary)'} />
           : null
       }
 
