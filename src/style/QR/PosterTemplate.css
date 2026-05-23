@@ -1,0 +1,297 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.sp-root {
+  position: relative;
+  width: 1240px;
+  display: inline-block;
+  font-family: 'Arial', 'Helvetica Neue', sans-serif;
+}
+
+.sp-bg {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+}
+
+.sp-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.sp-block { 
+  position: absolute; 
+}
+
+
+.sp-name {
+  top: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 88%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ── SRI SAI ── */
+.sp-name-main-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sp-name-h1 {
+  font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+  font-size: 100px;
+  font-weight: 900;
+  color: #1a5c2e;
+  letter-spacing: -2px;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 1.6rem;
+}
+
+.sp-name-h1-mid {
+  font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+  font-size: 80px;
+  font-weight: 900;
+  color: #1a5c2e;
+  letter-spacing: -2px;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 1.6rem;
+}
+
+.sp-name-h1-long {
+  font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+  font-size: 60px;
+  font-weight: 900;
+  color: #1a5c2e;
+  letter-spacing: -2px;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* ── DAIRY & GENERAL STORE ── */
+.sp-name-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sp-name-h2 {
+  font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+  font-size: clamp(16px, 2.9vw, 26px);
+  font-weight: 800;
+  color: #1a5c2e;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-top: 2.5px solid #1a5c2e;
+  border-bottom: 2.5px solid #1a5c2e;
+  padding: 5px 32px;
+  white-space: nowrap;
+  margin-bottom: 1rem;
+}
+
+/* ── Diamond ── */
+.sp-diamond {
+  font-size: 24px;
+  color: #1a5c2e;
+  margin: 5px 0 3px;
+  visibility: hidden;
+}
+
+/* ── Address ── */
+.sp-address {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 1.8rem;
+  color: #222;
+  line-height: 1.55;
+  text-align: left;
+  width: 50vw;
+}
+.sp-address p {
+  text-align: center;
+}
+.sp-address svg { flex-shrink: 0; margin-top: 2px; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2. MAIN QR 
+═══════════════════════════════════════════════════════════════════════════ */
+.sp-main-qr {
+  top: 52.5%;
+  left: 49.7%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sp-main-qr-img {
+  width: clamp(160px, 70%, 300px);
+  height: clamp(160px, 70%, 300px);
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. CONTACT BAR 
+═══════════════════════════════════════════════════════════════════════════ */
+.sp-contact {
+  top: 64%;
+  left: 7.3%;
+  width: 85%;
+  display: flex;
+  align-items: stretch;
+  background: #e8f5eeaa;
+  border: 1.5px solid #ddd;
+  border-radius: 13px;
+  overflow: hidden;
+  padding: 13px 0;
+}
+
+.sp-contact-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  padding: 0 16px;
+}
+
+.sp-contact-cell > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.sp-contact-sep {
+  width: 1.5px;
+  align-self: stretch;
+  background: #ddd;
+  flex-shrink: 1;
+}
+.sp-contact-circle {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: #1a5c2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sp-clabel {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.sp-cval {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+}
+.sp-cval-long {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111;
+}
+.sp-cval-long-long {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   4. SOCIAL SECTION
+═══════════════════════════════════════════════════════════════════════════ */
+
+.sp-social {
+  position: absolute;
+  top: 72.2%;
+  left: 3.8%;
+  width: 92.4%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* FOLLOW US title */
+.sp-social-container {
+  width: 100%;
+  text-align: center;
+  font-size: clamp(12px, 1.6vw, 16px);
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #1a5c2e;
+  margin-bottom: 12px;
+}
+
+.sp-social-container p {
+  font-size: 2rem;
+  border-top: 2.5px solid #1a5c2e54;
+  display: inline;
+  padding-top: 5px;
+}
+
+/* QR row */
+.sp-social .sp-block {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5rem;
+}
+
+/* Each social item */
+.sp-social-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Platform icon */
+.sp-social-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+/* QR image */
+.sp-social-qr {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1.5px solid #e5e5e5;
+  background: white;
+  padding: 4px;
+}
+
+/* Handle text */
+.sp-social-handle {
+  font-size: clamp(9px, 1.35vw, 12.5px);
+  font-weight: 700;
+  text-align: center;
+}
+.sp-ig   { color: #e1306c; }
+.sp-fb   { color: #1877f2; }
+.sp-wa   { color: #25d366; }
+.sp-gm   { color: #4285f4; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Responsive: shrinks the whole poster on narrow viewports
+═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 940px) {
+  .sp-root { width: 100%; }
+}

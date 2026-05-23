@@ -6,45 +6,49 @@ import NoDataImg from "../assets/no_data.png"
 import { SystemState, InlineNoListingsFound } from "./index.js";
 
 
-function HeaderWithSeeAll({title, listings, see_all_navigate}) {
+function HeaderWithSeeAll({ title, subTitle = "", listings, see_all_navigate }) {
   return (
     <div className="listing-header">
-      <h2>{title}</h2>
-      <Link 
-        to={see_all_navigate} 
-        state={{ 
-          title
-        }} 
+      <div className="listing-header-text">
+        <span className="listing-eyebrow">{subTitle}</span>
+        <h2>{title}</h2>
+      </div>
+      <Link
+        to={see_all_navigate}
+        state={{ title }}
         className="see-all"
       >
         See All ❯
       </Link>
     </div>
-  )
+  );
 }
 
-function HeaderWithOutSeeAll({title}) {
+function HeaderWithOutSeeAll({ title, subTitle }) {
   return (
     <div className="listing-header-without-see-all">
-      <h2>{title}</h2>
+      <div className="listing-header-text">
+        <span className="listing-eyebrow">{subTitle}</span>
+        <h2>{title}</h2>
+      </div>
     </div>
-  )
+  );
 }
 
-export default function ListingSection({ title, listings=[], showSeeAll = true, see_all_navigate }) {
+export default function ListingSection({ title, subTitle = "", listings=[], showSeeAll = true, see_all_navigate, bgColor }) {
   const location = useLocation();
   const isListingPage = location.pathname.includes('/listings');
 
   return (
-    <section className="listing-section">
+    <section className="listing-section" style={{backgroundColor: bgColor}}>
       
       {/* Header */}
       {
         showSeeAll && see_all_navigate && listings.length !== 0
         ? 
-          <HeaderWithSeeAll title={title} see_all_navigate={see_all_navigate}/>
+          <HeaderWithSeeAll title={title} subTitle={subTitle} see_all_navigate={see_all_navigate}/>
         :
-          <HeaderWithOutSeeAll title={title}/> 
+          <HeaderWithOutSeeAll title={title} subTitle={subTitle}/> 
       }
 
       {/* Cards Grid */}

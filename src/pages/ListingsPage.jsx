@@ -8,7 +8,7 @@ import {
   getSimilarListingsPaginated,
   getListingById,
 } from "../services/firebase/firestore/listingService";
-import { ListingSection, ListingSectionLoader, SystemState } from "../components";
+import { BusinessCTA, ListingSection, ListingSectionLoader, SystemState } from "../components";
 import ErrorImg from "../assets/error.png";
 
 const QUANTITY = 20;
@@ -110,19 +110,23 @@ const ListingsPage = () => {
 
   return (
     <>
-      <ListingSection title={title} listings={listings} showSeeAll={false} />
+      <div className="listing-page-body" style={{ minHeight: "100vh"}}>
+        <ListingSection title={title} listings={listings} showSeeAll={false} />
 
-      <>
-        {isFetchingNextPage && (
-          <div style={{ padding: "0 16px" }}>
-            <ListingSectionLoader count={QUANTITY} showSeeAll={false} />
-          </div>
-        )}
-        <div
-          ref={sentinelRef}
-          style={{ height: "1px", width: "100%", marginBottom: "40px" }}
-        />
-      </>
+        <>
+          {isFetchingNextPage && (
+            <div style={{ padding: "0 16px" }}>
+              <ListingSectionLoader count={QUANTITY} showSeeAll={false} />
+            </div>
+          )}
+          <div
+            ref={sentinelRef}
+            style={{ height: "1px", width: "100%", marginBottom: "40px" }}
+          />
+        </>
+      </div>
+
+      <BusinessCTA />
     </>
   );
 };

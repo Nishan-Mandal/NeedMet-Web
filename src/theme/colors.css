@@ -1,0 +1,40 @@
+:root {
+  --primary:              #0f5c3e;
+  --primary-light:        #1a8a5a;
+  --primary-lighter:      #22c47a;
+  --primary-surface:      #e8f5ee;
+
+  --accent:               #4ade80;
+  --accent-yellow:        #f59e0b;
+  --accent-orange:        #f97316;
+  --accent-red:           #ef4444;
+
+  --background:           #ffffff;
+  --background-secondary: #f7faf8;
+  --background-dark:      #0d3d2e;
+
+  --surface:              #ffffff;
+  --surface-green:        #d1fae5;
+  --surface-overlay:      rgba(255, 255, 255, 0.08);
+
+  --text:                 #111827;
+  --text-secondary:       #6b7280;
+  --text-light:           rgba(255, 255, 255, 0.68);
+  --text-on-dark:         #ffffff;
+  --text-accent:          #0f5c3e;
+
+  --status-open:          #15803d;
+  --status-open-bg:       #dcfce7;
+  --status-new:           #b45309;
+  --status-new-bg:        #fef3c7;
+  --status-available:     #1d4ed8;
+  --status-available-bg:  #dbeafe;
+
+  --border:               #e5e7eb;
+  --border-green:         rgba(255, 255, 255, 0.14);
+
+  --nav-bg:               #ffffff;
+  --nav-text:             #111827;
+  --nav-btn-outline:      #0f5c3e;
+  --nav-btn-fill:         #0f5c3e;
+}

@@ -1,0 +1,55 @@
+/* ===================================
+   GOOGLE FONTS
+=================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&family=Sora:wght@400;500;600;700;800&display=swap");
+
+/* ===================================
+   FONT VARIABLES
+=================================== */
+
+:root {
+  /* Primary UI Font */
+  --font-primary: "DM Sans", sans-serif;
+
+  /* Hero / Modern Heading Font */
+  --font-heading: "Sora", sans-serif;
+
+  /* Elegant Serif Font */
+  --font-display: "Fraunces", serif;
+
+  /* Fallback Serif */
+  --font-serif: Georgia, serif;
+}
+
+/* ===================================
+   GLOBAL FONT DEFAULTS
+=================================== */
+
+body {
+  font-family: var(--font-primary);
+}
+
+/* ===================================
+   COMMON TYPOGRAPHY CLASSES
+=================================== */
+
+/* Main Heading */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+/* Elegant Serif Heading */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Paragraph / UI Text */
+.font-primary {
+  font-family: var(--font-primary);
+}
+
+/* Quote / Testimonial */
+.font-serif {
+  font-family: var(--font-serif);
+}

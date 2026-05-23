@@ -5,7 +5,9 @@ import {
   RatingSection, 
   PreviewImage, 
   ListingDetailsLoader,
-  SystemState
+  SystemState,
+  BusinessCTA,
+  Hyperlocal
 } from '../components'
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
@@ -137,7 +139,7 @@ function ListingDetails() {
         columns={["Details", "Info"]}
         rows={detailsRows}
         style={{ width: '100%' }}
-        fixHeight={'280px'}
+        fixHeight={'250px'}
       />
     </>
   );
@@ -147,7 +149,7 @@ function ListingDetails() {
       <div className="listing-details">
 
         <div className="listing-details-left">
-          <PreviewImage images={imageList} isPremium={listing?.isPremium}/>
+          <PreviewImage images={imageList} isPremium={listing?.isPremium} listing={listing} />
 
           <div className="likes-contact">
             <div className="likes">
@@ -201,15 +203,19 @@ function ListingDetails() {
 
       {
         similarListings.length > 0
-          ? <ListingSection title="Similar Listings" listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
+          ? <ListingSection title="Similar Listings" subTitle='YOU MAY ALSO LIKE' listings={similarListings} see_all_navigate={`/listings/similar/${listingId}`} />
           : null
       }
 
+      <Hyperlocal />
+
       {
         newListings.length > 0
-          ? <ListingSection title="Newly Added" listings={newListings} see_all_navigate='/listings/newly_added' />
+          ? <ListingSection title="Newly Added" subTitle='FRESH ON NEEDMET' listings={newListings} see_all_navigate='/listings/newly_added' bgColor={'var(--background-secondary)'} />
           : null
       }
+
+      <BusinessCTA />
     </>
   );
 }
