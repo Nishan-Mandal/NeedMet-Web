@@ -4,8 +4,14 @@ import { submitListingReview } from '../services/firebase/firestore/reviewServic
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query';
 
-function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRatings = {}, listingId }) {
+function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRatings = {}, listingId, openReviewModal }) {
   const [showReviewModal, setShowReviewModal] = useState(false);
+
+  useEffect(() => {
+    if(openReviewModal) {
+      setShowReviewModal(true);
+    }
+  }, [openReviewModal]);
 
   const queryClient = useQueryClient();
 
@@ -62,7 +68,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
   const overall = ((avgRatings.behaviour) + (avgRatings.quality)+ (avgRatings.value)) / 3;
   const getPercent = (val) => Math.round(((val) / 5) * 100);
 
-  const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 10);
+  const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 20);
   const validReviews = reviews.filter((review) => review.comment && review.comment.trim() !== "");
 
   const sentinelRef = useRef(null);
@@ -234,7 +240,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
                       }
 
                       
-                      {isFetchingMore && <p style={{'textAlign': 'center'}}>Loading more reviews...</p>}
+                      {(loading || isFetchingMore) && <p style={{'textAlign': 'center'}}>Loading reviews...</p>}
                       <div ref={sentinelRef} style={{ height: '2px' }} />
                     </div>
                   )

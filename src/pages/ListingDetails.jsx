@@ -11,7 +11,7 @@ import {
 } from '../components'
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useSearchParams } from 'react-router-dom';
 import '../style/ListingDetails.css'
 import { getNewListings, getListingByCategory, getListingById, getSimilarListings } from '../services/firebase/firestore/listingService.js';
 import { useQuery } from '@tanstack/react-query';
@@ -21,6 +21,9 @@ import { useQuery } from '@tanstack/react-query';
 function ListingDetails() {
   const location = useLocation();
   const stateListing = location.state?.listing;
+  
+  const [searchParams] = useSearchParams();
+  const shouldOpenReviewModal = searchParams.get("show") === "review_modal";
   
   const { listingId } = useParams();
 
@@ -191,6 +194,7 @@ function ListingDetails() {
             ratingStats={listing.ratingStats}
             avgRatings={listing.factorAvgRatings}
             listingId={listingId}
+            openReviewModal={shouldOpenReviewModal}
           />
         </div>
 

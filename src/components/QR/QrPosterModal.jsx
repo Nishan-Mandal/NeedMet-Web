@@ -38,7 +38,7 @@ export default function QrPosterModal({open, onClose, listing}) {
 
 				// SAFE FALLBACKS
 				const reviewUrl = listing?.listingId
-          ? `https://needmet.in/listing/${listing.listingId}`
+          ? `https://needmet.in/listing/${listing.listingId}?show=review_modal`
           : "https://needmet.in";
 				const instagramUrl = listing?.social?.instagram || "";
 				const facebookUrl = listing?.social?.facebook || "";
