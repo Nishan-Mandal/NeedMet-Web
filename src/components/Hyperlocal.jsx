@@ -3,10 +3,11 @@ import "../style/Hyperlocal.css";
 
 const CITIES = [
   { id: "haldia", label: "Haldia", active: true },
-  { id: "kolkata", label: "Kolkata", active: false },
-  { id: "siliguri", label: "Siliguri", active: false },
-  { id: "durgapur", label: "Durgapur", active: false },
-  { id: "asansol", label: "Asansol", active: false },
+  { id: "panskura", label: "Panskura", active: false },
+  { id: "tamluk", label: "Tamluk", active: false },
+  { id: "mecheda", label: "Mecheda", active: false },
+  { id: "medinipur", label: "Medinipur", active: false },
+  { id: "kharagpur", label: "Kharagpur", active: false },
 ];
 
 const HALDIA_BUSINESSES = [

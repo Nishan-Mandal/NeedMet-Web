@@ -3,6 +3,7 @@
 .sp-root {
   position: relative;
   width: 1240px;
+  background: white;
   display: inline-block;
   font-family: 'Arial', 'Helvetica Neue', sans-serif;
 }
