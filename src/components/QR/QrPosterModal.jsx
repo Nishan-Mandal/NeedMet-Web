@@ -21,7 +21,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
     maps: "",
   });
 
-  // Cached blob so navigator.share() can be called instantly on click
   const cachedBlobRef = useRef(null);
 
   // =========================================
@@ -31,7 +30,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
   useEffect(() => {
     if (!open) return;
 
-    // Reset cache when modal re-opens
     cachedBlobRef.current = null;
 
     const generateQrs = async () => {
@@ -39,10 +37,8 @@ export default function QrPosterModal({ open, onClose, listing }) {
         setLoading(true);
         setError(null);
 
-        // Wait for next paint
         await new Promise((resolve) => requestAnimationFrame(resolve));
 
-        // Safe fallbacks
         const reviewUrl = listing?.listingId
           ? `https://needmet.in/listing/${listing.listingId}?show=review_modal`
           : "https://needmet.in";
@@ -95,12 +91,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
     generateQrs();
   }, [open, listing]);
 
-  // =========================================
-  // PRE-CAPTURE BLOB ONCE POSTER IS READY
-  // Pre-capturing means navigator.share() can be
-  // called instantly on click (within the gesture window).
-  // =========================================
-
   useEffect(() => {
     if (!mainQr || loading) return;
 
@@ -108,7 +98,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
       try {
         setPreparing(true);
 
-        // Give the DOM time to fully paint the rendered poster
         await new Promise((r) => setTimeout(r, 400));
 
         const canvas = await capturePoster();
@@ -119,7 +108,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
         cachedBlobRef.current = blob;
       } catch (err) {
         console.error("Pre-capture failed:", err);
-        // Non-fatal: download still works; share will fall back to live capture
       } finally {
         setPreparing(false);
       }
@@ -140,12 +128,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
       document.body.style.overflow = prev;
     };
   }, [open]);
-
-  // =========================================
-  // CAPTURE HELPER
-  // Clones the poster off-screen at full resolution
-  // so the visible scaled-down preview doesn't affect output.
-  // =========================================
 
   const capturePoster = async () => {
     const source = document.getElementById("needmet-business-poster");
@@ -171,7 +153,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
     container.appendChild(clone);
     document.body.appendChild(container);
 
-    // Double rAF ensures layout is fully flushed
     await new Promise((r) =>
       requestAnimationFrame(() => requestAnimationFrame(r))
     );
@@ -204,7 +185,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
     try {
       setDownloading(true);
 
-      // Reuse cached blob if available, else capture fresh
       let blob = cachedBlobRef.current;
       if (!blob) {
         const canvas = await capturePoster();
@@ -228,24 +208,12 @@ export default function QrPosterModal({ open, onClose, listing }) {
     }
   };
 
-  // =========================================
-  // SHARE PNG
-  //
-  // KEY FIX: We use the pre-captured blob (cachedBlobRef)
-  // so navigator.share() is called almost immediately after
-  // the user gesture — before the browser's gesture timeout expires.
-  //
-  // Without pre-capturing, html2canvas takes ~1-2s which
-  // causes: NotAllowedError: Must be handling a user gesture.
-  // =========================================
+
 
   const handleShare = async () => {
     try {
       setSharing(true);
 
-      // Use pre-captured blob — this is what makes share() work.
-      // If somehow the blob isn't ready, fall back to live capture
-      // (this may still fail on strict browsers, but it's a last resort).
       let blob = cachedBlobRef.current;
       if (!blob) {
         console.warn("Blob not pre-cached, capturing live (may fail on some browsers)");
@@ -262,7 +230,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
       });
 
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        // Called quickly enough after gesture thanks to pre-capture
         await navigator.share({
           title: listing?.name,
           text: `Check out ${listing?.name} on NeedMet`,
@@ -288,7 +255,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
 
   if (!open) return null;
 
-  // Button disabled states
   const isBusy = loading || downloading || sharing || !!error;
   const shareReady = !!cachedBlobRef.current && !preparing;
 
