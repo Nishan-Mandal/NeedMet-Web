@@ -266,6 +266,12 @@
   flex: 1;
 }
 
+.reviews-container-top {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .reviews-header {
   display: flex;
   justify-content: center;

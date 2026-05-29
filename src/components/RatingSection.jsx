@@ -197,71 +197,68 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
       </div>
 
       <div className="reviews-container">
-            <div className="reviews-header">
-                <h3>Reviews</h3>
-            </div>
+        <div className="reviews-container-top">
+          <div className="reviews-header">
+            <h3>Reviews</h3>
+          </div>
 
-            {
-              <>
-                {
-                  !loading && !isFetchingMore && !validReviews.length ? (
-                    <div className="empty-review-text">No Reviews Yet</div>
-                  ) : (
-                    <div className="reviews-list" ref={listRef}>
-                      {
-                        validReviews.map((review) => (
-                          <div className="review-card" key={review.id}>
-                            <div className="review-card-left">
-                              <div className="review-avatar">
-                                {review.userName[0]}
-                              </div>
-
-                              <div className="review-user-info">
-                                <p className="review-username">{review.userName}</p>
-                                <p className="review-text">{review.comment}</p>
-                              </div>
+          {
+            <>
+              {
+                !loading && !isFetchingMore && !validReviews.length ? (
+                  <div className="empty-review-text">No Reviews Yet</div>
+                ) : (
+                  <div className="reviews-list" ref={listRef}>
+                    {
+                      validReviews.map((review) => (
+                        <div className="review-card" key={review.id}>
+                          <div className="review-card-left">
+                            <div className="review-avatar">
+                              {review.userName[0]}
                             </div>
-
-                            <div className="review-date">
-                              <div className="review-stars">
-                                {renderStars(review.rating)}
-                              </div>
-
-                              <span className="review-date">
-                                {
-                                  review.createdAt?.seconds
-                                    ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
-                                    : "N/A"
-                                }
-                              </span>
+                            <div className="review-user-info">
+                              <p className="review-username">{review.userName}</p>
+                              <p className="review-text">{review.comment}</p>
                             </div>
                           </div>
-                        ))
-                      }
-
-                      
-                      {(loading || isFetchingMore) && <p style={{'textAlign': 'center'}}>Loading reviews...</p>}
-                      <div ref={sentinelRef} style={{ height: '2px' }} />
-                    </div>
-                  )
-                }
-              </>
-            }
-
-            <button
-              className="share-your-review-btn"
-              onClick={() => setShowReviewModal(true)}
-            >
-              Share Your Review
-            </button>
-
-            <AddReviewModal
-              isOpen={showReviewModal}
-              onClose={() => setShowReviewModal(false)}
-              listingName={"This Listing"}
-              onSubmit={handleSubmitReview}
-            />
+                          <div className="review-date">
+                            <div className="review-stars">
+                              {renderStars(review.rating)}
+                            </div>
+                            <span className="review-date">
+                              {
+                                review.createdAt?.seconds
+                                  ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
+                                  : "N/A"
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    }
+                    
+                    {(loading || isFetchingMore) && <p style={{'textAlign': 'center'}}>Loading reviews...</p>}
+                    <div ref={sentinelRef} style={{ height: '2px' }} />
+                  </div>
+                )
+              }
+            </>
+          }
         </div>
+
+        <button
+          className="share-your-review-btn"
+          onClick={() => setShowReviewModal(true)}
+        >
+          Share Your Review
+        </button>
+        <AddReviewModal
+          isOpen={showReviewModal}
+          onClose={() => setShowReviewModal(false)}
+          listingName={"This Listing"}
+          onSubmit={handleSubmitReview}
+        />
+      </div>
     </div>
     
   );
