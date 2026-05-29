@@ -1,62 +1,72 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import QRCode from "qrcode";
 import html2canvas from "html2canvas";
 import PosterTemplate from "./PosterTemplate";
 import "../../style/QR/QrPosterModal.css";
 
-export default function QrPosterModal({open, onClose, listing}) {
+export default function QrPosterModal({ open, onClose, listing }) {
   const [downloading, setDownloading] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [preparing, setPreparing] = useState(false); // pre-capture in progress
   const [error, setError] = useState(null);
   const [mainQr, setMainQr] = useState("");
-  const [socialQrs, setSocialQrs] =
-    useState({
-      instagram: "",
-      facebook: "",
-      whatsapp: "",
-      maps: "",
-    });
+  const [socialQrs, setSocialQrs] = useState({
+    instagram: "",
+    facebook: "",
+    whatsapp: "",
+    website: "",
+    linkedin: "",
+    maps: "",
+  });
+
+  // Cached blob so navigator.share() can be called instantly on click
+  const cachedBlobRef = useRef(null);
 
   // =========================================
-	// GENERATE ALL QR CODES
-	// =========================================
+  // GENERATE ALL QR CODES
+  // =========================================
 
-	useEffect(() => {
-		if (!open) return;
-		const generateQrs = async () => {
+  useEffect(() => {
+    if (!open) return;
 
-			try {
-				setLoading(true);
+    // Reset cache when modal re-opens
+    cachedBlobRef.current = null;
+
+    const generateQrs = async () => {
+      try {
+        setLoading(true);
         setError(null);
 
-        // wait for next paint
-        await new Promise((resolve) =>
-          requestAnimationFrame(resolve)
-        );
+        // Wait for next paint
+        await new Promise((resolve) => requestAnimationFrame(resolve));
 
-				// SAFE FALLBACKS
-				const reviewUrl = listing?.listingId
+        // Safe fallbacks
+        const reviewUrl = listing?.listingId
           ? `https://needmet.in/listing/${listing.listingId}?show=review_modal`
           : "https://needmet.in";
-				const instagramUrl = listing?.social?.instagram || "";
-				const facebookUrl = listing?.social?.facebook || "";
-				const whatsappUrl = listing?.phone
+        const instagramUrl = listing?.social?.instagram || "";
+        const facebookUrl = listing?.social?.facebook || "";
+        const whatsappUrl = listing?.phone
           ? `https://wa.me/${listing.phone}`
           : "";
-				const websiteUrl = listing?.social?.website || "";
-				const linkedinUrl = listing?.social?.linkedin || "";
-				const mapsUrl = listing?.geo?.lat && listing?.geo?.lng
+        const websiteUrl = listing?.social?.website || "";
+        const linkedinUrl = listing?.social?.linkedin || "";
+        const mapsUrl =
+          listing?.geo?.lat && listing?.geo?.lng
             ? `https://www.google.com/maps/dir/?api=1&destination=${listing.geo.lat},${listing.geo.lng}`
             : "";
 
-				// MAIN QR
-				const main = await QRCode.toDataURL(reviewUrl, {width: 1000, margin: 1, errorCorrectionLevel: "H",});
+        // Main QR
+        const main = await QRCode.toDataURL(reviewUrl, {
+          width: 1000,
+          margin: 1,
+          errorCorrectionLevel: "H",
+        });
 
-				const generateQrSafely = async (url) => {
+        const generateQrSafely = async (url) => {
           if (!url || url.trim() === "") return "";
-
           return await QRCode.toDataURL(url, {
             width: 400,
             margin: 1,
@@ -64,7 +74,7 @@ export default function QrPosterModal({open, onClose, listing}) {
           });
         };
 
-        // SOCIAL QR
+        // Social QRs
         const instagram = await generateQrSafely(instagramUrl);
         const facebook = await generateQrSafely(facebookUrl);
         const whatsapp = await generateQrSafely(whatsappUrl);
@@ -72,31 +82,51 @@ export default function QrPosterModal({open, onClose, listing}) {
         const linkedin = await generateQrSafely(linkedinUrl);
         const maps = await generateQrSafely(mapsUrl);
 
-				setMainQr(main);
+        setMainQr(main);
+        setSocialQrs({ instagram, facebook, whatsapp, website, linkedin, maps });
+      } catch (err) {
+        console.error(err);
+        setError("Failed to generate QR poster.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-				setSocialQrs({
-					instagram,
-					facebook,
-					whatsapp,
-          website,
-          linkedin,
-					maps,
-				});
+    generateQrs();
+  }, [open, listing]);
 
-			} catch (err) {
-				console.error(err);
-				setError(
-					"Failed to generate QR poster."
-				);
+  // =========================================
+  // PRE-CAPTURE BLOB ONCE POSTER IS READY
+  // Pre-capturing means navigator.share() can be
+  // called instantly on click (within the gesture window).
+  // =========================================
 
-			} finally {
-				setLoading(false);
-			}
-		};
+  useEffect(() => {
+    if (!mainQr || loading) return;
 
-		generateQrs();
+    const preCaptureBlob = async () => {
+      try {
+        setPreparing(true);
 
-	}, [open, listing]);
+        // Give the DOM time to fully paint the rendered poster
+        await new Promise((r) => setTimeout(r, 400));
+
+        const canvas = await capturePoster();
+        const blob = await new Promise((resolve) =>
+          canvas.toBlob(resolve, "image/png")
+        );
+
+        cachedBlobRef.current = blob;
+      } catch (err) {
+        console.error("Pre-capture failed:", err);
+        // Non-fatal: download still works; share will fall back to live capture
+      } finally {
+        setPreparing(false);
+      }
+    };
+
+    preCaptureBlob();
+  }, [mainQr, loading]);
 
   // =========================================
   // BODY SCROLL LOCK
@@ -104,15 +134,17 @@ export default function QrPosterModal({open, onClose, listing}) {
 
   useEffect(() => {
     if (!open) return;
-
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev;};
-
+    return () => {
+      document.body.style.overflow = prev;
+    };
   }, [open]);
 
   // =========================================
   // CAPTURE HELPER
+  // Clones the poster off-screen at full resolution
+  // so the visible scaled-down preview doesn't affect output.
   // =========================================
 
   const capturePoster = async () => {
@@ -139,7 +171,10 @@ export default function QrPosterModal({open, onClose, listing}) {
     container.appendChild(clone);
     document.body.appendChild(container);
 
-    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    // Double rAF ensures layout is fully flushed
+    await new Promise((r) =>
+      requestAnimationFrame(() => requestAnimationFrame(r))
+    );
 
     const actualWidth = clone.scrollWidth;
     const actualHeight = clone.scrollHeight;
@@ -169,15 +204,23 @@ export default function QrPosterModal({open, onClose, listing}) {
     try {
       setDownloading(true);
 
-      const canvas = await capturePoster();
-      const link = document.createElement("a");
+      // Reuse cached blob if available, else capture fresh
+      let blob = cachedBlobRef.current;
+      if (!blob) {
+        const canvas = await capturePoster();
+        blob = await new Promise((resolve) =>
+          canvas.toBlob(resolve, "image/png")
+        );
+      }
 
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
       link.download = `${listing.name
         .replace(/\s+/g, "-")
         .toLowerCase()}-poster.png`;
-
-      link.href = canvas.toDataURL("image/png");
+      link.href = url;
       link.click();
+      URL.revokeObjectURL(url);
     } catch (err) {
       console.error(err);
     } finally {
@@ -187,51 +230,53 @@ export default function QrPosterModal({open, onClose, listing}) {
 
   // =========================================
   // SHARE PNG
+  //
+  // KEY FIX: We use the pre-captured blob (cachedBlobRef)
+  // so navigator.share() is called almost immediately after
+  // the user gesture — before the browser's gesture timeout expires.
+  //
+  // Without pre-capturing, html2canvas takes ~1-2s which
+  // causes: NotAllowedError: Must be handling a user gesture.
   // =========================================
 
   const handleShare = async () => {
     try {
       setSharing(true);
 
-      const canvas = await capturePoster();
-      const blob = await new Promise((resolve) =>
-        canvas.toBlob(resolve, "image/png")
-      );
+      // Use pre-captured blob — this is what makes share() work.
+      // If somehow the blob isn't ready, fall back to live capture
+      // (this may still fail on strict browsers, but it's a last resort).
+      let blob = cachedBlobRef.current;
       if (!blob) {
-        throw new Error("Failed to create image blob");
+        console.warn("Blob not pre-cached, capturing live (may fail on some browsers)");
+        const canvas = await capturePoster();
+        blob = await new Promise((resolve) =>
+          canvas.toBlob(resolve, "image/png")
+        );
       }
 
-      const file = new File(
-        [blob],
-        "needmet-poster.png",
-        {
-          type: "image/png",
-        }
-      );
+      if (!blob) throw new Error("Failed to create image blob");
 
-      if (
-        navigator.share &&
-        navigator.canShare?.({
-          files: [file],
-        })
-      ) {
+      const file = new File([blob], "needmet-poster.png", {
+        type: "image/png",
+      });
+
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        // Called quickly enough after gesture thanks to pre-capture
         await navigator.share({
           title: listing?.name,
           text: `Check out ${listing?.name} on NeedMet`,
           files: [file],
         });
-
       } else {
+        // Fallback: trigger download if Web Share API unavailable
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
-
         a.href = url;
         a.download = "needmet-poster.png";
-
         a.click();
         URL.revokeObjectURL(url);
       }
-
     } catch (err) {
       if (err.name !== "AbortError") {
         console.error(err);
@@ -243,16 +288,16 @@ export default function QrPosterModal({open, onClose, listing}) {
 
   if (!open) return null;
 
-  return createPortal(
+  // Button disabled states
+  const isBusy = loading || downloading || sharing || !!error;
+  const shareReady = !!cachedBlobRef.current && !preparing;
 
+  return createPortal(
     <div className="qr-overlay" onClick={onClose}>
       <div
         className="qr-modal qr-business-modal"
-        onClick={(e) =>
-          e.stopPropagation()
-        }
+        onClick={(e) => e.stopPropagation()}
       >
-
         {/* HEADER */}
         <div className="qr-modal-header">
           <div className="qr-modal-title">
@@ -287,30 +332,26 @@ export default function QrPosterModal({open, onClose, listing}) {
 
           {!loading && !error && mainQr && (
             <div className="qr-poster-preview-container">
-							<div className="qr-poster-scale">
-								<div id="needmet-business-poster">
-									<PosterTemplate
-										listing={listing}
-										qrImage={mainQr}
-										socialQrs={socialQrs}
-									/>
-								</div>
-							</div>
-						</div>
+              <div className="qr-poster-scale">
+                <div id="needmet-business-poster">
+                  <PosterTemplate
+                    listing={listing}
+                    qrImage={mainQr}
+                    socialQrs={socialQrs}
+                  />
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
         {/* ACTIONS */}
         <div className="qr-modal-actions">
+          {/* DOWNLOAD */}
           <button
             className="qr-btn qr-btn-download"
             onClick={handleDownload}
-            disabled={
-              loading ||
-              downloading ||
-              sharing ||
-              !!error
-            }
+            disabled={isBusy}
           >
             {downloading ? (
               <>
@@ -325,20 +366,21 @@ export default function QrPosterModal({open, onClose, listing}) {
             )}
           </button>
 
+          {/* SHARE */}
           <button
             className="qr-btn qr-btn-share"
             onClick={handleShare}
-            disabled={
-              loading ||
-              downloading ||
-              sharing ||
-              !!error
-            }
+            disabled={isBusy || !shareReady}
           >
             {sharing ? (
               <>
                 <i className="fa-solid fa-spinner fa-spin"></i>
                 Please wait...
+              </>
+            ) : preparing || (!shareReady && !error && !loading) ? (
+              <>
+                <i className="fa-solid fa-spinner fa-spin"></i>
+                Preparing...
               </>
             ) : (
               <>
