@@ -4,8 +4,14 @@ import { submitListingReview } from '../services/firebase/firestore/reviewServic
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query';
 
-function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRatings = {}, listingId }) {
+function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRatings = {}, listingId, openReviewModal }) {
   const [showReviewModal, setShowReviewModal] = useState(false);
+
+  useEffect(() => {
+    if(openReviewModal) {
+      setShowReviewModal(true);
+    }
+  }, [openReviewModal]);
 
   const queryClient = useQueryClient();
 
@@ -62,7 +68,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
   const overall = ((avgRatings.behaviour) + (avgRatings.quality)+ (avgRatings.value)) / 3;
   const getPercent = (val) => Math.round(((val) / 5) * 100);
 
-  const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 10);
+  const { reviews, loading, hasMore, loadMore, isFetchingMore } = useReviews(listingId, 20);
   const validReviews = reviews.filter((review) => review.comment && review.comment.trim() !== "");
 
   const sentinelRef = useRef(null);
@@ -191,71 +197,68 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
       </div>
 
       <div className="reviews-container">
-            <div className="reviews-header">
-                <h3>Reviews</h3>
-            </div>
+        <div className="reviews-container-top">
+          <div className="reviews-header">
+            <h3>Reviews</h3>
+          </div>
 
-            {
-              <>
-                {
-                  !loading && !isFetchingMore && !validReviews.length ? (
-                    <div className="empty-review-text">No Reviews Yet</div>
-                  ) : (
-                    <div className="reviews-list" ref={listRef}>
-                      {
-                        validReviews.map((review) => (
-                          <div className="review-card" key={review.id}>
-                            <div className="review-card-left">
-                              <div className="review-avatar">
-                                {review.userName[0]}
-                              </div>
-
-                              <div className="review-user-info">
-                                <p className="review-username">{review.userName}</p>
-                                <p className="review-text">{review.comment}</p>
-                              </div>
+          {
+            <>
+              {
+                !loading && !isFetchingMore && !validReviews.length ? (
+                  <div className="empty-review-text">No Reviews Yet</div>
+                ) : (
+                  <div className="reviews-list" ref={listRef}>
+                    {
+                      validReviews.map((review) => (
+                        <div className="review-card" key={review.id}>
+                          <div className="review-card-left">
+                            <div className="review-avatar">
+                              {review.userName[0]}
                             </div>
-
-                            <div className="review-date">
-                              <div className="review-stars">
-                                {renderStars(review.rating)}
-                              </div>
-
-                              <span className="review-date">
-                                {
-                                  review.createdAt?.seconds
-                                    ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
-                                    : "N/A"
-                                }
-                              </span>
+                            <div className="review-user-info">
+                              <p className="review-username">{review.userName}</p>
+                              <p className="review-text">{review.comment}</p>
                             </div>
                           </div>
-                        ))
-                      }
-
-                      
-                      {isFetchingMore && <p style={{'textAlign': 'center'}}>Loading more reviews...</p>}
-                      <div ref={sentinelRef} style={{ height: '2px' }} />
-                    </div>
-                  )
-                }
-              </>
-            }
-
-            <button
-              className="share-your-review-btn"
-              onClick={() => setShowReviewModal(true)}
-            >
-              Share Your Review
-            </button>
-
-            <AddReviewModal
-              isOpen={showReviewModal}
-              onClose={() => setShowReviewModal(false)}
-              listingName={"This Listing"}
-              onSubmit={handleSubmitReview}
-            />
+                          <div className="review-date">
+                            <div className="review-stars">
+                              {renderStars(review.rating)}
+                            </div>
+                            <span className="review-date">
+                              {
+                                review.createdAt?.seconds
+                                  ? new Date(review.createdAt.seconds * 1000).toLocaleDateString()
+                                  : "N/A"
+                              }
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    }
+                    
+                    {(loading || isFetchingMore) && <p style={{'textAlign': 'center'}}>Loading reviews...</p>}
+                    <div ref={sentinelRef} style={{ height: '2px' }} />
+                  </div>
+                )
+              }
+            </>
+          }
         </div>
+
+        <button
+          className="share-your-review-btn"
+          onClick={() => setShowReviewModal(true)}
+        >
+          Share Your Review
+        </button>
+        <AddReviewModal
+          isOpen={showReviewModal}
+          onClose={() => setShowReviewModal(false)}
+          listingName={"This Listing"}
+          onSubmit={handleSubmitReview}
+        />
+      </div>
     </div>
     
   );

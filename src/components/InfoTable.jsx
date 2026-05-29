@@ -6,7 +6,7 @@ function InfoTable({ title, columns, rows , style, fixHeight}) {
       <div className={`info-section`} style={style}>
         <h2>{title}</h2>
 
-        <div className="table-container">
+        <div className="table-container" style={{ textAlign: "center", color: "var(--text-secondary)", fontSize: "0.92rem" }}>
           No Data Available
         </div>
       </div>

@@ -15,7 +15,7 @@ const CHIPS = [
 const Stats = () => (
     <div className="hero-stats">
       {[
-        { num: "100+", label: "Businesses Listed" },
+        { num: "500+", label: "Businesses Listed" },
         { num: "50+", label: "Categories Covered" },
         { num: "4.8★", label: "Avg. User Rating" },
       ].map((s, i) => (
