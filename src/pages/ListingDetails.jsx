@@ -7,7 +7,8 @@ import {
   ListingDetailsLoader,
   SystemState,
   BusinessCTA,
-  Hyperlocal
+  Hyperlocal, 
+  Button
 } from '../components'
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
@@ -170,15 +171,16 @@ function ListingDetails() {
                 <i className="fa-solid fa-phone"></i>
                 {listing?.phone || listing?.alternatePhone}
               </a>
-              <a 
-                href={`https://www.google.com/maps/dir/?api=1&destination=${listing?.geo?.lat},${listing?.geo?.lng}`}  
+
+              <Button
+                href={`https://www.google.com/maps/dir/?api=1&destination=${listing?.geo?.lat},${listing?.geo?.lng}`}
                 target="_blank"
                 rel="noreferrer"
-                className="direction"
+                variant="primary"
+                icon={<i className="fa-solid fa-location-arrow"></i>}
               >
-                <i className="fa-solid fa-location-arrow"></i>
                 Direction
-              </a>
+              </Button>
             </div>
           </div>
 

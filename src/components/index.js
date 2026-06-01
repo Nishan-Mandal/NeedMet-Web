@@ -25,6 +25,7 @@ import BusinessCTA from './BusinessCTA.jsx'
 import Banner from './Banner.jsx'
 import PosterTemplate from './QR/PosterTemplate.jsx'
 import QrPosterModal from './QR/QrPosterModal.jsx'
+import Button from './Common/Button.jsx'
 
 export {
     Header, 
@@ -53,5 +54,6 @@ export {
     BusinessCTA, 
     Banner, 
     PosterTemplate, 
-    QrPosterModal
+    QrPosterModal, 
+    Button
 }

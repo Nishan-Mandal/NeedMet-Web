@@ -1,0 +1,240 @@
+/* ===================================
+   BUTTON BASE
+=================================== */
+
+.btn {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+
+  padding: 0.85rem 1rem;
+
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+
+  border-radius: 0.9rem;
+  border: 1.5px solid transparent;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.2s ease;
+}
+
+/* ===================================
+   VARIANTS
+=================================== */
+
+/* Primary CTA */
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary-light)
+  );
+
+  color: var(--text-on-dark);
+  border-color: var(--border);
+}
+
+/* Soft Primary */
+
+.btn-secondary {
+  background: var(--primary-surface);
+  color: var(--text-accent);
+  border-color: var(--border);
+}
+
+/* Success */
+
+.btn-success {
+  background: var(--status-open);
+  color: var(--text-on-dark);
+  border-color: transparent;
+}
+
+/* Warning */
+
+.btn-warning {
+  background: var(--accent-yellow);
+  color: var(--text-on-dark);
+  border-color: transparent;
+}
+
+/* Danger */
+
+.btn-danger {
+  background: var(--accent-red);
+  color: var(--text-on-dark);
+  border-color: transparent;
+}
+
+/* Outline */
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-accent);
+  border-color: var(--primary);
+}
+
+/* Ghost */
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: transparent;
+}
+
+/* Dark */
+
+.btn-dark {
+  background: var(--background-dark);
+  color: var(--text-on-dark);
+  border-color: transparent;
+}
+
+/* ===================================
+   HOVER
+=================================== */
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-outline:hover {
+    background: var(--primary-surface);
+  }
+
+  .btn-ghost:hover {
+    background: var(--background-secondary);
+  }
+}
+
+/* ===================================
+   ACTIVE / TAP
+=================================== */
+
+.btn:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+
+/* ===================================
+   ACCESSIBILITY
+=================================== */
+
+.btn:focus-visible {
+  outline: 3px solid var(--primary-lighter);
+  outline-offset: 3px;
+}
+
+/* ===================================
+   DISABLED
+=================================== */
+
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+
+  transform: none;
+  box-shadow: none;
+}
+
+/* ===================================
+   SIZES
+=================================== */
+
+.btn-sm {
+  padding: 0.65rem 0.9rem;
+  font-size: 0.85rem;
+  border-radius: 0.75rem;
+}
+
+.btn-md {
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+}
+
+.btn-lg {
+  padding: 1rem 1.25rem;
+  font-size: 1.05rem;
+}
+
+/* ===================================
+   WIDTH
+=================================== */
+
+.btn-full {
+  width: 100%;
+}
+
+/* ===================================
+   ICONS
+=================================== */
+
+.btn i,
+.btn svg {
+  flex-shrink: 0;
+  font-size: 0.95em;
+}
+
+/* ===================================
+   ICON ONLY
+=================================== */
+
+.btn-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* ===================================
+   LOADING STATE
+=================================== */
+
+.btn-loading {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.btn-loading::after {
+  content: "";
+
+  width: 1rem;
+  height: 1rem;
+
+  margin-left: 0.5rem;
+
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+
+  border-radius: 50%;
+
+  animation: btn-spin 0.7s linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -170,42 +170,11 @@
 }
 
 .call:hover {
-  background: var(--primary-surface);
-  color: var(--text);
-  border-color: var(--border);
   transform: translateY(-2px);
-}
-
-.call:hover i {
-  color: var(--primary);
-}
-
-/* ─────────────────────────────
-   DIRECTION BUTTON
-───────────────────────────── */
-.direction {
-  background: linear-gradient(
-    135deg,
-    var(--primary),
-    var(--primary-light)
-  );
-  color: var(--text-on-dark);
-  border: 1.5px solid var(--primary);
-}
-
-.direction i {
-  transition: 0.25s ease;
-}
-
-.direction:hover {
-  background: var(--primary-surface);
-  color: var(--text);
-  border-color: var(--border);
-  transform: translateY(-2px);
-}
-
-.direction:hover i {
-  color: var(--primary);
+  box-shadow:
+    0 10px 24px rgba(15, 92, 62, 0.15),
+    0 4px 8px rgba(15, 92, 62, 0.08);
+  
 }
 
 /* ─────────────────────────────
