@@ -13,6 +13,8 @@ import {
   AllCategory, 
   LegalPage,
   SearchPage,
+  SignUp,
+  LogIn,
 } from './pages'
 import { SystemState } from './components'
 import MaintenanceImg from "./assets/maintenance.jpg"
@@ -32,6 +34,8 @@ const router = createBrowserRouter(
       <Route path="/all_categories" element={<AllCategory />} />
       <Route path="/:legalDocument" element={<LegalPage />} />
       <Route path="/search" element={<SearchPage />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/login" element={<LogIn />} />
     </Route>
   )
 
