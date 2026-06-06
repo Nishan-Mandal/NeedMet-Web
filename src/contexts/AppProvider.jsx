@@ -1,9 +1,12 @@
 import { InfoProvider } from "./infoContext.jsx";
+import { AuthProvider } from "./authContext.jsx";
 
 export const AppProvider = ({children}) => {
     return (
         <InfoProvider>
-            {children}
+            <AuthProvider>
+                {children}
+            </AuthProvider>
         </InfoProvider>
     )
 }

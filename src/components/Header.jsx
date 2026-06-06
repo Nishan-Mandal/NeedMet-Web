@@ -2,14 +2,31 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import '../style/Header.css'
 import companyLogo from '../assets/companyLogo.png';
 import play_store from '../assets/play_store.png';
-import { use } from "react";
+import play_store_icon from '../assets/play_store_icon.png';
+import { useAuth } from "../contexts/authContext.jsx";
+import { Button } from "../components";
+import { useState } from "react";
 
 export default function Header() {
+  const [showMenu, setShowMenu] = useState(false);
+
   const navigate = useNavigate();
+
+  const { userLoggedIn, userData, logout } = useAuth();
 
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isSearchPage = location.pathname === '/search';
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setShowMenu(false);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -24,7 +41,17 @@ export default function Header() {
             </div>
           </div>
 
+          <div className="header-inner-middle">
+            <nav className="nav">
+              <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
+              <NavLink to="/all_categories" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Categories</NavLink>
+              <NavLink to="/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
+              {/* <NavLink to="/contact_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink> */}
+            </nav>
+          </div>
+
           <div className="header-inner-right">
+
             {
               !isHomePage && !isSearchPage && (
                 <NavLink to="/search" className={({ isActive }) => isActive ? "search-pill active" : "search-pill"}>
@@ -33,12 +60,20 @@ export default function Header() {
               )
             }
 
-            <nav className="nav">
-              <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
-              <NavLink to="/all_categories" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Categories</NavLink>
-              <NavLink to="/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
-              <NavLink to="/contact_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink>
-            </nav>
+            <div>
+              <button
+                className="profileButton profileButton-desktop"
+                onClick={() =>
+                  setShowMenu(prev => !prev)
+                }
+              >
+                {
+                  userLoggedIn ? 
+                    userData?.name?.charAt(0)?.toUpperCase() || "U" :
+                    <i className="fa-solid fa-user" style={{height: '9px', width: '7px', padding: '10px 6px',display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem'}}></i>
+                }
+              </button>
+            </div>
 
             <a
               className="play-store-btn"
@@ -60,16 +95,130 @@ export default function Header() {
           <span>NeedMet</span>
         </div>
 
-        <a
-          className="play-store-btn"
-          href="https://play.google.com/store/apps/details?id=com.findon.app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src={play_store} alt="Get it on Play Store" />
-        </a>
-        
+        <div className="mobile-header-right">
+          <a
+            className="play-store-btn"
+            href="https://play.google.com/store/apps/details?id=com.findon.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={play_store_icon} alt="Get it on Play Store" />
+          </a>
+
+          <div>
+            <button
+              className="profileButton profileButton-desktop"
+              onClick={() =>
+                setShowMenu(prev => !prev)
+              }
+            >
+              {
+                userLoggedIn ? 
+                  userData?.name?.charAt(0)?.toUpperCase() || "U" :
+                  <i className="fa-solid fa-user" style={{height: '9px', width: '7px', padding: '10px 6px',display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem'}}></i>
+              }
+            </button>
+          </div>
+        </div>
       </header>
+
+        {/* sidebar component */}
+        <>
+          <div
+            className={`menu-overlay ${showMenu ? "show" : ""}`}
+            onClick={() => setShowMenu(false)}
+          />
+
+          <div className={`side-menu ${showMenu ? "open" : ""}`}>
+            <div className="sidebar-content">
+              <div className="side-menu-header"> 
+                <span>Menu</span> 
+                <button 
+                  className="menu-close" 
+                  onClick={() => setShowMenu(false)} 
+                > 
+                  <i className="fa-solid fa-xmark"></i> 
+                </button> 
+              </div>
+
+              <div className="sidebar-section-title">
+                Profile
+              </div>
+
+              {userLoggedIn ? ( 
+                <div className="sidebar-section profile-section"> 
+                  <div className="profileButton">
+                    <i className="fa-solid fa-user" style={{height: '9px', width: '7px', padding: '10px 6px',display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem'}}></i>
+                  </div>
+                  <div className="sidebar-user-info"> 
+                    <h4>{userData?.name}</h4> 
+                    <p>{userData?.phone}</p> 
+                  </div> 
+                </div> 
+              ) : (
+                <NavLink to="/login" 
+                  className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} 
+                  style={{'color': 'var(--text-on-dark)', 'background': 'linear-gradient(135deg,var(--primary), var(--primary-light))'}}
+                  onClick={() => setShowMenu(false)}
+                >
+                  Sign In
+                </NavLink>
+              )}
+
+              <div className="sidebar-section-title">
+                Navigation
+              </div>
+
+              <NavLink to="/" onClick={() => setShowMenu(false)}>
+                Home
+              </NavLink>
+
+              <NavLink to="/all_categories" onClick={() => setShowMenu(false)}>
+                Categories
+              </NavLink>
+
+              <NavLink to="/about_us" onClick={() => setShowMenu(false)}>
+                About Us
+              </NavLink>
+
+              <NavLink to="/contact_us" onClick={() => setShowMenu(false)}>
+                Contact Us
+              </NavLink>
+
+              <NavLink to="/community_guidelines" onClick={() => setShowMenu(false)}>
+                Community Guidelines
+              </NavLink>
+
+              <NavLink to="/listing_policy" onClick={() => setShowMenu(false)}>
+                Listing Policy
+              </NavLink>
+
+              <NavLink to="/privacy_policy" onClick={() => setShowMenu(false)}>
+                Privacy Policy
+              </NavLink>
+
+              <NavLink to="/safety" onClick={() => setShowMenu(false)}>
+                Safety
+              </NavLink>
+
+              <NavLink to="/terms_service" onClick={() => setShowMenu(false)}>
+                Terms of Service
+              </NavLink>
+
+            </div>
+
+            {userLoggedIn && (
+              <button
+                className="sidebar-logout-btn"
+                onClick={handleLogout}
+              >
+                <i className="fa-solid fa-right-from-bracket"></i>
+                Logout
+              </button>
+            )}
+
+          </div>
+        </>
 
       {/* ── MOBILE BOTTOM NAV ── */}
       <nav className="bottom-nav">

@@ -1,17 +1,31 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../../style/Auth/SignUp.module.css";
-import Button from "../../components/Common/Button";
+import { Button, Toast, ToastContainer, Loader } from "../../components";
+import { sendOTP, verifyOTP } from "../../services/firebase/auth/authService";
+import { resetRecaptcha } from "../../services/firebase/auth/recaptchaService";
+import { saveUserData, getUserByPhone } from "../../services/firebase/firestore/userService";
 
 export default function SignUp() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
+  const [formData, setFormData] = useState({name: "", phone: "",});
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
+  const [confirmationResult, setConfirmationResult] = useState(null);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [isResendingOtp, setIsResendingOtp] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  const [toasts, setToasts] = useState([]);
+
+  const Navigate = useNavigate();
+
+  const addToast = (message, type) => {
+    const id = `${Date.now()}-${Math.random()}`;
+    setToasts(prev => [...prev, { id, message, type }]);
+  };
+
+  const removeToast = (id) =>
+    setToasts(prev => prev.filter(t => t.id !== id));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,27 +36,153 @@ export default function SignUp() {
     }));
   };
 
-  const handleSendOTP = () => {
-    if (
-      formData.name.trim() &&
-      formData.phone.length === 10
-    ) {
+  const handleSendOTP = async () => {
+    if (isSendingOtp) return;
+
+    try {
+      setIsSendingOtp(true);
+
+      const userData = await getUserByPhone(formData.phone);
+      if (userData) {
+        addToast("This phone number is already registered. Please log in instead.", "regular");
+        return;
+      }
+
+      const result = await sendOTP(formData.phone);
+      if (!result) {
+        addToast("OTP send failed. Please try again.", "regular");
+        return;
+      }
+
+      setConfirmationResult(result);
       setOtpSent(true);
+
+      setResendTimer(30);
+
+      addToast("OTP sent successfully", "regular");
+
+    } catch (error) {
+      console.error(error);
+      addToast("Failed to send OTP", "regular");
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 
-  const handleVerifyOTP = () => {
-    console.log("Signup Data:", formData);
-    console.log("OTP:", otp);
+  const handleVerifyOTP = async () => {
+    if (isVerifyingOtp) return;
+
+    if (!confirmationResult) {
+      addToast("OTP session expired. Please resend OTP.", 'regular');
+      return;
+    }
+
+    try {
+      setIsVerifyingOtp(true);
+
+      const user = await verifyOTP(
+        confirmationResult,
+        otp
+      );
+
+      await saveUserData(
+        user,
+        formData.name.trim(),
+        formData.phone
+      );
+
+      Navigate("/");
+
+      console.log("Signup Success");
+
+
+    } catch (error) {
+      console.error(error);
+      addToast("Invalid OTP. Please check and try again.", "regular");
+    } finally {
+      setIsVerifyingOtp(false);
+    }
   };
+
+  const handleResendOTP = async () => {
+    if (isResendingOtp || resendTimer > 0) return;
+
+    try {
+      setIsResendingOtp(true);
+      setOtp("");
+
+      const result = await sendOTP(formData.phone);
+      setConfirmationResult(result);
+
+      setResendTimer(30);
+
+      addToast("OTP resent successfully", "regular");
+
+    } catch (error) {
+      console.error(error);
+      addToast("Failed to resend OTP. Try again later.", "regular");
+    } finally {
+      setIsResendingOtp(false);
+    }
+  };
+
+  useEffect(() => {
+    let interval;
+
+    if (resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer(prev => prev - 1);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [resendTimer]);
+
+  useEffect(() => {
+    return () => {
+      resetRecaptcha();
+    };
+  }, []);
 
   return (
     <div className={styles.signupContainer}>
+
+      <ToastContainer>
+        {toasts.map(t => (
+          <Toast
+            key={t.id}
+            message={t.message}
+            type={t.type}
+            onClose={() => removeToast(t.id)}
+          />
+        ))}
+      </ToastContainer>
+
       {/* LEFT FORM SECTION */}
       <div className={styles.signupLeft}>
         <div className={styles.formWrapper}>
+
           <p className={styles.step}>
-            {otpSent ? "STEP 2 OF 2" : "STEP 1 OF 2"}
+            {otpSent && (
+              <Button 
+                variant="secondary" 
+                onClick={() => {
+                  setOtpSent(false);
+                  setOtp("");
+                  setConfirmationResult(null);
+                  setResendTimer(0);
+                }}
+                icon={<i className="fa-solid fa-arrow-left"></i>}
+              />
+                
+            )}
+            <span>
+              {otpSent ? 
+                <>&nbsp;&nbsp;STEP 2 OF 2</> : 
+                "STEP 1 OF 2"}
+            </span>
           </p>
 
           <h2>Create Account</h2>
@@ -51,12 +191,15 @@ export default function SignUp() {
             Join NeedMet and connect with your local community.
           </p>
 
+          <div id="recaptcha-container" style={{ display: "none" }} />
+
           {!otpSent ? (
             <>
               <label>Full Name</label>
               <input
                 className={styles.textInput}
                 type="text"
+                maxLength={50}
                 name="name"
                 placeholder="Enter your full name"
                 value={formData.name}
@@ -66,9 +209,7 @@ export default function SignUp() {
               <label>Mobile Number</label>
 
               <div className={styles.phoneInput}>
-                <div className={styles.countryCode}>
-                  +91
-                </div>
+                <div className={styles.countryCode}>+91</div>
 
                 <input
                   type="tel"
@@ -77,12 +218,9 @@ export default function SignUp() {
                   value={formData.phone}
                   maxLength={10}
                   onChange={(e) =>
-                    setFormData((prev) => ({
+                    setFormData(prev => ({
                       ...prev,
-                      phone: e.target.value.replace(
-                        /\D/g,
-                        ""
-                      ),
+                      phone: e.target.value.replace(/\D/g, ""),
                     }))
                   }
                 />
@@ -92,12 +230,20 @@ export default function SignUp() {
                 variant="primary"
                 onClick={handleSendOTP}
                 disabled={
-                  !formData.name ||
-                  formData.phone.length !== 10
+                  !formData.name.trim() ||
+                  formData.phone.length !== 10 ||
+                  isSendingOtp
                 }
                 className={styles.authButton}
               >
-                Send OTP
+                {isSendingOtp ? (
+                  <>
+                    <Loader variant="button" />
+                    Sending...
+                  </>
+                ) : (
+                  "Send OTP"
+                )}
               </Button>
             </>
           ) : (
@@ -111,26 +257,47 @@ export default function SignUp() {
                 placeholder="••••••"
                 value={otp}
                 onChange={(e) =>
-                  setOtp(e.target.value)
+                  setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
                 }
+                disabled={isVerifyingOtp || isResendingOtp}
               />
 
               <Button
                 variant="primary"
                 onClick={handleVerifyOTP}
+                disabled={isVerifyingOtp || otp.length !== 6 || !confirmationResult}
                 className={styles.authButton}
               >
-                Create Account
+                {isVerifyingOtp ? (
+                  <>
+                    <Loader variant="button" />
+                    Verifying...
+                  </>
+                ): (
+                  "Create Account"
+                )}
               </Button>
 
               <Button
                 variant="outline"
-                onClick={() =>
-                  console.log("Resend OTP")
+                onClick={handleResendOTP}
+                disabled={
+                  isVerifyingOtp ||
+                  isResendingOtp ||
+                  resendTimer > 0
                 }
                 className={styles.resendButton}
               >
-                Resend OTP
+                {isResendingOtp ? (
+                  <>
+                    <Loader variant="button" />
+                    Resending...
+                  </>
+                ) : resendTimer > 0 ? (
+                  `Resend OTP in ${resendTimer}s`
+                ) : (
+                  "Resend OTP"
+                )}
               </Button>
             </>
           )}
@@ -138,16 +305,17 @@ export default function SignUp() {
           <p className={styles.switchAuth}>
             Already have an account?
             <Link to="/login"> Log in</Link>
-        	</p>
+          </p>
 
           <p className={styles.terms}>
             By creating an account,
             <br />
-            you agree to our
-            <Link to="/terms_service"> Terms of Service </Link>
-            and
-            <Link to="/privacy_policy"> Privacy Policy</Link>.
+            you agree to our{" "}
+            <Link to="/terms_service">Terms of Service</Link>
+            {" "}and{" "}
+            <Link to="/privacy_policy">Privacy Policy</Link>.
           </p>
+
         </div>
       </div>
 
@@ -180,6 +348,7 @@ export default function SignUp() {
           </div>
         </div>
       </div>
+
     </div>
   );
 }
