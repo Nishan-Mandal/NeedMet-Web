@@ -156,13 +156,15 @@ export default function Header() {
                   </div> 
                 </div> 
               ) : (
-                <NavLink to="/login" 
-                  className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} 
-                  style={{'color': 'var(--text-on-dark)', 'background': 'linear-gradient(135deg,var(--primary), var(--primary-light))'}}
-                  onClick={() => setShowMenu(false)}
+                <button
+                  className="sidebar-login-btn"
+                  onClick={() => {
+                    setShowMenu(false);
+                    navigate("/login");
+                  }}
                 >
-                  Sign In
-                </NavLink>
+                  Log In / Sign Up
+                </button>
               )}
 
               <div className="sidebar-section-title">

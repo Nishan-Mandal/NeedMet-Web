@@ -93,9 +93,6 @@ export default function SignUp() {
 
       Navigate("/");
 
-      console.log("Signup Success");
-
-
     } catch (error) {
       console.error(error);
       addToast("Invalid OTP. Please check and try again.", "regular");
@@ -195,7 +192,7 @@ export default function SignUp() {
 
           {!otpSent ? (
             <>
-              <label>Full Name</label>
+              <label className={styles.inputLabel}>Full Name</label>
               <input
                 className={styles.textInput}
                 type="text"
@@ -206,7 +203,7 @@ export default function SignUp() {
                 onChange={handleChange}
               />
 
-              <label>Mobile Number</label>
+              <label className={styles.inputLabel}>Mobile Number</label>
 
               <div className={styles.phoneInput}>
                 <div className={styles.countryCode}>+91</div>
@@ -248,7 +245,7 @@ export default function SignUp() {
             </>
           ) : (
             <>
-              <label>Enter OTP</label>
+              <label className={styles.inputLabel}>Enter OTP</label>
 
               <input
                 className={styles.otpInput}

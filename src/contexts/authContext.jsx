@@ -12,9 +12,8 @@ export function useAuth() {
 
 const logout = async () => {
   try {
-    console.log("Before logout:", auth.currentUser);
     await signOut(auth);
-    console.log("After logout:", auth.currentUser);
+
   } catch(error) {
     console.error(error);
   }
@@ -31,12 +30,9 @@ export function AuthProvider({ children }) {
           if (user) {
             setCurrentUser(user);
 
-            console.log(user.phoneNumber.slice(3)); // Remove country code
             const firestoreUser = await getUserByPhone(user.phoneNumber.slice(3)); // Remove country code
             setUserData(firestoreUser);
 
-            console.log("User logged in:", user);
-            console.log("Firestore user data:", firestoreUser);
           } else {
             setCurrentUser(null);
             setUserData(null);

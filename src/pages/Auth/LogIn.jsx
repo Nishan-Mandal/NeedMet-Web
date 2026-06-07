@@ -77,7 +77,6 @@ export default function LogIn() {
       );
       
       Navigate("/");
-      console.log("Login Success");
 
     } catch (error) {
       console.error(error);

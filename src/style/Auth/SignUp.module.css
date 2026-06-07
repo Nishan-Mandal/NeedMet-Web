@@ -50,6 +50,12 @@
    INPUTS
 ========================== */
 
+.inputLabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px
+}
+
 .textInput,
 .otpInput {
   width: 100%;
@@ -234,10 +240,6 @@
   .signupLeft {
     width: 100%;
     padding: 2rem;
-  }
-
-  .formWrapper {
-    max-width: 550px;
   }
 
   .formWrapper h2 {

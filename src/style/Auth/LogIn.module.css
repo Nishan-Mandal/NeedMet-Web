@@ -160,10 +160,9 @@
 }
 
 .subtitle {
-  margin-top: 12px;
+  margin: 12px 0 35px;
   color: var(--text-secondary);
   line-height: 1.8;
-  margin-bottom: 35px;
 }
 
 .formWrapper label {
@@ -193,6 +192,7 @@
   outline: none;
   padding: 16px;
   font-size: 1rem;
+  min-width: 0; 
 }
 
 .otpInput {
@@ -204,12 +204,11 @@
 
 .authButton {
   width: 100%;
-  margin-top: 0.5rem;
 }
 
 .resendButton {
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 12px;
 }
 
 .primaryBtn {
@@ -345,6 +344,13 @@
 
   .formWrapper h2 {
     font-size: 1.8rem;
+  }
+
+  .phoneInput input,
+  .otpInput,
+  .countryCode {
+    padding: 14px;
+    font-size: 0.95rem;
   }
 
   .subtitle {

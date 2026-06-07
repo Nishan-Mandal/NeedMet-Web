@@ -343,6 +343,30 @@
   margin: 0;
 }
 
+.sidebar-login-btn {
+  font-family: var(--font-primary);
+  width: 95%;
+  margin: 0 8px 0 8px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 12px;
+  text-decoration: none;
+  border-radius: 8px;
+  position: relative;
+  letter-spacing: 0.01em;
+  color: var(--text-on-dark); 
+  background: linear-gradient(135deg,var(--primary), var(--primary-light));
+  border: none;
+  cursor: pointer;
+}
+
+.sidebar-login-btn:hover {
+  opacity: 0.9;
+}
+
 /* ── NAV LINKS ── */
 .side-menu a {
   display: flex;
