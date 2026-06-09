@@ -4,8 +4,10 @@ import {
   Route,
 } from "react-router-dom";
 import App from "../App";
-import ProtectedRoute from "./ProtectedRoute";
-import GuestRoute from "./GuestRoute";
+import ProtectedRoute from "./routeGuard/ProtectedRoute";
+import GuestRoute from "./routeGuard/GuestRoute";
+import AdminRoute from "./routeGuard/AdminRoute";
+import { adminRoutes } from "./adminRoutes";
 import { publicRoutes } from "./publicRoutes";
 import { authRoutes } from "./authRoutes";
 import { userRoutes } from "./userRoutes";
@@ -43,6 +45,16 @@ const router = createBrowserRouter(
             element={route.element}
           />
         ))}
+      </Route>
+
+      <Route element={<AdminRoute />}>
+        {adminRoutes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={route.element}
+          />
+        ))} 
       </Route>
       
     </Route>

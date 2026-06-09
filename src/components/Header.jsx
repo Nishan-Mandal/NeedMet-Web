@@ -46,7 +46,11 @@ export default function Header() {
               <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
               <NavLink to="/all_categories" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Categories</NavLink>
               <NavLink to="/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
-              {/* <NavLink to="/contact_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Contact</NavLink> */}
+              {
+                userLoggedIn && userData?.role === "admin" && (
+                  <NavLink to="/admin/dashboard" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>DashBoard</NavLink>
+                )
+              }
             </nav>
           </div>
 
@@ -166,6 +170,20 @@ export default function Header() {
                   Log In / Sign Up
                 </button>
               )}
+
+              {
+                userLoggedIn && userData?.role === "admin" && (
+                  <>
+                    <div className="sidebar-section-title">
+                      Admin
+                    </div>
+
+                    <NavLink to="/admin/dashboard" onClick={() => setShowMenu(false)}>
+                      DashBoard
+                    </NavLink>
+                  </>
+                )
+              }
 
               <div className="sidebar-section-title">
                 Navigation
