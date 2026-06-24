@@ -2,8 +2,8 @@ import "../style/BusinessCTA.css";
 import { useNavigate } from "react-router-dom";
 
 export default function BusinessCTA() {
-    const goToApp = () => {
-        window.open("https://play.google.com/store/apps/details?id=com.findon.app", "_blank");
+    const goToAddListing = () => {
+        navigate("/contribute/listing");
     };
   
     const navigate = useNavigate();
@@ -41,7 +41,7 @@ export default function BusinessCTA() {
 
           <div className="business-cta-right">
 
-            <button onClick={goToApp} className="business-cta-primary-btn">
+            <button onClick={goToAddListing} className="business-cta-primary-btn">
               Add Your Business
             </button>
 

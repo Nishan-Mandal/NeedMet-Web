@@ -1,0 +1,291 @@
+.signupContainer {
+  min-height: 94vh;
+  display: flex;
+  background: var(--background);
+}
+
+/* ==========================
+   LEFT SIDE (FORM)
+========================== */
+
+.signupLeft {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: var(--background);
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 500px;
+  padding: 3rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-sizing: border-box;
+}
+
+.step {
+  color: var(--primary-light);
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+}
+
+.formWrapper h2 {
+  margin-top: 12px;
+  font-size: 3rem;
+  color: var(--text-accent);
+  font-family: var(--font-heading);
+}
+
+.subtitle {
+  margin: 12px 0 35px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+/* ==========================
+   INPUTS
+========================== */
+
+.inputLabel {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px
+}
+
+.textInput,
+.otpInput {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+  outline: none;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.phoneInput {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.countryCode {
+  padding: 16px;
+  background: var(--background-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.phoneInput input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 16px;
+  font-size: 1rem;
+  min-width: 0;
+}
+
+/* ==========================
+   BUTTONS
+========================== */
+
+.authButton,
+.resendButton {
+  width: 100%;
+}
+
+.resendButton {
+	margin-top: 12px;
+}
+
+/* ==========================
+   TERMS & LINKS
+========================== */
+
+.terms {
+  margin-top: 25px;
+  text-align: center;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.terms a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.switchAuth {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.switchAuth a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.switchAuth a:hover {
+  color: var(--primary-light);
+}
+
+/* ==========================
+   RIGHT SIDE (SHOWCASE)
+========================== */
+
+.signupRight {
+  width: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--background-dark)
+  );
+  color: var(--text-on-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.signupRight::before {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  top: -100px;
+  right: -120px;
+}
+
+.signupRight::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  bottom: -100px;
+  left: -100px;
+}
+
+.rightContent {
+  max-width: 520px;
+  z-index: 2;
+}
+
+.rightContent h1 {
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.rightContent p {
+  color: var(--text-light);
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.features {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.featureCard {
+  background: var(--surface-overlay);
+  border: 1px solid var(--border-green);
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.featureCard i {
+  font-size: 1.3rem;
+}
+
+.featureCard p {
+  color: white;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ==========================
+   TABLET
+========================== */
+
+@media (max-width: 900px) {
+  .signupRight {
+    display: none;
+  }
+
+  .signupLeft {
+    width: 100%;
+    padding: 2rem;
+  }
+
+  .formWrapper h2 {
+    font-size: 2.3rem;
+  }
+}
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width: 488px) {
+  .signupContainer {
+    min-height: 85vh;
+  }
+
+  .signupLeft {
+    padding: 1rem;
+  }
+
+  .formWrapper {
+    padding: 2rem;
+  }
+
+  .formWrapper h2 {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+    margin: 8px 0 20px;
+  }
+
+  .textInput,
+  .otpInput,
+  .phoneInput input,
+  .countryCode {
+    padding: 14px;
+    font-size: 0.95rem;
+  }
+
+  .terms {
+    font-size: 0.8rem;
+  }
+
+  .switchAuth {
+    font-size: 0.85rem;
+  }
+}
