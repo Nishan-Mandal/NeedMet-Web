@@ -6,9 +6,10 @@ export default function SectionCard({
   subtitle,
   icon,
   children,
+  sectionStyle
 }) {
   return (
-    <div className={styles.section}>
+    <div className={styles.section} style={sectionStyle}>
       <div className={styles.sectionHead}>
         <div className={styles.sectionIcon}>
           {icon}

@@ -21,9 +21,10 @@ import {
   SectionCard,
   KeyValueFields, 
   CurrentLocationPicker, 
-  Button
+  Button, 
+  SearchableSelect,
 } from "../components";
-
+import { useCategories } from "../hooks/useAllCategories";
 import OpenHours, { defaultHours } from "../components/OpenHours";
 
 /* ─── Validation Schema ─────────────────────────────────── */
@@ -58,12 +59,6 @@ const schema = z.object({
   images: z.any(),
   tags:   z.array(z.string()),
 });
-
-const CATEGORIES = [
-  "Restaurant / Food", "Retail Shop", "Healthcare", "Salon & Beauty",
-  "Education", "Gym & Fitness", "Electronics", "Automobile", "Real Estate",
-  "Printing & Xerox", "Gas / LPG", "Tailor & Laundry", "Pharmacy", "Other",
-];
 
 const DEFAULT_VALUES = {
   addedBy: "", shopName: "", ownerName: "", category: "", address: "",
@@ -106,6 +101,8 @@ export default function AddListing() {
   const { showToast } = useToast();
   const { userData } = useAuth();
   const { draftFormData, setDraftFormData, clearDraftFormData } = useListingDraft();
+
+  const { data: categories = [], isLoading: categoryLoading } = useCategories();
 
   const {
     register,
@@ -202,10 +199,23 @@ export default function AddListing() {
         </div>
       </div>
 
-      <form className={styles.formWrap} onSubmit={handleSubmit(goToPreview, onError)} noValidate>
+      <form
+        className={styles.formWrap}
+        onSubmit={handleSubmit(goToPreview, onError)}
+        onKeyDown={(e) => {
+          const tag = e.target.tagName;
+          const isTextarea = tag === "TEXTAREA";
+          const isTagInput = e.target.dataset.enterAllowed === "true";
+
+          if (e.key === "Enter" && !isTextarea && !isTagInput) {
+            e.preventDefault();
+          }
+        }}
+        noValidate
+      >
 
         {/* ── 1. Basic Details ── */}
-        <SectionCard step={1} title="Basic Details" subtitle="Tell us about your shop or service." icon={Ico.store}>
+        <SectionCard step={1} title="Basic Details" subtitle="Tell us about your shop or service." icon={Ico.store} sectionStyle={{overflow: 'visible'}}>
           <div className={styles.grid2}>
             <Controller
               name="shopName"
@@ -244,22 +254,27 @@ export default function AddListing() {
           </div>
           <div className={styles.grid2}>
 
-            <Controller 
-              name="category" 
-              control={control} 
+            <Controller
+              name="category"
+              control={control}
               render={({ field }) => (
-                <SelectInput 
-                  id="category" 
-                  label="Category" 
+                <SearchableSelect
+                  id="category"
+                  label="Category"
                   required
                   error={errors.category?.message}
-                  value={field.value} 
-                  onChange={field.onChange} 
+                  value={field.value}
+                  onChange={field.onChange}
                   onBlur={field.onBlur}
-                >
-                    {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                </SelectInput>
-              )} 
+                  options={categories}
+                  loading={categoryLoading}
+                  getOptionLabel={(item) => item.name}
+                  getOptionValue={(item) => item.name}
+                  getOptionImage={(item) => item.imageUrl}
+                  searchPlaceholder="Search category..."
+                  noOptionsText="No category found"
+                />
+              )}
             />
 
             <div className={styles.locationCard}>

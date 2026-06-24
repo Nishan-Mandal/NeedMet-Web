@@ -84,7 +84,7 @@ export default function CurrentLocationPicker({ onLocationSelect }) {
           loading ? (
             <Loader variant="button" />
           ) : (
-            <i className="fa-solid fa-location-crosshairs"></i>
+            <i className="fa-solid fa-location-crosshairs" style={{ color: "var(--text-accent)" }}></i>
           )
         }
       />

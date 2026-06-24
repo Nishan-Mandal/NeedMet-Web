@@ -38,6 +38,7 @@ import ImageUploader from './Common/ImageUploader.jsx'
 import TagInput from './Common/TagInput.jsx'
 import KeyValueFields from './KeyValueFields.jsx'
 import CurrentLocationPicker from './Common/CurrentLocationPicker.jsx'
+import SearchableSelect from './Common/SearchableSelect.jsx'
 
 export {
     Header, 
@@ -80,5 +81,6 @@ export {
     ImageUploader, 
     TagInput, 
     KeyValueFields, 
-    CurrentLocationPicker
+    CurrentLocationPicker, 
+    SearchableSelect
 }

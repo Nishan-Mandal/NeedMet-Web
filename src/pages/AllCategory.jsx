@@ -3,16 +3,12 @@ import { useMemo } from "react";
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
 import { useQuery } from "@tanstack/react-query";
-import { getAllCategory } from "../services/firebase/firestore/categoryService.js";
+// import { getAllCategory } from "../services/firebase/firestore/categoryService.js";
+import { useCategories } from "../hooks/useAllCategories";
 
 export default function AllCategory() {
 
-  const { data: categories = [], isLoading: loading, error } = useQuery({
-    queryKey: ['allCategories'],
-    queryFn: () => getAllCategory(),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error)
-  });
+  const { data: categories = [], isLoading: loading, error } = useCategories();
 
   const groupedCategories = useMemo(() => {
     return categories.reduce((acc, cat) => {

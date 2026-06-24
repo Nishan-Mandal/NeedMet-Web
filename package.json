@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
+    "@tanstack/query-sync-storage-persister": "^5.101.1",
     "@tanstack/react-query": "^5.100.5",
     "@tanstack/react-query-devtools": "^5.100.5",
+    "@tanstack/react-query-persist-client": "^5.101.1",
     "browser-image-compression": "^2.0.2",
     "firebase": "^12.10.0",
     "html2canvas": "^1.4.1",
