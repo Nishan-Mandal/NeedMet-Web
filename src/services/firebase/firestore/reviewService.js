@@ -20,7 +20,6 @@ const formatData = (snap) => {
 
 export const getReviews = async ({listingId, pageSize, lastDoc = null}) => {
   try {
-    console.log('[Api Call] getReviews -> start');
     const ref = collection(
       firestore,
       "listings",
@@ -46,8 +45,6 @@ export const getReviews = async ({listingId, pageSize, lastDoc = null}) => {
     const snap = await getDocs(q);
 
     const reviews = formatData(snap);
-
-    console.log('[Api Call] getReviews -> end');
 
     return {
       reviews,
@@ -131,8 +128,6 @@ export const submitListingReview = async ({
         collection(firestore, "listings", listingId, "reviews")
       );
 
-      console.log('[Api Call] submitListingReview -> start');
-
       const reviewData = {
         reviewId: reviewRef.id,
         userId: "anonymous",
@@ -156,8 +151,6 @@ export const submitListingReview = async ({
         updatedAt: serverTimestamp(),
       });
     });
-
-    console.log('[Api Call] submitListingReview -> end');
 
     return {
       success: true,

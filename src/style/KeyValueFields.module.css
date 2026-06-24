@@ -1,0 +1,130 @@
+.kvList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kvRow {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.2s ease;
+}
+
+.kvIndex {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kvInputWrap {
+  flex: 1;
+}
+
+.kvInput {
+  width: 100%;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.kvInput::placeholder {
+  color: var(--text-secondary);
+}
+
+.kvInput:hover {
+  border-color: var(--primary-light);
+}
+
+.kvInput:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 92, 62, 0.12);
+}
+
+.kvDivider {
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kvRemove {
+  width: 25px;
+  height: 25px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--accent-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.kvRemove:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.kvAdd {
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+
+  height: 40px;
+  padding: 0 16px;
+
+  border: 1px dashed var(--primary-light);
+  border-radius: 10px;
+
+  background: var(--primary-surface);
+  color: var(--primary);
+
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: all 0.15s ease;
+}
+
+.kvAdd:hover {
+  background: var(--surface-green);
+  border-color: var(--primary);
+}
+
+@media (max-width: 680px) {
+  .kvIndex {
+    align-self: center;
+  }
+
+  .kvDivider {
+    align-self: center;
+  }
+
+  .kvRemove {
+    align-self: center;
+  }
+
+  .kvAdd {
+    width: 100%;
+    justify-content: center;
+  }
+}

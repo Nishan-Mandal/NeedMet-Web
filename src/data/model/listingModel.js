@@ -117,27 +117,34 @@ class DaySchedule {
 
   toReadable() {
     if (this.isClosed) return "Closed";
-    return this.slots;
+
+    return this.slots.map(slot =>
+      slot.to12Hour()
+    );
   }
 
   static fromJson(json) {
     if (!json) {
-      return new DaySchedule({ isClosed: true, slots: [] });
+      return new DaySchedule({
+        isClosed: true,
+        slots: [],
+      });
     }
 
     return new DaySchedule({
       isClosed: json.isClosed || false,
-      slots: (json.slots || []).map((e) => {
-        const slot = TimeSlot.fromJson(e);
-        return slot.to12Hour();
-      }),
+      slots: (json.slots || []).map(slot =>
+        TimeSlot.fromJson(slot)
+      ),
     });
   }
 
   toJson() {
     return {
       isClosed: this.isClosed,
-      slots: this.slots,
+      slots: this.slots.map(slot =>
+        slot.toJson()
+      ),
     };
   }
 }
@@ -161,6 +168,7 @@ class Listing {
     address = "",
     description = "",
     details = {},
+    detailsOrder = [],
     geo = new Geo(),
     phone = "",
     alternatePhone = "",
@@ -185,9 +193,15 @@ class Listing {
     since = 2025,
     likes = 0,
     views = 0,
-    social = {},
+    social = {
+      instagram: "",
+      facebook: "",
+      website: "",
+      linkedin: "",
+      whatsapp: "",
+    }, 
     ratingStats = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 },
-    factorAvgRatings = {},
+    factorAvgRatings = {'behaviour': 0, 'quality': 0, 'value': 0},
     businessHours = {},
   } = {}) {
     this.listingId = listingId;
@@ -196,6 +210,7 @@ class Listing {
     this.address = address;
     this.description = description;
     this.details = details;
+    this.detailsOrder = detailsOrder
     this.geo = geo;
     this.phone = phone;
     this.alternatePhone = alternatePhone;
@@ -234,6 +249,7 @@ class Listing {
       address: capitalizeWords(json.address) || "",
       description: json.description || "",
       details: json.details || {},
+      detailsOrder: json.detailsOrder || [],
 
       geo: Geo.fromJson(json.geo),
 
@@ -279,7 +295,7 @@ class Listing {
         instagram: json.social?.Instagram || "",
         facebook: json.social?.Facebook || "",
         website: json.social?.Website || "",
-        linkedin: json.social?.Linkedin || "",
+        linkedin: json.social?.LinkedIn || "",
         whatsapp: json.social?.WhatsApp || "",
       },
 
@@ -306,31 +322,62 @@ class Listing {
     return {
       listingId: this.listingId,
       contributionId: this.contributionId,
+
       name: this.name,
       address: this.address,
       description: this.description,
       details: this.details,
+      detailsOrder: this.detailsOrder, 
+
       geo: this.geo.toJson(),
+
       phone: this.phone,
       alternatePhone: this.alternatePhone,
       email: this.email,
+
       category: this.category,
       categoryId: this.categoryId,
       tags: this.tags,
+
       addedBy: this.addedBy,
+      updatedBy: this.updatedBy,
+
       isClaimed: this.isClaimed,
       isPremium: this.isPremium,
+
       ownerId: this.ownerId,
       ownerName: this.ownerName,
+
       claimStatus: this.claimStatus,
       verifiedBy: this.verifiedBy,
+
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+
       images: this.images.map((e) => e.toJson()),
+
+      reviews: this.reviews,
+      ratingCount: this.ratingCount,
+      rating: this.rating,
+
+      likes: this.likes,
+      views: this.views,
+
+      social: {
+        Instagram: this.social.instagram,
+        Facebook: this.social.facebook,
+        Website: this.social.website,
+        LinkedIn: this.social.linkedin,
+        WhatsApp: this.social.whatsapp,
+      },
+
+      ratingStats: this.ratingStats,
+      factorAvgRatings: this.factorAvgRatings,
+
       since: this.since,
-      social: this.social,
+
       businessHours: Object.fromEntries(
-        Object.entries(this.businessHours).map(([day, val]) => [
+        Object.entries(this.businessHours || {}).map(([day, val]) => [
           day,
           val.toJson(),
         ])

@@ -1,0 +1,146 @@
+.fieldWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.box {
+  position: relative;
+
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+
+  background: var(--surface);
+
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
+}
+
+.box:hover {
+  border-color: var(--primary-light);
+}
+
+.boxFocused {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3.5px rgba(15, 92, 62, 0.11);
+}
+
+.boxErr {
+  border-color: var(--accent-red) !important;
+  box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.09) !important;
+}
+
+.inner {
+  position: relative;
+  padding: 0 14px;
+}
+
+.lbl {
+  position: absolute;
+
+  left: 14px;
+  top: 22px;
+
+  font-size: 14.5px;
+  font-weight: 400;
+
+  color: var(--text-secondary);
+
+  pointer-events: none;
+
+  transition:
+    top 0.18s,
+    font-size 0.18s,
+    color 0.18s,
+    font-weight 0.18s;
+}
+
+.lblUp {
+  top: 10px !important;
+
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+
+  color: var(--primary) !important;
+
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.fieldError .lblUp {
+  color: var(--accent-red) !important;
+}
+
+.textarea {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  resize: vertical;
+
+  background: transparent;
+
+  font-family: var(--font-primary);
+  font-size: 14.5px;
+  font-weight: 500;
+
+  color: var(--text);
+
+  caret-color: var(--primary);
+
+  min-height: 120px;
+
+  padding: 20px 0 14px;
+  line-height: 1.6;
+}
+
+.textareaActive {
+  padding-top: 30px;
+}
+
+.textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+.textarea:disabled {
+  cursor: not-allowed;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.helperMsg {
+  margin: 0;
+  padding-left: 4px;
+
+  font-size: 12px;
+  line-height: 1.4;
+
+  color: var(--text-secondary);
+}
+
+.errMsg {
+  margin: 0;
+  padding-left: 4px;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+
+  color: var(--accent-red);
+}
+
+.counter {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.req {
+  color: var(--accent-red);
+  font-weight: 700;
+}

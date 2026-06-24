@@ -1,0 +1,267 @@
+.fieldWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.fieldError .lblUp {
+  color: var(--accent-red) !important;
+}
+
+.box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  min-height: 56px;
+  padding: 0 14px;
+
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+
+  transition: border-color 0.18s, box-shadow 0.18s;
+  cursor: text;
+}
+
+.box:hover {
+  border-color: var(--primary-light);
+}
+
+.boxFocused {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3.5px rgba(15, 92, 62, 0.11);
+}
+
+.boxErr {
+  border-color: var(--accent-red) !important;
+  box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.09) !important;
+}
+
+.boxDisabled {
+  background: var(--background-secondary);
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
+.inner {
+  position: relative;
+  flex: 1;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+.lbl {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-size: 14.5px;
+  font-weight: 400;
+  color: var(--text-secondary);
+
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: 1;
+
+  transition:
+    top 0.18s,
+    transform 0.18s,
+    font-size 0.18s,
+    color 0.18s,
+    font-weight 0.18s;
+}
+
+.lblUp {
+  top: 9px !important;
+  transform: none !important;
+
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  color: var(--primary) !important;
+
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.inp {
+  width: 100%;
+  height: 100%;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-family: var(--font-primary);
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text);
+  caret-color: var(--primary);
+
+  padding: 0;
+}
+
+.inpActive {
+  padding-top: 16px;
+}
+
+.inp::placeholder {
+  color: var(--text-secondary);
+}
+
+.inp:disabled {
+  cursor: not-allowed;
+}
+
+.inp:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+  -webkit-text-fill-color: var(--text);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  transition: color 0.18s;
+}
+
+.boxFocused .icon {
+  color: var(--primary);
+}
+
+.chevron {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  transition: transform 0.18s, color 0.18s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 40;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 14px 32px rgba(17, 24, 39, 0.12);
+
+  padding: 6px;
+}
+
+.option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+
+  padding: 10px 12px;
+  border-radius: 10px;
+
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+
+  transition: background 0.16s, color 0.16s;
+}
+
+.option:hover {
+  background: var(--primary-surface);
+  color: var(--text-accent);
+}
+
+.optionActive {
+  background: var(--primary-surface);
+  color: var(--text-accent);
+}
+
+.empty {
+  padding: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.helperMsg {
+  margin: 0;
+  padding-left: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.errMsg {
+  margin: 0;
+  padding-left: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--accent-red);
+}
+
+.req {
+  color: var(--accent-red);
+  font-weight: 700;
+}
+
+.selectedImage {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.option {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+
+  padding: 10px 12px;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+
+  transition: background 0.16s, color 0.16s;
+}
+
+.optionImage {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  padding: 5px;
+}
+
+.optionLabel {
+  flex: 1;
+  min-width: 0;
+}
