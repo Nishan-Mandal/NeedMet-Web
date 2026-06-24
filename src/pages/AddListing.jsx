@@ -9,7 +9,7 @@ import { uploadListingImages } from "../services/firebase/storage/listingImageSe
 import { createListingPipeline } from "../services/firebase/listing/listingPipeline.js";
 import { useAuth } from "../contexts/authContext";
 import { useToast } from "../contexts/toastContext";
-import { useListingDraft } from "../contexts/ListingDraftContext";
+import { useListingDraft } from "../contexts/listingDraftContext";
 import { ResetIcon, DraftIcon, TickIcon, PreviewIcon } from "../assets/collection.jsx";
 import {
   TextInput,
