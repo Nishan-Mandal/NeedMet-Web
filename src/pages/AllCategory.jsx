@@ -7,7 +7,6 @@ import { getAllCategory } from "../services/firebase/firestore/categoryService.j
 
 export default function AllCategory() {
 
-  // const { categories, loading, error } = useCategories();
   const { data: categories = [], isLoading: loading, error } = useQuery({
     queryKey: ['allCategories'],
     queryFn: () => getAllCategory(),

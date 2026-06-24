@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../../style/Auth/LogIn.module.css";
-import { Button, Loader, Toast, ToastContainer } from "../../components";
+import { Button, Loader } from "../../components";
+import { useToast } from "../../contexts/toastContext";
 import { getUserByPhone } from "../../services/firebase/firestore/userService";
 import { sendOTP, verifyOTP } from "../../services/firebase/auth/authService";
 import { resetRecaptcha } from "../../services/firebase/auth/recaptchaService";
@@ -15,17 +16,10 @@ export default function LogIn() {
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [isResendingOtp, setIsResendingOtp] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [toasts, setToasts] = useState([]);
+
+  const { showToast } = useToast();
 
   const Navigate = useNavigate();
-
-  const addToast = (message, type) => {
-    const id = `${Date.now()}-${Math.random()}`;
-    setToasts(prev => [...prev, { id, message, type }]);
-  };
-
-  const removeToast = (id) =>
-    setToasts(prev => prev.filter(t => t.id !== id));
 
   const handleSendOTP = async () => {
     if (isSendingOtp) return;
@@ -35,13 +29,13 @@ export default function LogIn() {
 
       const userData = await getUserByPhone(phone);
       if (!userData) {
-        addToast("This number is not registered. Please sign up first.", "regular");
+        showToast("This number is not registered. Please sign up first.", "regular");
         return;
       }
 
       const result = await sendOTP(phone);
       if (!result) {
-        addToast("OTP send failed. Please try again.", "regular");
+        showToast("OTP send failed. Please try again.", "error");
         return;
       }
 
@@ -50,11 +44,11 @@ export default function LogIn() {
 
       setResendTimer(30);
 
-      addToast("OTP sent successfully", "regular");
+      showToast("OTP sent successfully", "regular");
 
     } catch (error) {
       console.error(error);
-      addToast("Failed to send OTP. Please try again.", 'regular');
+      showToast("Failed to send OTP. Please try again.", 'error');
     } finally {
       setIsSendingOtp(false);
     }
@@ -64,7 +58,7 @@ export default function LogIn() {
     if (isVerifyingOtp) return;
 
     if (!confirmationResult) {
-      addToast("OTP session expired. Please resend OTP.", 'regular');
+      showToast("OTP session expired. Please resend OTP.", 'error');
       return;
     }
 
@@ -76,6 +70,7 @@ export default function LogIn() {
         otp
       );
       
+      showToast('Logged in successfully', 'regular');
       Navigate("/");
 
     } catch (error) {
@@ -83,15 +78,15 @@ export default function LogIn() {
 
       switch (error.code) {
         case "auth/code-expired":
-          addToast("OTP has expired. Please request a new one.", "regular");
+          showToast("OTP has expired. Please request a new one.", "error");
           break;
 
         case "auth/invalid-verification-code":
-          addToast("Incorrect OTP.", "regular");
+          showToast("Incorrect OTP.", "error");
           break;
 
         default:
-          addToast("Verification failed.", "regular");
+          showToast("Verification failed.", "error");
       }
 
     } finally {
@@ -111,11 +106,11 @@ export default function LogIn() {
 
       setResendTimer(30);
 
-      addToast("OTP resent successfully", "regular");
+      showToast("OTP resent successfully", "regular");
 
     } catch (error) {
       console.error(error);
-      addToast("Failed to resend OTP. Try again later.", 'regular');
+      showToast("Failed to resend OTP. Try again later.", 'error');
     } finally {
       setIsResendingOtp(false);
     }
@@ -144,18 +139,7 @@ export default function LogIn() {
   return (
     <div className={styles.loginContainer}>
 
-      <ToastContainer>
-        {toasts.map(t => (
-          <Toast
-            key={t.id}
-            message={t.message}
-            type={t.type}
-            onClose={() => removeToast(t.id)}
-          />
-        ))}
-      </ToastContainer>
-
-            {/* LEFT SECTION */}
+      {/* LEFT SECTION */}
       <div className={styles.loginLeft}>
         <div className={styles.leftContent}>
           <h1>Connect needs with solutions.</h1>
@@ -197,6 +181,7 @@ export default function LogIn() {
                   setConfirmationResult(null);
                   setResendTimer(0);
                 }}
+                style={{width: '18%'}}
                 icon={<i className="fa-solid fa-arrow-left"></i>}
               />
                 

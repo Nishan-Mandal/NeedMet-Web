@@ -1,5 +1,7 @@
 import styles from "../../style/Common/Loader.module.css";
 
+// variant = page, button
+
 export default function Loader({
   variant = "page",
   size = "md",

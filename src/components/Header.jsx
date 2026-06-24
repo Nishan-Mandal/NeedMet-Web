@@ -6,11 +6,13 @@ import play_store_icon from '../assets/play_store_icon.png';
 import { useAuth } from "../contexts/authContext.jsx";
 import { Button } from "../components";
 import { useState } from "react";
+import { useToast } from "../contexts/toastContext.jsx";
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const { userLoggedIn, userData, logout } = useAuth();
 
@@ -22,7 +24,9 @@ export default function Header() {
     try {
       await logout();
       setShowMenu(false);
-      navigate("/");
+      showToast("Logged out successfully", "regular")
+      navigate("/login");
+      
     } catch (error) {
       console.error(error);
     }
@@ -45,7 +49,7 @@ export default function Header() {
             <nav className="nav">
               <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Home</NavLink>
               <NavLink to="/all_categories" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Categories</NavLink>
-              <NavLink to="/about_us" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>About Us</NavLink>
+              <NavLink to="/contribute/listing" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Add Business</NavLink>
               {
                 userLoggedIn && userData?.role === "admin" && (
                   <NavLink to="/admin/dashboard" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>DashBoard</NavLink>
@@ -197,6 +201,10 @@ export default function Header() {
                 Categories
               </NavLink>
 
+              <NavLink to="/contribute/listing" onClick={() => setShowMenu(false)}>
+                Add Business
+              </NavLink>
+
               <NavLink to="/about_us" onClick={() => setShowMenu(false)}>
                 About Us
               </NavLink>
@@ -204,6 +212,11 @@ export default function Header() {
               <NavLink to="/contact_us" onClick={() => setShowMenu(false)}>
                 Contact Us
               </NavLink>
+
+
+              <div className="sidebar-section-title">
+                Terms & Conditions
+              </div>
 
               <NavLink to="/community_guidelines" onClick={() => setShowMenu(false)}>
                 Community Guidelines

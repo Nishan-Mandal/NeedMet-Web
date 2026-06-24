@@ -1,0 +1,235 @@
+/* ═══════════════════════════════════════════════════════════
+   OpenHours.module.css
+   ═══════════════════════════════════════════════════════════ */
+
+.hoursGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* ── Each day row ───────────────────────────────────────── */
+.dayRow {
+  display: flex;
+  align-items: space-between;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  background: #fff;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+
+.dayRow:last-child {
+  border-bottom: none;
+}
+
+.dayRowOpen {
+  background: #f8faff;
+}
+
+/* ── Left side: toggle + label ──────────────────────────── */
+.dayLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* min-width: 148px; */
+  padding-top: 2px; /* optical alignment with first slot row */
+  flex-shrink: 0;
+}
+
+.dayName {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #94a3b8;
+  transition: color 0.15s;
+  user-select: none;
+}
+
+.dayNameActive {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* ── Toggle switch ──────────────────────────────────────── */
+.toggle {
+  width: 38px;
+  height: 22px;
+  border-radius: 100px;
+  background: #e2e8f0;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+  outline: none;
+  padding: 0;
+}
+
+.toggle:focus-visible {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.toggleOn {
+  background: #2563eb;
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+}
+
+.toggleOn .toggleThumb {
+  transform: translateX(16px);
+}
+
+/* ── Right side ─────────────────────────────────────────── */
+.dayRight {
+  /* flex: 1; */
+  display: flex;
+  align-items: flex-start;
+}
+
+.closedBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-top: 1px;
+}
+
+/* ── Slots container ────────────────────────────────────── */
+.slotsWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+}
+
+/* ── Single slot row ────────────────────────────────────── */
+.slotRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slotInputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.timeInput {
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+  background: #fff;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 116px;
+}
+
+.timeInput:hover {
+  border-color: #cbd5e1;
+}
+
+.timeInput:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.timeSep {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ── Remove slot button ─────────────────────────────────── */
+.removeSlot {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+  color: #ef4444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+  padding: 0;
+}
+
+.removeSlot:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* ── Add slot button ────────────────────────────────────── */
+.addSlot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px dashed #93c5fd;
+  border-radius: 8px;
+  background: transparent;
+  color: #2563eb;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  align-self: center;
+}
+
+.addSlot:hover {
+  background: #eff6ff;
+  border-color: #60a5fa;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 560px) {
+  .dayRow {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 14px;
+  }
+
+  .dayLeft {
+    padding-top: 0;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .timeInput {
+    width: 100px;
+  }
+}

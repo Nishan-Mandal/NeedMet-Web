@@ -8,6 +8,7 @@ import LogIn from "./auth/LogIn.jsx";
 import SignUp from "./auth/SignUp.jsx";
 import AllListings from "./admin/AllListings.jsx";
 import Dashboard from "./admin/Dashboard.jsx";
+import AddListing from "./AddListing.jsx";
 
 export {
     Home, 
@@ -19,5 +20,6 @@ export {
     LogIn, 
     SignUp, 
     AllListings, 
-    Dashboard
+    Dashboard, 
+    AddListing
 }

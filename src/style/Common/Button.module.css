@@ -4,6 +4,7 @@
 
 .btn {
   position: relative;
+  width: 100%;
 
   display: inline-flex;
   align-items: center;
@@ -17,7 +18,7 @@
   font-weight: 600;
   line-height: 1;
 
-  border-radius: 0.9rem;
+  border-radius: 10px;
   border: 1.5px solid transparent;
 
   text-decoration: none;
@@ -50,7 +51,7 @@
   );
 
   color: var(--text-on-dark);
-  border-color: var(--border);
+  border: none;
 }
 
 /* Soft Primary */
@@ -58,7 +59,7 @@
 .btn-secondary {
   background: var(--primary-surface);
   color: var(--text-accent);
-  border-color: var(--border);
+  border-color: none;
 }
 
 /* Success */
@@ -89,8 +90,8 @@
 
 .btn-outline {
   background: transparent;
-  color: var(--text-accent);
-  border-color: var(--primary);
+  color: var(--primary);
+  border: 1px solid #e2e8f0;
 }
 
 /* Ghost */

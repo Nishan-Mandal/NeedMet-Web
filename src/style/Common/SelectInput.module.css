@@ -1,0 +1,115 @@
+.fieldWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* ── Main Box ── */
+.box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  height: 56px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  transition: 0.2s;
+}
+
+.box:hover {
+  border-color: var(--primary-light);
+}
+
+.boxFocused {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(15, 92, 62, 0.12);
+}
+
+.boxErr {
+  border-color: var(--accent-red);
+}
+
+.boxDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--background-secondary);
+}
+
+/* ── Inner wrapper ── */
+.inner {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Label (floating) ── */
+.label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  transition: 0.2s;
+  pointer-events: none;
+}
+
+.labelUp {
+  top: 9px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Select ── */
+.select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  appearance: none;
+  cursor: pointer;
+  padding-top: 0;
+}
+
+.selectActive {
+  color: var(--text);
+  padding-top: 16px;
+}
+
+/* ── Icon ── */
+.icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
+}
+
+/* ── Chevron ── */
+.chevron {
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+/* ── Error ── */
+.error {
+  font-size: 12px;
+  color: var(--accent-red);
+  margin: 0;
+  padding-left: 4px;
+}
+
+/* ── Required ── */
+.req {
+  color: var(--accent-red);
+  font-weight: 700;
+}

@@ -1,5 +1,7 @@
 import styles from "../../style/Common/Button.module.css";
 
+// variant = primary, secondary, success, danger, warning, outline, ghost, dark
+
 const Button = ({
   children,
   href,

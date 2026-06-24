@@ -1,7 +1,20 @@
 import { firestore } from "../../../firebase/firebaseConfig";
-import { collection, getDocs, query, where, orderBy, limit, doc, getDoc, startAfter, documentId } from "firebase/firestore";
-import { Listing } from "../../../data/model/listingModel";
-
+import { 
+    collection, 
+    getDocs, 
+    query, 
+    where, 
+    orderBy, 
+    limit, 
+    doc, 
+    getDoc, 
+    startAfter, 
+    documentId, 
+    setDoc, 
+    serverTimestamp 
+} from "firebase/firestore";
+import { Listing, Geo, DaySchedule, ImageFile } from "../../../data/model/listingModel";
+import { uploadListingImages } from "../storage/listingImageService";
 
 
 const formatData = (snap) => {
@@ -22,6 +35,14 @@ const verificationConstraints = import.meta.env.DEV
 
 const listingRef = collection(firestore, "listings");
 
+export const generateListingRef = () => {
+  return doc(listingRef);
+};
+
+
+// ========================================
+// read - services
+//=========================================
 
 export const getListingById = async (listingId) => {
   try {
@@ -306,4 +327,26 @@ export const getSimilarListingsPaginated = async ({ listingId, category, quantit
             hasMore: false
         };
     }
+};
+
+
+// ========================================
+// write - services
+//=========================================
+
+export const saveListing = async (listingId, listingData) => {
+  try {
+    const docRef = doc(firestore, "listings", listingId);
+
+    await setDoc(docRef, {
+        ...listingData,
+        createdAt: serverTimestamp(),
+    });
+
+    return listingId;
+
+  } catch (error) {
+    console.error("Error saving listing:", error);
+    return null;
+  }
 };

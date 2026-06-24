@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "../../style/Auth/SignUp.module.css";
-import { Button, Toast, ToastContainer, Loader } from "../../components";
+import { Button, Loader } from "../../components";
 import { sendOTP, verifyOTP } from "../../services/firebase/auth/authService";
 import { resetRecaptcha } from "../../services/firebase/auth/recaptchaService";
 import { saveUserData, getUserByPhone } from "../../services/firebase/firestore/userService";
+import { useToast } from "../../contexts/toastContext";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({name: "", phone: "",});
@@ -15,17 +16,10 @@ export default function SignUp() {
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [isResendingOtp, setIsResendingOtp] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [toasts, setToasts] = useState([]);
+
+  const { showToast } = useToast();
 
   const Navigate = useNavigate();
-
-  const addToast = (message, type) => {
-    const id = `${Date.now()}-${Math.random()}`;
-    setToasts(prev => [...prev, { id, message, type }]);
-  };
-
-  const removeToast = (id) =>
-    setToasts(prev => prev.filter(t => t.id !== id));
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,13 +38,13 @@ export default function SignUp() {
 
       const userData = await getUserByPhone(formData.phone);
       if (userData) {
-        addToast("This phone number is already registered. Please log in instead.", "regular");
+        showToast("This phone number is already registered. Please log in instead.", "regular");
         return;
       }
 
       const result = await sendOTP(formData.phone);
       if (!result) {
-        addToast("OTP send failed. Please try again.", "regular");
+        showToast("OTP send failed. Please try again.", "error");
         return;
       }
 
@@ -59,11 +53,11 @@ export default function SignUp() {
 
       setResendTimer(30);
 
-      addToast("OTP sent successfully", "regular");
+      showToast("OTP sent successfully", "regular");
 
     } catch (error) {
       console.error(error);
-      addToast("Failed to send OTP", "regular");
+      showToast("Failed to send OTP", "error");
     } finally {
       setIsSendingOtp(false);
     }
@@ -73,7 +67,7 @@ export default function SignUp() {
     if (isVerifyingOtp) return;
 
     if (!confirmationResult) {
-      addToast("OTP session expired. Please resend OTP.", 'regular');
+      showToast("OTP session expired. Please resend OTP.", 'error');
       return;
     }
 
@@ -91,11 +85,12 @@ export default function SignUp() {
         formData.phone
       );
 
+      showToast('Signed up successfully', 'regular');
       Navigate("/");
 
     } catch (error) {
       console.error(error);
-      addToast("Invalid OTP. Please check and try again.", "regular");
+      showToast("Invalid OTP. Please check and try again.", "error");
     } finally {
       setIsVerifyingOtp(false);
     }
@@ -113,11 +108,11 @@ export default function SignUp() {
 
       setResendTimer(30);
 
-      addToast("OTP resent successfully", "regular");
+      showToast("OTP resent successfully", "regular");
 
     } catch (error) {
       console.error(error);
-      addToast("Failed to resend OTP. Try again later.", "regular");
+      showToast("Failed to resend OTP. Try again later.", "error");
     } finally {
       setIsResendingOtp(false);
     }
@@ -146,17 +141,6 @@ export default function SignUp() {
   return (
     <div className={styles.signupContainer}>
 
-      <ToastContainer>
-        {toasts.map(t => (
-          <Toast
-            key={t.id}
-            message={t.message}
-            type={t.type}
-            onClose={() => removeToast(t.id)}
-          />
-        ))}
-      </ToastContainer>
-
       {/* LEFT FORM SECTION */}
       <div className={styles.signupLeft}>
         <div className={styles.formWrapper}>
@@ -171,6 +155,7 @@ export default function SignUp() {
                   setConfirmationResult(null);
                   setResendTimer(0);
                 }}
+                style={{width: '18%'}}
                 icon={<i className="fa-solid fa-arrow-left"></i>}
               />
                 
