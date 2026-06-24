@@ -20,7 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 import { TimeSlot } from '../data/model/listingModel.js';
 import { useState } from "react";
 import { SubmitIcon, BackIcon } from '../assets/collection.jsx';
-import { useListingDraft } from "../contexts/ListingDraftContext";
+import { useListingDraft } from "../contexts/listingDraftContext";
 import { buildListingPreviewFromFormData } from "../services/firebase/listing/listingPreviewBuilder.js";
 import { createListingPipeline } from "../services/firebase/listing/listingPipeline.js";
 import { useToast } from '../contexts/toastContext';
