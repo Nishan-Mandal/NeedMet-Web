@@ -1,0 +1,382 @@
+.page {
+  min-height: 100vh;
+  font-family: var(--font-primary);
+}
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(
+    135deg,
+    var(--background-dark) 0%,
+    var(--primary) 38%,
+    var(--primary-light) 72%,
+    var(--primary-lighter) 100%
+  );
+  padding: 56px 24px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(99, 179, 237, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 10% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.heroInner {
+  max-width: 860px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 14px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #bfdbfe;
+  margin-bottom: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.heroTitle {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.heroSub {
+  font-size: clamp(12px, 2vw, 14px);
+  color: #bfdbfe;
+  margin: 0 0 36px;
+  max-width: 400px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.heroSteps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.heroStep {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 7px 14px;
+  backdrop-filter: blur(4px);
+}
+
+.heroStepNum {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.heroStepLabel {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #dbeafe;
+}
+
+/* ── Form wrapper (also applies when element is <form>) ── */
+.formWrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 32px 10px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Reset default form appearance */
+form.formWrap {
+  border: none;
+  background: none;
+}
+
+.locationCard {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 4fr 0.5fr;
+  gap: 16px;
+}
+
+/* ── Layout grids ───────────────────────────────────────── */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 680px) {
+  .grid2,
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Gap between grids/fields inside a section body */
+.formWrap :global(.sectionBody) > * + *,
+.grid2 + *,
+.grid3 + * {
+  margin-top: 0; /* gaps handled by section body flex gap */
+}
+
+/* ── Toggle card (online payments) ─────────────────────── */
+.toggleCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #f8faff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  min-height: 64px;
+}
+
+.toggleCardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 3px;
+}
+
+.toggleCardSub {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* ── Category hint banner ───────────────────────────────── */
+.categoryHint {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #1e40af;
+  line-height: 1.5;
+}
+
+.categoryHint svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #3b82f6;
+}
+
+.categoryHint strong {
+  font-weight: 600;
+}
+
+/* ── Tag hints ──────────────────────────────────────────── */
+.tagHint {
+  font-size: 12.5px;
+  color: #94a3b8;
+  margin: 10px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.tagHint span {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 100px;
+  font-size: 12px;
+  color: #475569;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.tagHint span:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+/* ── Action bar ─────────────────────────────────────────── */
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.actionRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 50%;
+}
+
+.resetBtn {
+  width: 25%;
+}
+
+.btnCancel {
+  height: 42px;
+  padding: 0 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btnCancel:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.btnDraft {
+  height: 42px;
+  padding: 0 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btnDraft:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.btnSubmit {
+  height: 42px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+
+.btnSubmit:hover {
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
+}
+
+.btnSubmit:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 520px) {
+  .heroSub {
+    max-width: 300px;
+  }
+  .actionBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actionRight {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .resetBtn {
+    width: 100%;
+  }
+
+  .btnCancel,
+  .btnDraft,
+  .btnSubmit {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Submit spinner ─────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.btnSubmit:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}

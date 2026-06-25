@@ -1,0 +1,107 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Upload Box ── */
+.uploadBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 34px 20px;
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  background: var(--background-secondary);
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s;
+  color: var(--text-secondary);
+}
+
+.uploadBox:hover {
+  border-color: var(--primary-light);
+  background: var(--primary-surface);
+  color: var(--primary);
+}
+
+.icon {
+  color: var(--text-secondary);
+}
+
+.title {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.title span {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+/* ── Image Card ── */
+.card {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Cover badge */
+.cover {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Remove button */
+.remove {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.remove:hover {
+  background: var(--accent-red);
+}

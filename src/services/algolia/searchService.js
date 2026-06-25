@@ -12,8 +12,6 @@ export class AlgoliaService {
 
   static async _search(query, index) {
     if (!query.trim()) return [];
-
-    console.log(`[Api Call] algolia(${index}) -> start`);
     
     const url = `https://${APP_ID}-dsn.algolia.net/1/indexes/${index}/query`;
     
@@ -31,8 +29,6 @@ export class AlgoliaService {
     });
     
     const data = await response.json();
-
-    console.log(`[Api Call] algolia(${index}) -> end`);
     
     return data.hits || [];
   }

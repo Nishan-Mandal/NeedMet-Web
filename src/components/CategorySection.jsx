@@ -1,6 +1,7 @@
 import "../style/CategorySection.css";
 import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
+import empty_thumb from "../assets/empty_thumb.png";
 
 export default function CategorySection({ title, subTitle="", fontSz, categories, data, style = {}, showSeeAll = true, see_all_navigate}) {
 
@@ -35,7 +36,7 @@ export default function CategorySection({ title, subTitle="", fontSz, categories
               {categoryList.map((category, index) => {
                 
                 const name = category.name || category.category;
-                const image = category.imageUrl;
+                const image = category.imageUrl || empty_thumb;
                 const id = category.id || index;
 
                 return (

@@ -1,7 +1,20 @@
 import { firestore } from "../../../firebase/firebaseConfig";
-import { collection, getDocs, query, where, orderBy, limit, doc, getDoc, startAfter, documentId } from "firebase/firestore";
-import { Listing } from "../../../data/model/listingModel";
-
+import { 
+    collection, 
+    getDocs, 
+    query, 
+    where, 
+    orderBy, 
+    limit, 
+    doc, 
+    getDoc, 
+    startAfter, 
+    documentId, 
+    setDoc, 
+    serverTimestamp 
+} from "firebase/firestore";
+import { Listing, Geo, DaySchedule, ImageFile } from "../../../data/model/listingModel";
+import { uploadListingImages } from "../storage/listingImageService";
 
 
 const formatData = (snap) => {
@@ -22,17 +35,21 @@ const verificationConstraints = import.meta.env.DEV
 
 const listingRef = collection(firestore, "listings");
 
+export const generateListingRef = () => {
+  return doc(listingRef);
+};
+
+
+// ========================================
+// read - services
+//=========================================
 
 export const getListingById = async (listingId) => {
   try {
-    console.log('[Api Call] getListingById -> start');
-
     const ref = doc(firestore, "listings", listingId);
     const snap = await getDoc(ref);
 
     if (!snap.exists()) return null;
-
-    console.log('[Api Call] getListingById -> end');
 
     return Listing.fromJson({
         listingId: snap.id,
@@ -47,8 +64,6 @@ export const getListingById = async (listingId) => {
 
 export const getListingByIds = async (ids) => {
   try{
-    console.log('[Api Call] getListingByIds -> start');
-
     if (!ids.length) return [];
 
     let fetchedListings = [];
@@ -70,8 +85,6 @@ export const getListingByIds = async (ids) => {
       fetchedListings.push(...listingsChunk);
     }
 
-    console.log('[Api Call] getListingByIds -> end');
-
     return fetchedListings;
   } catch (error) {
     console.error("Error fetching listing:", error);
@@ -83,8 +96,6 @@ export const getListingByCategory = async ({ category, quantity }) => {
     try {
         if (!category || category.length === 0) return [];
         
-        console.log('[Api Call] getListingByCategory -> start');
-
         const q = query(
             listingRef,
             ...verificationConstraints, 
@@ -92,8 +103,6 @@ export const getListingByCategory = async ({ category, quantity }) => {
             limit(quantity)
         );
         const snap = await getDocs(q);
-
-        console.log('[Api Call] getListingByCategory -> end');
         
         return formatData(snap);
 
@@ -105,8 +114,6 @@ export const getListingByCategory = async ({ category, quantity }) => {
 
 export const getListingByCategoryPaginated = async ({ category, quantity = 20, pageParam = null }) => {
     try {
-        console.log('[Api Call] getListingByCategoryPaginated -> start');
-
         if (!category || category.length === 0) 
             return { 
                 listings: [], 
@@ -131,8 +138,6 @@ export const getListingByCategoryPaginated = async ({ category, quantity = 20, p
         const snap = await getDocs(q);
         const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
 
-        console.log('[Api Call] getListingByCategoryPaginated -> end');
-
         return { 
             listings: formatData(snap), 
             lastDoc, 
@@ -151,8 +156,6 @@ export const getListingByCategoryPaginated = async ({ category, quantity = 20, p
 
 export const getNewListings = async ({ quantity }) => {
     try {
-        console.log('[Api Call] getNewListings -> start');
-
         const q = query(
             listingRef,
             ...verificationConstraints,
@@ -160,8 +163,6 @@ export const getNewListings = async ({ quantity }) => {
             limit(quantity)
         );
         const snap = await getDocs(q);
-
-        console.log('[Api Call] getNewListings -> end');
 
         return formatData(snap);
     
@@ -173,8 +174,6 @@ export const getNewListings = async ({ quantity }) => {
 
 export const getNewListingsPaginated = async ({ quantity = 20, pageParam = null }) => {
     try {
-        console.log('[Api Call] getNewListingsPaginated -> start');
-
         let q = query(
             listingRef,
             ...verificationConstraints,
@@ -191,8 +190,6 @@ export const getNewListingsPaginated = async ({ quantity = 20, pageParam = null 
 
         const snap = await getDocs(q);
         const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
-
-        console.log('[Api Call] getNewListingsPaginated -> end');
 
         return { 
             listings: formatData(snap), 
@@ -212,8 +209,6 @@ export const getNewListingsPaginated = async ({ quantity = 20, pageParam = null 
 
 export const getRecommendedListings = async ({ quantity }) => {
     try {
-        console.log('[Api Call] getRecommendedListings -> start');
-        
         const q = query(
             listingRef,
             ...verificationConstraints,
@@ -221,8 +216,6 @@ export const getRecommendedListings = async ({ quantity }) => {
             limit(quantity)
         );
         const snap = await getDocs(q);
-
-        console.log('[Api Call] getRecommendedListings -> end');
 
         return formatData(snap);
     
@@ -234,8 +227,6 @@ export const getRecommendedListings = async ({ quantity }) => {
 
 export const getRecommendedListingsPaginated = async ({ quantity = 20, pageParam = null }) => {
     try {
-        console.log('[Api Call] getRecommendedListingsPaginated -> start');
-
         let q = query(
             listingRef,
             ...verificationConstraints, 
@@ -252,8 +243,6 @@ export const getRecommendedListingsPaginated = async ({ quantity = 20, pageParam
 
         const snap = await getDocs(q);
         const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
-
-        console.log('[Api Call] getRecommendedListingsPaginated -> end');
 
         return { 
             listings: formatData(snap), 
@@ -273,8 +262,6 @@ export const getRecommendedListingsPaginated = async ({ quantity = 20, pageParam
 
 export const getSimilarListings = async ({ listingId, category, quantity }) => {
     try {
-        console.log('[Api Call] getSimilarListings -> start');
-
         if (!category || category.length === 0) return [];
 
         const q = query(
@@ -284,8 +271,6 @@ export const getSimilarListings = async ({ listingId, category, quantity }) => {
             limit(quantity)
         );
         const snap = await getDocs(q);
-
-        console.log('[Api Call] getSimilarListings -> end');
         
         let totalListings = formatData(snap);
         totalListings = totalListings
@@ -303,8 +288,6 @@ export const getSimilarListings = async ({ listingId, category, quantity }) => {
 
 export const getSimilarListingsPaginated = async ({ listingId, category, quantity = 20, pageParam = null }) => {
     try {
-        console.log('[Api Call] getSimilarListingsPaginated -> start');
-
         if (!category || category.length === 0)
             return {
                 listings: [],
@@ -330,8 +313,6 @@ export const getSimilarListingsPaginated = async ({ listingId, category, quantit
         const snap = await getDocs(q);
         const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
 
-        console.log('[Api Call] getSimilarListingsPaginated -> end');
-
         return {
             listings: formatData(snap),
             lastDoc,
@@ -346,4 +327,26 @@ export const getSimilarListingsPaginated = async ({ listingId, category, quantit
             hasMore: false
         };
     }
+};
+
+
+// ========================================
+// write - services
+//=========================================
+
+export const saveListing = async (listingId, listingData) => {
+  try {
+    const docRef = doc(firestore, "listings", listingId);
+
+    await setDoc(docRef, {
+        ...listingData,
+        createdAt: serverTimestamp(),
+    });
+
+    return listingId;
+
+  } catch (error) {
+    console.error("Error saving listing:", error);
+    return null;
+  }
 };
