@@ -8,7 +8,7 @@ function LegalPage() {
   const { legalDocument } = useParams();
 
   const { data: page, isLoading: loading } = useQuery({
-    queryKey: ['page', legalDocument],
+    queryKey: ['docs', legalDocument],
     queryFn: () => getPageById(legalDocument),
     enabled: !!legalDocument,
   });

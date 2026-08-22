@@ -8,7 +8,7 @@ export default function BusinessCTA() {
   
     const navigate = useNavigate();
     const goToContact = () => {
-        navigate("/contact_us");
+        navigate("/docs/contact_us");
     };
 
   return (
