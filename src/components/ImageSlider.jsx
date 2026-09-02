@@ -70,6 +70,7 @@ function ImageSlider({
             key={index}
             className="carousel-image"
             onClick={() => {navigate(img?.route)}}
+            loading={index === 0 ? "eager" : "lazy"}
           />
         ))}
       </div>

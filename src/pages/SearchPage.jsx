@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getListingByIds } from "../services/firebase/firestore/listingService";
 import { AlgoliaService } from "../services/algolia/searchService";
-import { BusinessCTA, CategorySection, ListingSection, SearchPageLoader, TrendingSearches } from "../components";
+import { BusinessCTA, CategorySection, ListingSection, SearchPageLoader, TrendingSearches, SEO } from "../components";
 import searchImg from "../assets/search.png";
 import useDebounce from "../hooks/useDebounce";
 import "../style/SearchPage.css";
@@ -129,6 +129,11 @@ export default function SearchPage() {
 
   return (
     <div className="search-page">
+      <SEO 
+        title={debouncedQuery.trim() ? `Search results for "${debouncedQuery}" | NeedMet` : "Search Local Businesses & Services | NeedMet"}
+        description={debouncedQuery.trim() ? `Check search results for "${debouncedQuery}" on NeedMet. Explore local shops, reviews, timing schedules, and contact details.` : "Search for service providers and shops near you. Read ratings, find directions, and contact local sellers."}
+        canonicalUrl="https://needmet.in/search"
+      />
 
       {/* Search Header */}
       <div className="search-header">
@@ -233,7 +238,7 @@ export default function SearchPage() {
       {
         query === "" && (
           <div className="search-empty-state">
-            <img src={searchImg} alt="search_img" />
+            <img src={searchImg} alt="search_img" loading="lazy" />
             <h2>Search Listings & Services</h2>
 
             <p>

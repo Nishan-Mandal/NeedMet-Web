@@ -1,17 +1,11 @@
 import "../style/CategorySection.css";
 import { Link } from "react-router-dom";
-import { useNavigate, useLocation } from "react-router-dom";
 import empty_thumb from "../assets/empty_thumb.png";
+import { generateSlug } from "../utils/slugify.js";
 
 export default function CategorySection({ title, subTitle="", fontSz, categories, data, style = {}, showSeeAll = true, see_all_navigate}) {
 
   const categoryList = categories || data?.categories || [];
-
-  const navigate = useNavigate();
-
-  const navigate_to_selected_category = (name) => {
-    navigate(`/listings/category/${encodeURIComponent(name)}`);
-  };
 
   return (
     <section className="category-section" style={style}>
@@ -40,12 +34,16 @@ export default function CategorySection({ title, subTitle="", fontSz, categories
                 const id = category.id || index;
 
                 return (
-                  <div className="category-card" key={id} onClick={() => navigate_to_selected_category(name)}>
+                  <Link
+                    to={`/listings/category/${generateSlug(name)}`}
+                    className="category-card"
+                    key={id}
+                  >
                     <div className="category-icon">
-                      <img src={image} alt={name} />
+                      <img src={image} alt={name} loading="lazy" />
                     </div>
                     <p className="category-name">{name}</p>
-                  </div>
+                  </Link>
                 );
               })}
             </div>

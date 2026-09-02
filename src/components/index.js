@@ -39,6 +39,7 @@ import TagInput from './Common/TagInput.jsx'
 import KeyValueFields from './KeyValueFields.jsx'
 import CurrentLocationPicker from './Common/CurrentLocationPicker.jsx'
 import SearchableSelect from './Common/SearchableSelect.jsx'
+import SEO from './SEO.jsx'
 
 export {
     Header, 
@@ -82,5 +83,6 @@ export {
     TagInput, 
     KeyValueFields, 
     CurrentLocationPicker, 
-    SearchableSelect
+    SearchableSelect,
+    SEO
 }

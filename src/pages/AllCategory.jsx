@@ -1,4 +1,4 @@
-import { CategorySection, AllCategoryLoader, SystemState, BusinessCTA } from "../components";
+import { CategorySection, AllCategoryLoader, SystemState, BusinessCTA, SEO } from "../components";
 import { useMemo } from "react";
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
@@ -52,6 +52,10 @@ export default function AllCategory() {
     
   return (
     <div>
+      <SEO 
+        title="Browse Business Categories | NeedMet"
+        description="Explore all business and service categories on NeedMet. Find salons, repair services, retail stores, medical clinics, and more."
+      />
       <h1 style={{
         textAlign: 'center', 
         margin: '1rem 0 0rem', 

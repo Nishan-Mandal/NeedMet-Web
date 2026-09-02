@@ -16,7 +16,7 @@ export const publicRoutes = [
     element: <Home />,
   },
   {
-    path: "listing/:listingId",
+    path: "listing/:listingId/:slug?",
     element: <ListingDetails />,
   },
   {
@@ -28,7 +28,7 @@ export const publicRoutes = [
     element: <ListingsPage />,
   },
   {
-    path: "listings/category/:category_name",
+    path: "listings/category/:category_slug",
     element: <ListingsPage />,
   },
   {

@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import QRCode from "qrcode";
 import html2canvas from "html2canvas";
 import PosterTemplate from "./PosterTemplate";
+import { generateSlug } from "../../utils/slugify.js";
 import "../../style/QR/QrPosterModal.css";
 
 export default function QrPosterModal({ open, onClose, listing }) {
@@ -39,8 +40,9 @@ export default function QrPosterModal({ open, onClose, listing }) {
 
         await new Promise((resolve) => requestAnimationFrame(resolve));
 
+        const slug = generateSlug(listing.name);
         const reviewUrl = listing?.listingId
-          ? `https://needmet.in/listing/${listing.listingId}?show=review_modal`
+          ? `https://needmet.in/listing/${listing.listingId}/${slug}?show=review_modal`
           : "https://needmet.in";
         const instagramUrl = listing?.social?.instagram || "";
         const facebookUrl = listing?.social?.facebook || "";

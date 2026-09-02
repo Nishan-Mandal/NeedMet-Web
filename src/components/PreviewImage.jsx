@@ -35,7 +35,7 @@ function ThumbnailStrip({ images, currentIndex, onSelect, scroll }) {
       <button onClick={scrollLeft} disabled={isLeftDisabled} className={`preview-image-arrow prev-img-arrow-left ${isLeftDisabled ? "prev-img-arrow-disabled" : ""}`}>❮</button>
       <div className="fs-strip" ref={ref} onScroll={check} style={hasOverflow ? { justifyContent: "flex-start" } : { justifyContent: "center" }}>
         {images.map((img, index) => (
-          <img key={index} src={img} alt="thumbnail" className={`preview ${currentIndex === index ? "preview-active" : ""}`} onClick={() => onSelect(index)} onLoad={check} />
+          <img key={index} src={img} alt="thumbnail" className={`preview ${currentIndex === index ? "preview-active" : ""}`} onClick={() => onSelect(index)} onLoad={check} loading="lazy" />
         ))}
       </div>
       <button onClick={scrollRight} disabled={isRightDisabled} className={`preview-image-arrow prev-img-arrow-right ${isRightDisabled ? "prev-img-arrow-disabled" : ""}`}>❯</button>
@@ -97,7 +97,7 @@ function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
         </div>
         <div className="fs-main-image-wrap">
           <button className={`fs-nav-btn fs-nav-left ${currentIndex === 0 ? "fs-nav-disabled" : ""}`} onClick={(e) => { e.stopPropagation(); setCurrentIndex((i) => Math.max(0, i - 1)); }} disabled={currentIndex === 0} aria-label="Previous image">❮</button>
-          <img onClick={(e) => e.stopPropagation()} className="fs-main-img" src={images[currentIndex]} alt={`Image ${currentIndex + 1}`} />
+          <img onClick={(e) => e.stopPropagation()} className="fs-main-img" src={images[currentIndex]} alt={`Image ${currentIndex + 1}`} loading="lazy" />
           <button className={`fs-nav-btn fs-nav-right ${currentIndex === images.length - 1 ? "fs-nav-disabled" : ""}`} onClick={(e) => { e.stopPropagation(); setCurrentIndex((i) => Math.min(images.length - 1, i + 1)); }} disabled={currentIndex === images.length - 1} aria-label="Next image">❯</button>
         </div>
         <span className="fs-counter">{currentIndex + 1} / {images.length}</span>
@@ -122,7 +122,7 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
       <div onClick={() => setIsFullscreen(true)} className="main-image" style={{ width, backgroundImage: `url(${imageList[currentIndex]})`, backgroundSize: "cover", backgroundPosition: "center" }}>
         {isPremium && (
           <div className="preview-img-premium-badge">
-            <img src={premiumImg} alt="premium" />
+            <img src={premiumImg} alt="premium" loading="lazy" />
             <span>Premium</span>
           </div>
         )}

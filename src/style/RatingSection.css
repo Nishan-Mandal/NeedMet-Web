@@ -104,7 +104,7 @@
   height: max-content;
 }
 
-.rating-overview h1 {
+.rating-overview h3 {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-accent);
@@ -434,7 +434,7 @@
     border-bottom: 1px solid var(--border);
   }
 
-  .rating-overview h1 {
+  .rating-overview h3 {
     font-size: 1.6rem;
   }
 
@@ -508,7 +508,7 @@
     gap: 1rem;
   }
 
-  .rating-overview h1 {
+  .rating-overview h3 {
     font-size: 1.35rem;
   }
 
