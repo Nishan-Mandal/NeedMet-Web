@@ -8,7 +8,7 @@ export default function Banner({ imageUrl, mobileImageUrl, alt = "Banner" }) {
         {mobileImageUrl && (
           <source media="(max-width: 480px)" srcSet={mobileImageUrl} />
         )}
-        <img src={imageUrl} alt={alt} className="banner-image" />
+        <img src={imageUrl} alt={alt} className="banner-image" loading="lazy" />
       </picture>
     </div>
   );

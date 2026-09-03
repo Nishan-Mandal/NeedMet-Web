@@ -8,6 +8,7 @@ import {
 } from "../pages";
 import { SystemState } from "../components";
 import ErrorImg from '../assets/error.png'
+import { Navigate } from "react-router-dom";
 
 export const publicRoutes = [
   {
@@ -15,7 +16,7 @@ export const publicRoutes = [
     element: <Home />,
   },
   {
-    path: "listing/:listingId",
+    path: "listing/:listingId/:slug?",
     element: <ListingDetails />,
   },
   {
@@ -27,7 +28,7 @@ export const publicRoutes = [
     element: <ListingsPage />,
   },
   {
-    path: "listings/category/:category_name",
+    path: "listings/category/:category_slug",
     element: <ListingsPage />,
   },
   {
@@ -35,7 +36,7 @@ export const publicRoutes = [
     element: <AllCategory />,
   },
   {
-    path: ":legalDocument",
+    path: "docs/:legalDocument",
     element: <LegalPage />,
   },
   {
@@ -44,14 +45,14 @@ export const publicRoutes = [
   },
   {
     path: "*",
-    element: 
-      <SystemState
-        imageSrc={ErrorImg}
-        title="404 - Page"
-        highlight="Not Found"
-        message="The page you're looking for doesn't exist or may have been moved. Please check the URL or go back to the homepage."
-        actionType="navigate"
-        actionLabel="Go Home"
-      />,
+    element: <Navigate to="/" replace />
+      // <SystemState
+      //   imageSrc={ErrorImg}
+      //   title="404 - Page"
+      //   highlight="Not Found"
+      //   message="The page you're looking for doesn't exist or may have been moved. Please check the URL or go back to the homepage."
+      //   actionType="navigate"
+      //   actionLabel="Go Home"
+      // />,
   }
 ];

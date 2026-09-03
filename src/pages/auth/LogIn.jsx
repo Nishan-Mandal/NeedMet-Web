@@ -316,12 +316,11 @@ export default function LogIn() {
             By continuing,
             <br />
             you agree to our{" "}
-            <Link to="/terms_service">
+            <Link to="/docs/terms_service">
               Terms of Service
             </Link>
             {" "}and{" "}
-            <Link to="/privacy_policy">
-              
+            <Link to="/docs/privacy_policy">
               Privacy Policy
             </Link>
             .

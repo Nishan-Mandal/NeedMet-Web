@@ -1,22 +1,21 @@
 import "../style/ListingCard.css";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import empty_thumb from "../assets/empty_thumb.png"
 import premiumImg from "../assets/premium.png";
 
 
-export default function ListingCard({listing}) {
+import { generateSlug } from "../utils/slugify.js";
 
-  const navigate = useNavigate()
-  const navigateToListingDetails = () => {
-    navigate(`/listing/${listing.listingId}`, {
-      state: { listing: listing }
-    });
-  }
+export default function ListingCard({listing}) {
 
   const imageUrl = listing.images.length > 0 ? listing.images[0].thumbUrl : empty_thumb;
 
   return (
-    <div className="listing-card" onClick={navigateToListingDetails}>
+    <Link
+      to={`/listing/${listing.listingId}/${generateSlug(listing.name)}`}
+      state={{ listing }}
+      className="listing-card"
+    >
       {/* Image */}
       <div 
         className="listing-image" 
@@ -27,7 +26,7 @@ export default function ListingCard({listing}) {
         }}>
         {listing?.isPremium && (
             <div className="premium-badge">
-              <img src={premiumImg} alt="premium" /> 
+              <img src={premiumImg} alt="premium" loading="lazy" /> 
               <span>Premium</span>
             </div>
           )}
@@ -49,6 +48,6 @@ export default function ListingCard({listing}) {
           <span>{listing.rating} ({listing.reviews} reviews)</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

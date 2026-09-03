@@ -8,8 +8,10 @@ import {
   getSimilarListingsPaginated,
   getListingById,
 } from "../services/firebase/firestore/listingService";
-import { BusinessCTA, ListingSection, ListingSectionLoader, SystemState } from "../components";
+import { BusinessCTA, ListingSection, ListingSectionLoader, SystemState, SEO } from "../components";
 import ErrorImg from "../assets/error.png";
+import { useCategories } from "../hooks/useAllCategories";
+import { generateSlug } from "../utils/slugify.js";
 
 const QUANTITY = 20;
 const title_decide = (type, category_name) => {
@@ -29,12 +31,48 @@ const generateKey = (type, category_name, listingId) => {
 
 const ListingsPage = () => {
   const { state } = useLocation();
-  const { category_name, listingId } = useParams();
+  const { category_slug, listingId } = useParams();
   let { type } = useParams();
+
+  const { data: allCategories = [] } = useCategories();
+
+  // Resolve category slug to database category name
+  const matchedCategory = allCategories.find(cat => generateSlug(cat.name) === category_slug);
+  const category_name = matchedCategory ? matchedCategory.name : (category_slug || "");
+  const isCategoryResolving = !!category_slug && allCategories.length === 0;
 
   type = listingId ? "similar" : type; 
   const title = state?.title || title_decide(type, category_name);
   const sentinelRef = useRef(null);
+
+  const getSeoMetadata = () => {
+    let seoTitle = "Local Business Listings | NeedMet";
+    let seoDescription = "Find top-rated services and businesses. View ratings, maps, phone numbers, and operational hours.";
+
+    if (category_name) {
+      const decodedCategory = decodeURIComponent(category_name);
+      seoTitle = `Best ${decodedCategory} Services | NeedMet`;
+      seoDescription = `Find the best ${decodedCategory} services and businesses on NeedMet. View ratings, customer reviews, contact details, maps, and hours.`;
+    } else if (type === "recommended") {
+      seoTitle = "Recommended Local Businesses | NeedMet";
+      seoDescription = "Discover top-rated local services and businesses handpicked for you on NeedMet.";
+    } else if (type === "newly_added") {
+      seoTitle = "Newly Added Local Businesses | NeedMet";
+      seoDescription = "Check out the latest local service providers, shops, and businesses newly added to NeedMet.";
+    } else if (type === "similar") {
+      seoTitle = "Similar Local Businesses | NeedMet";
+      seoDescription = "Explore similar local services, shops, and businesses near you on NeedMet.";
+    }
+
+    return { seoTitle, seoDescription };
+  };
+
+  const { seoTitle, seoDescription } = getSeoMetadata();
+  const canonicalUrl = category_slug 
+    ? `https://needmet.in/listings/category/${category_slug}` 
+    : type 
+      ? `https://needmet.in/listings/${type}` 
+      : undefined;
 
   const { 
     data: listingData, 
@@ -62,7 +100,7 @@ const ListingsPage = () => {
     queryFn: ({ pageParam = null }) => fetchFn({ ...params, quantity: QUANTITY, pageParam }),
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.lastDoc : undefined,
-    enabled: !!fetchFn && (type === "similar" ? similar_category !== '' : true),
+    enabled: !!fetchFn && !isCategoryResolving && (type === "similar" ? similar_category !== '' : true),
     onSuccess: (data) => console.log(data),
     onError: (error) => console.log(error),
   });
@@ -93,7 +131,8 @@ const ListingsPage = () => {
     return () => observer.disconnect();
   }, [handleObserver]);
 
-  if (isLoading || listingIsLoading) return <ListingSectionLoader count={QUANTITY} showSeeAll={false} />;
+  const isPageLoading = isLoading || listingIsLoading || isCategoryResolving;
+  if (isPageLoading) return <ListingSectionLoader count={QUANTITY} showSeeAll={false} />;
 
   if(error) {
     return (
@@ -110,6 +149,11 @@ const ListingsPage = () => {
 
   return (
     <>
+      <SEO 
+        title={seoTitle}
+        description={seoDescription}
+        canonicalUrl={canonicalUrl}
+      />
       <div className="listing-page-body">
         <ListingSection title={title} listings={listings} showSeeAll={false} />
 

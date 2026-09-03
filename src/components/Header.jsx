@@ -205,11 +205,11 @@ export default function Header() {
                 Add Business
               </NavLink>
 
-              <NavLink to="/about_us" onClick={() => setShowMenu(false)}>
+              <NavLink to="/docs/about_us" onClick={() => setShowMenu(false)}>
                 About Us
               </NavLink>
 
-              <NavLink to="/contact_us" onClick={() => setShowMenu(false)}>
+              <NavLink to="/docs/contact_us" onClick={() => setShowMenu(false)}>
                 Contact Us
               </NavLink>
 
@@ -218,23 +218,23 @@ export default function Header() {
                 Terms & Conditions
               </div>
 
-              <NavLink to="/community_guidelines" onClick={() => setShowMenu(false)}>
+              <NavLink to="/docs/community_guidelines" onClick={() => setShowMenu(false)}>
                 Community Guidelines
               </NavLink>
 
-              <NavLink to="/listing_policy" onClick={() => setShowMenu(false)}>
+              <NavLink to="/docs/listing_policy" onClick={() => setShowMenu(false)}>
                 Listing Policy
               </NavLink>
 
-              <NavLink to="/privacy_policy" onClick={() => setShowMenu(false)}>
+              <NavLink to="/docs/privacy_policy" onClick={() => setShowMenu(false)}>
                 Privacy Policy
               </NavLink>
 
-              <NavLink to="/safety" onClick={() => setShowMenu(false)}>
+              <NavLink to="/docs/safety" onClick={() => setShowMenu(false)}>
                 Safety
               </NavLink>
 
-              <NavLink to="/terms_service" onClick={() => setShowMenu(false)}>
+              <NavLink to="/docs/terms_service" onClick={() => setShowMenu(false)}>
                 Terms of Service
               </NavLink>
 
@@ -281,7 +281,7 @@ export default function Header() {
           </div>
         </NavLink>
 
-        <NavLink to="/about_us" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
+        <NavLink to="/docs/about_us" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <circle cx="12" cy="8" r="4" />
             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
@@ -289,7 +289,7 @@ export default function Header() {
           <span>About</span>
         </NavLink>
 
-        <NavLink to="/contact_us" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
+        <NavLink to="/docs/contact_us" className={({ isActive }) => `bnav-item${isActive ? ' active' : ''}`}>
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>

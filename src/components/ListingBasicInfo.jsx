@@ -13,11 +13,11 @@ import { useEffect } from 'react'
 export default function ListingBasicInfo({ listing, className = '' }) {
 
     const socialIcons = {
-        instagram: <img src={instagram} alt="instagram" className='social-icons-img' />,
-        facebook: <img src={facebook} alt="facebook" className='social-icons-img'/>,
-        website: <img src={website} alt="linkedin" className='social-icons-img' />,
-        whatsapp: <img src={whatsapp} alt="website" className='social-icons-img' />,
-        linkedin: <img src={linkedin} alt="whatsapp" className='social-icons-img' />
+        instagram: <img src={instagram} alt="instagram" className='social-icons-img' loading="lazy" />,
+        facebook: <img src={facebook} alt="facebook" className='social-icons-img' loading="lazy" />,
+        website: <img src={website} alt="linkedin" className='social-icons-img' loading="lazy" />,
+        whatsapp: <img src={whatsapp} alt="website" className='social-icons-img' loading="lazy" />,
+        linkedin: <img src={linkedin} alt="whatsapp" className='social-icons-img' loading="lazy" />
     }
 
     function formatSocialLink(key, value) {
@@ -95,10 +95,10 @@ export default function ListingBasicInfo({ listing, className = '' }) {
     return (
         <div className={`listing-basic-info ${className}`}>
 
-            <h1 className='listing-basic-info-category'>{listing.category}</h1>
+            <span className='listing-basic-info-category'>{listing.category}</span>
 
             {/* Title */}
-            <h2 className="listing-info-title">{listing.name}</h2>
+            <h1 className="listing-info-title">{listing.name}</h1>
 
             {/* Rating */}
             <div className="listing-rating">
@@ -154,7 +154,7 @@ export default function ListingBasicInfo({ listing, className = '' }) {
                         <p className="owner-name">{listing.ownerName}</p>
                         <p className="owner-role">
                             Contributor
-                            <img src={blueTick} alt="verified" />
+                            <img src={blueTick} alt="verified" loading="lazy" />
                         </p>
                     </div>
                 </div>

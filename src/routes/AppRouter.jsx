@@ -11,6 +11,7 @@ import { adminRoutes } from "./adminRoutes";
 import { publicRoutes } from "./publicRoutes";
 import { authRoutes } from "./authRoutes";
 import { userRoutes } from "./userRoutes";
+import { redirectRoutes } from "./redirectRoutes";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +19,15 @@ const router = createBrowserRouter(
 
       {/* Public Pages */}
       {publicRoutes.map((route) => (
+        <Route
+          key={route.path}
+          path={route.path}
+          element={route.element}
+        />
+      ))}
+
+      {/* Legacy Policy Redirects */}
+      {redirectRoutes.map((route) => (
         <Route
           key={route.path}
           path={route.path}

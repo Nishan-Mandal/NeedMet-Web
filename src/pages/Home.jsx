@@ -1,10 +1,11 @@
-import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal, TrendingSearches, BusinessCTA, Banner } from '../components'
+import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal, TrendingSearches, BusinessCTA, Banner, SEO } from '../components'
 import ErrorImg from "../assets/error.png"
 import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
 import { useEffect, Fragment } from 'react';
 import useInfo from '../contexts/infoContext.jsx';
+import { generateSlug } from "../utils/slugify.js";
 
 function Home() {
 
@@ -63,6 +64,10 @@ function Home() {
   
   return (
     <>
+      <SEO 
+        title="NeedMet | Find Local Businesses & Services Near You"
+        description="Search and discover trusted local service providers, shops, salons, electricians, and businesses in your area. Check reviews and contact them directly on NeedMet."
+      />
       <Hero data={homeData} />
       <TrendingSearches />
       <CategorySection 
@@ -112,7 +117,7 @@ function Home() {
               title={category}
               subTitle='Specially For You'
               listings={listings}
-              see_all_navigate={`/listings/category/${encodeURIComponent(category)}`}
+              see_all_navigate={`/listings/category/${generateSlug(category)}`}
               bgColor={'var(--background-secondary)'}
             />
 

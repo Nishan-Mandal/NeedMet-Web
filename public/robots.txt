@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /listings/
+Allow: /listing/
+Allow: /docs/
+Disallow: /admin/
+Disallow: /contribute/listing/preview
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://needmet.in/sitemap.xml
