@@ -107,7 +107,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
           
             {/* LEFT SIDE - Average Rating */}
             <div className="rating-overview">
-              <h1>{ratingCount > 0 ? getRatingLabel(rating) : "No Ratings"}</h1>
+              <h3>{ratingCount > 0 ? getRatingLabel(rating) : "No Ratings"}</h3>
               <div className="stars">
                 {"★".repeat(Math.round(rating))}
                 {"☆".repeat(5 - Math.round(rating))}

@@ -1,14 +1,14 @@
 import { useParams } from "react-router-dom";
 import { getPageById } from "../services/firebase/firestore/pageService";
 import { useQuery } from "@tanstack/react-query";
-import { BusinessCTA, SystemState } from "../components";
+import { BusinessCTA, SystemState, SEO } from "../components";
 import ErrorImg from '../assets/error.png'
 
 function LegalPage() {
   const { legalDocument } = useParams();
 
   const { data: page, isLoading: loading } = useQuery({
-    queryKey: ['page', legalDocument],
+    queryKey: ['docs', legalDocument],
     queryFn: () => getPageById(legalDocument),
     enabled: !!legalDocument,
   });
@@ -30,6 +30,12 @@ function LegalPage() {
 
   return (
     <>
+      {page && (
+        <SEO 
+          title={`${page.title} | NeedMet`}
+          description={`Read our official ${page.title} document. Understand our community guidelines, listing policies, and terms of service.`}
+        />
+      )}
       <div className="legal-page-body" style={{minHeight: '100vh'}}>
         <p style={{
             textAlign: 'center', 

@@ -5,7 +5,7 @@ const DRAFT_KEY = "add-listing-draft";
 
 export function ListingDraftProvider({ children }) {
   const [draftFormData, setDraftFormDataState] = useState(null);
-  console.log(draftFormData)
+  // console.log(draftFormData)
 
   useEffect(() => {
     const savedDraft = localStorage.getItem(DRAFT_KEY);

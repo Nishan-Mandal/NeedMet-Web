@@ -49,7 +49,7 @@ export default function SystemState({
       <div className="grid-overlay" />
 
       <div className="nodata-left">
-        <img src={imageSrc} alt="image" />
+        <img src={imageSrc} alt="image" loading="lazy" />
       </div>
 
       <div className="nodata-right">
@@ -83,7 +83,7 @@ function InlineNoListingsFound({ actionType='redirect', actionTo='https://play.g
   return (
     <div className="no-listings-row">
       <div className="no-listings-img">
-        <img src={NoDataImg} alt="no_data"/>
+        <img src={NoDataImg} alt="no_data" loading="lazy" />
       </div>
  
       <div className="no-listings-text">

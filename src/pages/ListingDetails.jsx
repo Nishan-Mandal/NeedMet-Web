@@ -9,8 +9,10 @@ import {
   BusinessCTA,
   Hyperlocal, 
   Button,
-  Loader
+  Loader,
+  SEO
 } from '../components'
+import { generateSlug } from "../utils/slugify.js";
 import ErrorImg from "../assets/error.png"
 import NoDataImg from "../assets/no_data.png"
 import { useParams, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
@@ -69,6 +71,38 @@ function ListingDetails() {
   });
 
   const listing = isPreviewPage ? previewListing : fetchedListing || stateListing;
+
+  const cleanListingSlug = listing && listing.listingId !== "preview-listing" ? generateSlug(listing.name) : "";
+  const canonicalUrl = listing && listing.listingId !== "preview-listing" 
+    ? `https://needmet.in/listing/${listing.listingId}/${cleanListingSlug}` 
+    : undefined;
+
+  const schema = listing && listing.listingId !== "preview-listing" ? {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": listing.name,
+    "description": listing.description || `Find ${listing.name} in ${listing.address} on NeedMet.`,
+    "image": listing.images?.map(img => img.fullUrl) || [],
+    "telephone": listing.phone || listing.alternatePhone,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": listing.address,
+      "addressLocality": listing.city || "Delhi",
+      "addressCountry": "IN"
+    },
+    "geo": listing.geo ? {
+      "@type": "GeoCoordinates",
+      "latitude": listing.geo.lat,
+      "longitude": listing.geo.lng
+    } : undefined,
+    "url": `https://needmet.in/listing/${listing.listingId}/${cleanListingSlug}`,
+    "aggregateRating": listing.ratingCount > 0 ? {
+      "@type": "AggregateRating",
+      "ratingValue": listing.rating,
+      "reviewCount": listing.ratingCount
+    } : undefined
+  } : null;
+
   const shouldFetch = !isPreviewPage && !!listing;
 
   const { data: newListings = [], isLoading: newLoading, error: newError } = useQuery({
@@ -234,6 +268,16 @@ function ListingDetails() {
 
   return (
     <>
+      {listing && (
+        <SEO 
+          title={`${listing.name} in ${listing.address} - ${listing.category} | NeedMet`}
+          description={`Looking for the best ${listing.category} in ${listing.address}? Check reviews, ratings, opening hours, and contact ${listing.name} directly on NeedMet.`}
+          canonicalUrl={canonicalUrl}
+          schema={schema}
+          image={listing.images?.[0]?.fullUrl}
+          ogType="article"
+        />
+      )}
       <div className="listing-details">
 
         <div className="listing-details-left">

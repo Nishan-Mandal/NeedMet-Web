@@ -293,9 +293,9 @@ export default function SignUp() {
             By creating an account,
             <br />
             you agree to our{" "}
-            <Link to="/terms_service">Terms of Service</Link>
+            <Link to="/docs/terms_service">Terms of Service</Link>
             {" "}and{" "}
-            <Link to="/privacy_policy">Privacy Policy</Link>.
+            <Link to="/docs/privacy_policy">Privacy Policy</Link>.
           </p>
 
         </div>
