@@ -40,6 +40,6 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      # Deploy to Firebase Hosting
+      # Deploy to Firebase Hosting 
       - name: Deploy to Firebase
         run: firebase deploy --only hosting --token "${{ secrets.FIREBASE_SERVICE_ACCOUNT_STARTUP20_5EAA7 }}"
