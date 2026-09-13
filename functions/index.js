@@ -22,6 +22,8 @@ const SOCIAL_BOT_USER_AGENTS = [
   "discordbot",
   "vkshare",
   "w3c_validator",
+  "meta-externalagent",
+  "applebot",
 ];
 
 // Helper to sanitize HTML strings against XSS injection
@@ -46,23 +48,58 @@ async function logShareStatus(data) {
   }
 }
 
-// In-Memory cache of index.html (read once when server boots)
+// In-Memory cache of the production index.html
 let cachedIndexHtml = null;
-function getIndexHtml() {
-  if (!cachedIndexHtml) {
-    try {
-      const indexPath = path.join(__dirname, "../dist/index.html");
-      if (fs.existsSync(indexPath)) {
-        cachedIndexHtml = fs.readFileSync(indexPath, "utf8");
-      }
-    } catch (err) {
-      console.error("Error reading index.html from dist:", err);
-    }
+async function getIndexHtml() {
+  if (cachedIndexHtml) {
+    return cachedIndexHtml;
   }
+
+  // 1. Try reading from local filesystem (works during local tests if dist exists)
+  try {
+    const localDistPath = path.join(__dirname, "../dist/index.html");
+    if (fs.existsSync(localDistPath)) {
+      cachedIndexHtml = fs.readFileSync(localDistPath, "utf8");
+      return cachedIndexHtml;
+    }
+  } catch (_) {}
+
+  // 2. In Cloud Functions production, fetch the live production index.html from Hosting CDN
+  try {
+    const res = await fetch("https://needmet.in/index.html");
+    if (res.ok) {
+      cachedIndexHtml = await res.text();
+      return cachedIndexHtml;
+    }
+  } catch (err) {
+    console.error("Error fetching live index.html from hosting:", err);
+  }
+
   return (
     cachedIndexHtml ||
     "<!doctype html><html><head><title>NeedMet</title></head><body><div id='root'></div></body></html>"
   );
+}
+
+// Helper to extract listingId from any URL format
+function extractListingId(req) {
+  if (req.query && req.query.id) {
+    return req.query.id;
+  }
+
+  const reqPath = req.path || req.url || "";
+  const match = reqPath.match(/\/listing\/([^\/\?#]+)/i);
+  if (match && match[1]) {
+    return match[1];
+  }
+
+  const parts = reqPath.split("/").filter(Boolean);
+  const idx = parts.findIndex((p) => p.toLowerCase() === "listing");
+  if (idx !== -1 && parts[idx + 1]) {
+    return parts[idx + 1];
+  }
+
+  return null;
 }
 
 exports.shareListing = onRequest(
@@ -77,11 +114,9 @@ exports.shareListing = onRequest(
     const isBot = Boolean(matchedBot);
     const clientIp = req.headers["x-forwarded-for"] || req.ip || "";
 
-    // Extract listingId from /listing/:listingId or query param ?id=...
-    const pathParts = req.path.split("/").filter(Boolean);
-    const listingId = (pathParts[0] === "listing" ? pathParts[1] : null) || req.query.id;
+    const listingId = extractListingId(req);
 
-    // 1. If it's a real human visitor (or no listing ID found), serve the standard React SPA
+    // 1. If it's a real human visitor (or no listing ID found), serve the full React SPA
     if (!isBot || !listingId) {
       logShareStatus({
         listingId: listingId || null,
@@ -93,11 +128,12 @@ exports.shareListing = onRequest(
         path: req.path || "",
       });
 
+      const fullHtml = await getIndexHtml();
       res.set("Cache-Control", "public, max-age=300, s-maxage=600");
-      return res.status(200).send(getIndexHtml());
+      return res.status(200).send(fullHtml);
     }
 
-    // 2. If it's a social crawler bot, fetch data from Firestore
+    // 2. If it's a social crawler bot (WhatsApp, Facebook, etc.), fetch data from Firestore
     try {
       const docSnap = await db.collection("listings").doc(listingId).get();
 
@@ -112,8 +148,9 @@ exports.shareListing = onRequest(
           path: req.path || "",
         });
 
+        const fullHtml = await getIndexHtml();
         res.set("Cache-Control", "public, max-age=300, s-maxage=600");
-        return res.status(200).send(getIndexHtml());
+        return res.status(200).send(fullHtml);
       }
 
       const listing = docSnap.data();
@@ -133,7 +170,7 @@ exports.shareListing = onRequest(
 
       const canonicalUrl = `https://needmet.in/listing/${listingId}`;
 
-      // Log successful bot share preview generation asynchronously
+      // Log successful bot preview generation asynchronously
       logShareStatus({
         listingId,
         listingName: name,
@@ -155,7 +192,7 @@ exports.shareListing = onRequest(
   <meta name="description" content="${escapeHtml(description)}" />
   
   <!-- Open Graph / WhatsApp / Facebook -->
-  <meta property="og:type" content="article" />
+  <meta property="og:type" content="website" />
   <meta property="og:site_name" content="NeedMet" />
   <meta property="og:url" content="${canonicalUrl}" />
   <meta property="og:title" content="${escapeHtml(title)}" />
@@ -197,8 +234,9 @@ exports.shareListing = onRequest(
         path: req.path || "",
       });
 
+      const fullHtml = await getIndexHtml();
       res.set("Cache-Control", "public, max-age=60, s-maxage=120");
-      return res.status(200).send(getIndexHtml());
+      return res.status(200).send(fullHtml);
     }
   }
 );
