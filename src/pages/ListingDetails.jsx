@@ -271,7 +271,7 @@ function ListingDetails() {
       {listing && (
         <SEO 
           title={`${listing.name} in ${listing.address} - ${listing.category} | NeedMet`}
-          description={`Looking for the best ${listing.category} in ${listing.address}? Check reviews, ratings, opening hours, and contact ${listing.name} directly on NeedMet.`}
+          description={`Find ${listing.name} (${listing.category}) in ${listing.address}. Get contact details, location directions, opening hours, and more on NeedMet.`}
           canonicalUrl={canonicalUrl}
           schema={schema}
           image={listing.images?.[0]?.fullUrl}

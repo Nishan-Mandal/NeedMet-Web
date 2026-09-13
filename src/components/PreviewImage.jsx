@@ -43,12 +43,32 @@ function ThumbnailStrip({ images, currentIndex, onSelect, scroll }) {
   );
 }
 
-function useShare() {
+function useShare(listing) {
   const [copied, setCopied] = useState(false);
   const handleShare = async () => {
     const url = window.location.href;
+    const shareTitle = listing?.name || document.title;
+
+    const details = [];
+    if (listing?.name) details.push(`*${listing.name}*`);
+    if (listing?.category) details.push(`📂 ${listing.category}`);
+    if (listing?.address) details.push(`📍 ${listing.address}`);
+    if (listing?.phone || listing?.alternatePhone) {
+      details.push(`📞 ${listing.phone || listing.alternatePhone}`);
+    }
+
+    const shareText = details.length > 0
+      ? `Check out ${details.join(" | ")} on NeedMet:`
+      : "Check out this listing on NeedMet:";
+
     if (navigator.share) {
-      try { await navigator.share({ title: document.title, url }); } catch (_) {}
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url,
+        });
+      } catch (_) {}
     } else {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -67,10 +87,10 @@ function ShareButton({ onClick, copied, className = "" }) {
   );
 }
 
-function FullscreenViewer({ images, startIndex, isPremium, onClose }) {
+function FullscreenViewer({ images, startIndex, isPremium, onClose, listing }) {
   const [currentIndex, setCurrentIndex] = useState(startIndex);
   const scroll = useThumbScroll(images);
-  const { handleShare, copied } = useShare();
+  const { handleShare, copied } = useShare(listing);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -113,7 +133,7 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showQrPoster, setShowQrPoster] = useState(false);   // ← NEW
   const scroll = useThumbScroll(images);
-  const { handleShare, copied } = useShare();
+  const { handleShare, copied } = useShare(listing);
 
   const imageList = images.length === 0 ? [empty_thumb] : images;
 
@@ -148,7 +168,7 @@ export default function PreviewImage({ width = "100%", images = [empty_thumb], i
       </div>
 
       {isFullscreen && (
-        <FullscreenViewer images={imageList} startIndex={currentIndex} isPremium={isPremium} onClose={() => setIsFullscreen(false)} />
+        <FullscreenViewer images={imageList} startIndex={currentIndex} isPremium={isPremium} onClose={() => setIsFullscreen(false)} listing={listing} />
       )}
 
       {showQrPoster && (
