@@ -47,30 +47,16 @@ function useShare(listing) {
   const [copied, setCopied] = useState(false);
   const handleShare = async () => {
     const url = window.location.href;
-    const shareTitle = listing?.name || document.title;
-
-    const details = [];
-    if (listing?.name) details.push(`*${listing.name}*`);
-    if (listing?.category) details.push(`📂 ${listing.category}`);
-    if (listing?.address) details.push(`📍 ${listing.address}`);
-    if (listing?.phone || listing?.alternatePhone) {
-      details.push(`📞 ${listing.phone || listing.alternatePhone}`);
-    }
-
-    const shareText = details.length > 0
-      ? `Check out ${details.join(" | ")} on NeedMet:`
-      : "Check out this listing on NeedMet:";
+    const shareText = `Check the listing here:\n${url}`;
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: shareTitle,
           text: shareText,
-          url,
         });
       } catch (_) {}
     } else {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(shareText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
