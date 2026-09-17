@@ -1,67 +1,113 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getListingByIds } from "../services/firebase/firestore/listingService";
 import { AlgoliaService } from "../services/algolia/searchService";
-import { BusinessCTA, CategorySection, ListingSection, SearchPageLoader, TrendingSearches, SEO } from "../components";
+import { useCategories } from "../hooks/useAllCategories";
+import {
+  BusinessCTA,
+  CategorySection,
+  ListingSection,
+  SearchPageLoader,
+  TrendingSearches,
+  SEO,
+  SearchAutocomplete,
+} from "../components";
 import searchImg from "../assets/search.png";
-import useDebounce from "../hooks/useDebounce";
 import "../style/SearchPage.css";
 
 
 export default function SearchPage() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlQuery = searchParams.get("q") || "";
-  const [query, setQuery] = useState(urlQuery);
+  const activeQuery = searchParams.get("q") || "";
+  const [query, setQuery] = useState(activeQuery);
+  const [isAutocompleteOpen, setIsAutocompleteOpen] = useState(false);
+  const inputContainerRef = useRef(null);
 
+  const handleGoBack = () => {
+    if (window.history.length > 2) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
+
+  // Sync input text when URL query changes (e.g. from Hero redirect or browser back/forward)
   useEffect(() => {
-    setQuery(urlQuery);
-  }, [urlQuery]);
+    setQuery(activeQuery);
+  }, [activeQuery]);
 
   const [recentSearches, setRecentSearches] = useState([]);
 
-  const debouncedQuery = useDebounce(query, 700);
-
+  // Load Recent Searches on mount
   useEffect(() => {
-    if (debouncedQuery.trim()) {
-      setSearchParams(
-        { q: debouncedQuery },
-        { replace: true }
-      );
-    } else {
-      setSearchParams(
-        {},
-        { replace: true }
-      );
+    try {
+      const searches = JSON.parse(localStorage.getItem("recentSearches")) || [];
+      setRecentSearches(searches);
+    } catch {
+      setRecentSearches([]);
     }
-  }, [debouncedQuery]);
-
-  // Load Recent Searches
-  useEffect(() => {
-    const searches = JSON.parse(localStorage.getItem("recentSearches")) || [];
-    setRecentSearches(searches);
   }, []);
 
-  // Listings Query
+  // Fetch cached categories (0 Algolia requests!)
+  const { data: allCategories = [] } = useCategories();
+
+  // Save to recent searches ONLY on explicitly committed search
+  const saveToRecentSearches = (term) => {
+    if (!term || !term.trim()) return;
+    const clean = term.trim();
+    setRecentSearches((prev) => {
+      const filtered = prev.filter(
+        (item) => item.toLowerCase() !== clean.toLowerCase()
+      );
+      const updated = [clean, ...filtered].slice(0, 10);
+      localStorage.setItem("recentSearches", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  // Explicitly commit a search (Enter key, selecting suggestion, clicking pill)
+  const commitSearch = (searchTerm) => {
+    const term = (typeof searchTerm === "string" ? searchTerm : query).trim();
+    setIsAutocompleteOpen(false);
+
+    if (!term) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+
+    setSearchParams({ q: term });
+    setQuery(term);
+    saveToRecentSearches(term);
+  };
+
+  // Record into recent searches if navigated with a committed ?q=... in URL
+  useEffect(() => {
+    if (activeQuery.trim()) {
+      saveToRecentSearches(activeQuery);
+    }
+  }, [activeQuery]);
+
+  // Listings Query (Algolia + Firebase) - only runs for COMMITTED activeQuery!
   const {
     data: listingResults = [],
     isLoading: listingsLoading,
   } = useQuery({
-    queryKey: ["searchListings", debouncedQuery],
+    queryKey: ["searchListings", activeQuery],
     queryFn: async () => {
-
       // Step 1: Search Algolia
-      const listingHits = await AlgoliaService.searchListings(debouncedQuery);
+      const listingHits = await AlgoliaService.searchListings(activeQuery);
 
       // Extract IDs
       const ids = listingHits
         .map((item) => item.objectID?.toString())
         .filter(Boolean);
 
-      // Step 3: Fetch Full Firebase Listings
+      // Step 2: Fetch Full Firebase Listings
       const fetchedListings = await getListingByIds(ids);
 
-      // Step 4: Maintain Algolia Order
+      // Step 3: Maintain Algolia Order
       const listingMap = {};
 
       fetchedListings.forEach((listing) => {
@@ -74,40 +120,21 @@ export default function SearchPage() {
 
       return orderedListings;
     },
-    enabled: !!debouncedQuery.trim(),
+    enabled: !!activeQuery.trim(),
   });
 
-  // Categories Query
-  const {
-    data: categoryResults = [],
-    isLoading: categoriesLoading,
-  } = useQuery({
-    queryKey: ["searchCategories", debouncedQuery],
-    queryFn: () => AlgoliaService.searchCategories(debouncedQuery),
-    enabled: !!debouncedQuery.trim(),
-  });
-
-  // Save Recent Searches
-  useEffect(() => {
-    if (!debouncedQuery.trim()) return;
-
-    let updated = [...recentSearches];
-
-    if (!updated.includes(debouncedQuery)) {
-      updated.unshift(debouncedQuery);
-
-      if (updated.length > 10) {
-        updated.pop();
-      }
-
-      setRecentSearches(updated);
-
-      localStorage.setItem(
-        "recentSearches",
-        JSON.stringify(updated)
+  // Filter Categories in-memory for COMMITTED activeQuery (0 Algolia requests!)
+  const categoryResults = useMemo(() => {
+    if (!activeQuery.trim() || !allCategories?.length) return [];
+    const normalized = activeQuery.trim().toLowerCase();
+    return allCategories.filter((cat) => {
+      const nameMatch = cat.name?.toLowerCase().includes(normalized);
+      const tagMatch = cat.tags?.some((tag) =>
+        tag?.toLowerCase().includes(normalized)
       );
-    }
-  }, [debouncedQuery]);
+      return nameMatch || tagMatch;
+    });
+  }, [activeQuery, allCategories]);
 
   const removeRecentSearch = (term) => {
     const updated = recentSearches.filter(
@@ -122,43 +149,84 @@ export default function SearchPage() {
     );
   };
 
-  const isDebouncing =
-    query.trim() !== debouncedQuery.trim();
-
-  const isLoading = isDebouncing || listingsLoading || categoriesLoading;
+  const isLoading = listingsLoading;
 
   return (
     <div className="search-page">
       <SEO 
-        title={debouncedQuery.trim() ? `Search results for "${debouncedQuery}" | NeedMet` : "Search Local Businesses & Services | NeedMet"}
-        description={debouncedQuery.trim() ? `Check search results for "${debouncedQuery}" on NeedMet. Explore local shops, reviews, timing schedules, and contact details.` : "Search for service providers and shops near you. Read ratings, find directions, and contact local sellers."}
+        title={activeQuery.trim() ? `Search results for "${activeQuery}" | NeedMet` : "Search Local Businesses & Services | NeedMet"}
+        description={activeQuery.trim() ? `Check search results for "${activeQuery}" on NeedMet. Explore local shops, reviews, timing schedules, and contact details.` : "Search for service providers and shops near you. Read ratings, find directions, and contact local sellers."}
         canonicalUrl="https://needmet.in/search"
       />
 
       {/* Search Header */}
       <div className="search-header">
-        <div className="search-input-wrapper">
-          <i className="fa-solid fa-magnifying-glass search-icon"></i>
-          <input
-            type="text"
-            placeholder="What service do you need?"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <i 
-            onClick={() => {
-              setQuery("");
-              setSearchParams({});
-            }} 
-            className="fa-solid fa-xmark search-cancel"
-          ></i>
+        <div className="search-input-row">
+          <button
+            type="button"
+            className="search-back-btn"
+            onClick={handleGoBack}
+            aria-label="Go back"
+            title="Go back"
+          >
+            <i className="fa-solid fa-arrow-left"></i>
+          </button>
+
+          <div className="search-input-container" ref={inputContainerRef}>
+            <div className="search-input-wrapper">
+              <i className="fa-solid fa-magnifying-glass search-icon"></i>
+              <input
+                type="text"
+                autoFocus
+                placeholder="What service do you need?"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setIsAutocompleteOpen(true);
+                }}
+                onFocus={() => setIsAutocompleteOpen(true)}
+                onClick={() => setIsAutocompleteOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    commitSearch(query);
+                  }
+                }}
+              />
+              {query && (
+                <i 
+                  onClick={() => {
+                    setQuery("");
+                    setSearchParams({}, { replace: true });
+                    setIsAutocompleteOpen(false);
+                  }} 
+                  className="fa-solid fa-xmark search-cancel"
+                  title="Clear search"
+                ></i>
+              )}
+            </div>
+
+            <SearchAutocomplete
+              query={query}
+              categories={allCategories}
+              recentSearches={recentSearches}
+              isOpen={isAutocompleteOpen}
+              onClose={() => setIsAutocompleteOpen(false)}
+              onSelectQuery={(term) => {
+                commitSearch(term);
+              }}
+              onSelectCategory={(cat) => {
+                commitSearch(cat.name || "");
+              }}
+              wrapperRef={inputContainerRef}
+            />
+          </div>
         </div>
       </div>
 
       {/* Recent Searches */}
       {
         recentSearches.length > 0 &&
-        query === "" && (
+        !activeQuery.trim() && (
           <>
             <div className="recent-search-wrapper">
               <div className="recent-search-section">
@@ -186,8 +254,7 @@ export default function SearchPage() {
                         key={item}
                         className="recent-search-pill"
                         onClick={() => {
-                          setQuery(item);
-                          setSearchParams({ q: item });
+                          commitSearch(item);
                         }}
                       >
                         <div className="recent-pill-left">
@@ -220,7 +287,7 @@ export default function SearchPage() {
       }
 
       {
-        query === "" && (
+        !activeQuery.trim() && (
           <TrendingSearches />
         )
       }
@@ -236,7 +303,8 @@ export default function SearchPage() {
 
       {/* Empty State */}
       {
-        query === "" && (
+        !isLoading &&
+        !activeQuery.trim() && (
           <div className="search-empty-state">
             <img src={searchImg} alt="search_img" loading="lazy" />
             <h2>Search Listings & Services</h2>
@@ -252,7 +320,7 @@ export default function SearchPage() {
       {/* Results */}
       {
         !isLoading &&
-        query !== "" && (
+        activeQuery.trim() !== "" && (
           <div className="search-results">
             <CategorySection
               title="Searched Categories"

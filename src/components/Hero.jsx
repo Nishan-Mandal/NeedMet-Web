@@ -36,11 +36,20 @@ const Stats = () => (
   }
 
 export default function Hero({ data }) {
-  const [query, setQuery] = useState("");
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const navigate = useNavigate();
 
-  const navigateToSearch = (query) => {
-    navigate(`/search?q=${query}`);
+  const handleSearchClick = (term = "") => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      const q = typeof term === "string" ? term.trim() : "";
+      if (q) {
+        navigate(`/search?q=${encodeURIComponent(q)}`);
+      } else {
+        navigate("/search");
+      }
+    }, 150);
   };
 
   const placeholders = [
@@ -123,7 +132,17 @@ const [placeholder, setPlaceholder] = useState("");
           </div>
 
           {/* Search */}
-          <div className="hero-search">
+          <div
+            className={`hero-search ${isTransitioning ? "is-transitioning" : ""}`}
+            onClick={() => handleSearchClick()}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                handleSearchClick();
+              }
+            }}
+          >
             <svg className="hero-search__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.35-4.35" />
@@ -132,11 +151,19 @@ const [placeholder, setPlaceholder] = useState("");
               type="text"
               className="hero-search__input"
               placeholder={`Try "${placeholder}"`}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onClick={() => navigateToSearch(query)}
-              />
-            <button onClick={() => navigateToSearch(query)} className="hero-search__btn">Search Now</button>
+              readOnly
+              tabIndex={-1}
+            />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleSearchClick();
+              }}
+              className="hero-search__btn"
+            >
+              Search Now
+            </button>
           </div>
 
           {/* Chips */}
@@ -144,7 +171,7 @@ const [placeholder, setPlaceholder] = useState("");
             {CHIPS.map((c) => (
               <button 
                 key={c.label} 
-                onClick={() => navigateToSearch(c.label)} 
+                onClick={() => handleSearchClick(c.label)} 
                 className="hero-chip"
               >
                   <span>{c.emoji}</span> {c.label}
