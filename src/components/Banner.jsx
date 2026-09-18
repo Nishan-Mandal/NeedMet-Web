@@ -1,15 +1,35 @@
-import "../style/Banner.css"
+import { useNavigate } from "react-router-dom";
+import "../style/Banner.css";
 
-export default function Banner({ imageUrl, mobileImageUrl, alt = "Banner" }) {
+export default function Banner({ imageUrl, mobileImageUrl, webUrl, weburl, route, alt = "Banner" }) {
+  const navigate = useNavigate();
+
+  const desktopImage = webUrl || weburl || imageUrl;
+  const phoneImage = mobileImageUrl || imageUrl || webUrl || weburl;
+
+  if (!desktopImage && !phoneImage) return null;
+
+  const handleClick = () => {
+    if (!route) return;
+    if (route.startsWith("http://") || route.startsWith("https://")) {
+      window.open(route, "_blank", "noopener,noreferrer");
+    } else {
+      navigate(route);
+    }
+  };
 
   return (
-    <div className="banner-section">
+    <div
+      className="banner-section"
+      onClick={route ? handleClick : undefined}
+      style={{ cursor: route ? "pointer" : "default" }}
+    >
       <picture>
-        {mobileImageUrl && (
-          <source media="(max-width: 480px)" srcSet={mobileImageUrl} />
+        {phoneImage && phoneImage !== desktopImage && (
+          <source media="(max-width: 768px)" srcSet={phoneImage} />
         )}
-        <img src={imageUrl} alt={alt} className="banner-image" loading="lazy" />
+        <img src={desktopImage} alt={alt} className="banner-image" loading="lazy" />
       </picture>
     </div>
   );
-}
+}
