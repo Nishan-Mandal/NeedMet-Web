@@ -14,6 +14,7 @@ function Home() {
     queryFn: () => getHomeDetails(),
   });
   
+  console.log(homeData)
   const { setContactNo } = useInfo();
   useEffect(() => {
     if (homeData?.whatsappSupport) {
@@ -102,7 +103,11 @@ function Home() {
           : null
       }
 
-      <Banner imageUrl={homeData?.banners?.[0]?.imageUrl}/>
+      <Banner 
+        imageUrl={homeData?.banners?.[0]?.imageUrl}
+        webUrl={homeData?.banners?.[0]?.webUrl}
+        route={homeData?.banners?.[0]?.route}
+      />
 
       {categoryList.map((category, index) => {
         const listings = categoryQueries[index]?.data ?? [];
@@ -123,6 +128,8 @@ function Home() {
 
             <Banner
               imageUrl={homeData?.banners?.[bannerIndex]?.imageUrl}
+              webUrl={homeData?.banners?.[bannerIndex]?.webUrl}
+              route={homeData?.banners?.[bannerIndex]?.route}
             />
 
           </Fragment>
