@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import "../style/Banner.css";
 
-export default function Banner({ imageUrl, mobileImageUrl, webUrl, weburl, route, alt = "Banner" }) {
+export default function Banner({ imageUrl, webUrl, route, alt = "Banner" }) {
   const navigate = useNavigate();
 
-  const desktopImage = webUrl || weburl || imageUrl;
-  const phoneImage = mobileImageUrl || imageUrl || webUrl || weburl;
+  const desktopImage = webUrl;
+  const phoneImage = imageUrl;
 
   if (!desktopImage && !phoneImage) return null;
 
@@ -32,4 +32,4 @@ export default function Banner({ imageUrl, mobileImageUrl, webUrl, weburl, route
       </picture>
     </div>
   );
-}
+}
