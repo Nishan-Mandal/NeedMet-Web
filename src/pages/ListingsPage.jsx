@@ -101,8 +101,7 @@ const ListingsPage = () => {
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.lastDoc : undefined,
     enabled: !!fetchFn && !isCategoryResolving && (type === "similar" ? similar_category !== '' : true),
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error),
+ 
   });
 
   const listings = data?.pages.flatMap((p) => p.listings) ?? [];

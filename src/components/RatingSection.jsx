@@ -22,7 +22,7 @@ function RatingSection({ rating, review_count, ratingCount, ratingStats, avgRati
       comment,
     });
 
-    console.log(response);
+    
 
     if (response.success) {
 
