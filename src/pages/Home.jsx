@@ -14,7 +14,7 @@ function Home() {
     queryFn: () => getHomeDetails(),
   });
   
-  console.log(homeData)
+ 
   const { setContactNo } = useInfo();
   useEffect(() => {
     if (homeData?.whatsappSupport) {
