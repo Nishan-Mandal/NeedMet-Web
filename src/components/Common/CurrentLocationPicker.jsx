@@ -27,7 +27,7 @@ export default function CurrentLocationPicker({ onLocationSelect }) {
 
           const data = await response.json();
 
-          console.log("Geocode response:", data);
+         
 
           if (data.status !== "OK" || !data.results?.length) {
             throw new Error(

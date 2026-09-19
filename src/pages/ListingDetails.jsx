@@ -66,8 +66,7 @@ function ListingDetails() {
     queryFn: () => getListingById(listingId),
     initialData: stateListing,
     enabled: !isPreviewPage && !!listingId,
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error)
+    
   });
 
   const listing = isPreviewPage ? previewListing : fetchedListing || stateListing;
@@ -109,16 +108,13 @@ function ListingDetails() {
     queryKey: ['newListings', 'short'],
     queryFn: () => getNewListings({ quantity: 20 }),
     enabled: shouldFetch, 
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error)
+
   });
 
   const { data: similarListings = [], isLoading: similarLoading, error: similarError } = useQuery({
     queryKey: ['similarListings', 'short', listing?.category],
     queryFn: () => getSimilarListings({ category: listing?.category, listingId: listing?.listingId }),
     enabled: shouldFetch && !!listing?.category, 
-    onSuccess: (data) => console.log(data),
-    onError: (error) => console.log(error)
   });
 
   if (isPreviewPage && !draftFormData) {
