@@ -61,7 +61,7 @@ export default function Header() {
           <div className="header-inner-right">
 
             {
-              !isHomePage && !isSearchPage && (
+              !isSearchPage && (
                 <NavLink to="/search" className={({ isActive }) => isActive ? "search-pill active" : "search-pill"}>
                   <i className="fa-solid fa-magnifying-glass"></i>
                 </NavLink>

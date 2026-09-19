@@ -8,7 +8,7 @@
   width: 100%;
   aspect-ratio: 16/4;
   display: block;
-  object-fit: cover;
+  object-fit: fill;
 }
 
 /* ─── Tablet (769px – 1024px) ─── */

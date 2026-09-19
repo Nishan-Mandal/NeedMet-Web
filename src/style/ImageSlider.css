@@ -14,7 +14,7 @@
 .carousel-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -118,7 +118,7 @@
 
 
 /* ─── Phone (≤ 480px) ─────────────────────────────────────────────── */
-@media (max-width: 480px) {
+@media (max-width: 530px) {
   .carousel-container {
     width: 100% !important;
     height: 200px !important;

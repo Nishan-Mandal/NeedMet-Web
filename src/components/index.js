@@ -40,8 +40,10 @@ import KeyValueFields from './KeyValueFields.jsx'
 import CurrentLocationPicker from './Common/CurrentLocationPicker.jsx'
 import SearchableSelect from './Common/SearchableSelect.jsx'
 import SEO from './SEO.jsx'
+import SearchAutocomplete from './SearchAutocomplete.jsx'
 
 export {
+    SearchAutocomplete,
     Header, 
     Footer, 
     Hero, 

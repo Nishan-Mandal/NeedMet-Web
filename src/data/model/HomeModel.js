@@ -2,8 +2,9 @@
    Banner Class
 ========================= */
 class Banner {
-  constructor({ imageUrl = "", route = "" } = {}) {
+  constructor({ imageUrl = "", route = "", webUrl = "" } = {}) {
     this.imageUrl = imageUrl;
+    this.webUrl = webUrl;
     this.route = route;
   }
 
@@ -11,6 +12,7 @@ class Banner {
     return new Banner({
       imageUrl: json.imageUrl || "",
       route: json.route || "",
+      webUrl: json.webUrl || json.weburl || "",
     });
   }
 
@@ -18,6 +20,7 @@ class Banner {
     return {
       imageUrl: this.imageUrl,
       route: this.route,
+      webUrl: this.webUrl,
     };
   }
 }
