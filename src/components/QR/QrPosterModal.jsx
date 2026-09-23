@@ -4,7 +4,6 @@ import QRCode from "qrcode";
 import html2canvas from "html2canvas";
 import PosterTemplate from "./PosterTemplate";
 import { generateSlug } from "../../utils/slugify.js";
-import "../../style/QR/QrPosterModal.css";
 
 export default function QrPosterModal({ open, onClose, listing }) {
   const [downloading, setDownloading] = useState(false);
@@ -210,8 +209,6 @@ export default function QrPosterModal({ open, onClose, listing }) {
     }
   };
 
-
-
   const handleShare = async () => {
     try {
       setSharing(true);
@@ -261,20 +258,20 @@ export default function QrPosterModal({ open, onClose, listing }) {
   const shareReady = !!cachedBlobRef.current && !preparing;
 
   return createPortal(
-    <div className="qr-overlay" onClick={onClose}>
+    <div className="fixed inset-0 z-[999999] bg-black/80 flex justify-center items-center p-4 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="qr-modal qr-business-modal"
+        className="w-full h-[90%] max-w-[520px] bg-white rounded-3xl p-4 sm:p-5 flex flex-col overflow-hidden animate-[fadeIn_0.22s_ease]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* HEADER */}
-        <div className="qr-modal-header">
-          <div className="qr-modal-title">
-            <i className="fa-solid fa-qrcode"></i>
-            <h2>Business QR Poster</h2>
+        <div className="flex justify-between items-center mb-3.5 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <i className="fa-solid fa-qrcode text-xl text-primary"></i>
+            <h2 className="m-0 text-lg sm:text-xl font-bold text-gray-900">Business QR Poster</h2>
           </div>
 
           <button
-            className="qr-close-btn"
+            className="w-10 h-10 border-none rounded-full bg-gray-100 hover:bg-gray-200 hover:rotate-90 cursor-pointer flex items-center justify-center text-gray-700 text-base transition-all shrink-0"
             onClick={onClose}
             aria-label="Close"
           >
@@ -283,25 +280,25 @@ export default function QrPosterModal({ open, onClose, listing }) {
         </div>
 
         {/* PREVIEW */}
-        <div className="qr-preview-area">
+        <div className="flex-1 w-full bg-gray-50 border border-gray-200 rounded-2xl p-3 sm:p-4 flex justify-center items-start overflow-y-auto min-h-0">
           {loading && (
-            <div className="qr-loading">
-              <i className="fa-solid fa-spinner fa-spin"></i>
+            <div className="min-h-[260px] flex flex-col items-center justify-center gap-3 text-gray-600">
+              <i className="fa-solid fa-spinner fa-spin text-3xl text-primary"></i>
               <span>Generating poster...</span>
             </div>
           )}
 
           {error && (
-            <div className="qr-error">
-              <i className="fa-solid fa-triangle-exclamation"></i>
+            <div className="min-h-[260px] flex flex-col items-center justify-center gap-3 text-accent-red text-center">
+              <i className="fa-solid fa-triangle-exclamation text-2xl"></i>
               <span>{error}</span>
             </div>
           )}
 
           {!loading && !error && mainQr && (
-            <div className="qr-poster-preview-container">
-              <div className="qr-poster-scale">
-                <div id="needmet-business-poster">
+            <div className="w-full flex justify-center items-start h-[calc(1754px*0.19)] sm:h-[calc(1754px*0.24)] md:h-[calc(1754px*0.32)]">
+              <div className="w-[1240px] h-[1754px] shrink-0 origin-top flex justify-center items-start scale-[0.19] sm:scale-[0.24] md:scale-[0.32]">
+                <div id="needmet-business-poster" className="w-[1240px] min-h-[1754px] bg-white overflow-hidden">
                   <PosterTemplate
                     listing={listing}
                     qrImage={mainQr}
@@ -314,10 +311,10 @@ export default function QrPosterModal({ open, onClose, listing }) {
         </div>
 
         {/* ACTIONS */}
-        <div className="qr-modal-actions">
+        <div className="flex gap-3 mt-3.5 shrink-0">
           {/* DOWNLOAD */}
           <button
-            className="qr-btn qr-btn-download"
+            className="flex-1 h-[46px] sm:h-[52px] border-none rounded-[12px] sm:rounded-[14px] cursor-pointer text-sm sm:text-base font-semibold flex items-center justify-center gap-2 text-white bg-primary hover:bg-[#0a4530] disabled:opacity-45 disabled:cursor-not-allowed active:scale-95 transition-all"
             onClick={handleDownload}
             disabled={isBusy}
           >
@@ -336,7 +333,7 @@ export default function QrPosterModal({ open, onClose, listing }) {
 
           {/* SHARE */}
           <button
-            className="qr-btn qr-btn-share"
+            className="flex-1 h-[46px] sm:h-[52px] border-none rounded-[12px] sm:rounded-[14px] cursor-pointer text-sm sm:text-base font-semibold flex items-center justify-center gap-2 text-white bg-primary hover:bg-[#0a4530] disabled:opacity-45 disabled:cursor-not-allowed active:scale-95 transition-all"
             onClick={handleShare}
             disabled={isBusy || !shareReady}
           >

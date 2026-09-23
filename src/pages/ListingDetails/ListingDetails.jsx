@@ -1,9 +1,11 @@
 import { 
   ListingBasicInfo, 
   InfoTable, 
-  ListingSection, 
   RatingSection, 
   PreviewImage, 
+} from './Sections';
+import {
+  ListingSection, 
   ListingDetailsLoader,
   SystemState,
   BusinessCTA,
@@ -11,21 +13,20 @@ import {
   Button,
   Loader,
   SEO
-} from '../components'
-import { generateSlug } from "../utils/slugify.js";
-import ErrorImg from "../assets/error.png"
-import NoDataImg from "../assets/no_data.png"
+} from '../../components';
+import { generateSlug } from "../../utils/slugify.js";
+import ErrorImg from "../../assets/error.png";
+import NoDataImg from "../../assets/no_data.png";
 import { useParams, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
-import '../style/ListingDetails.css'
-import { getNewListings, getListingByCategory, getListingById, getSimilarListings } from '../services/firebase/firestore/listingService.js';
+import { getNewListings, getListingByCategory, getListingById, getSimilarListings } from '../../services/firebase/firestore/listingService.js';
 import { useQuery } from '@tanstack/react-query';
-import { TimeSlot } from '../data/model/listingModel.js';
+import { TimeSlot } from '../../data/model/listingModel.js';
 import { useState } from "react";
-import { SubmitIcon, BackIcon } from '../assets/collection.jsx';
-import { useListingDraft } from "../contexts/listingDraftContext";
-import { buildListingPreviewFromFormData } from "../services/firebase/listing/listingPreviewBuilder.js";
-import { createListingPipeline } from "../services/firebase/listing/listingPipeline.js";
-import { useToast } from '../contexts/toastContext';
+import { SubmitIcon, BackIcon } from '../../assets/collection.jsx';
+import { useListingDraft } from "../../contexts/listingDraftContext";
+import { buildListingPreviewFromFormData } from "../../services/firebase/listing/listingPreviewBuilder.js";
+import { createListingPipeline } from "../../services/firebase/listing/listingPipeline.js";
+import { useToast } from '../../contexts/toastContext';
 
 
 // used in -> 
@@ -274,25 +275,25 @@ function ListingDetails() {
           ogType="article"
         />
       )}
-      <div className="listing-details">
+      <div className="p-4 max-[478px]:p-3 max-[924px]:py-[35px] max-[924px]:px-8 min-[925px]:px-[70px] min-[925px]:py-[50px] flex flex-col min-[925px]:flex-row justify-center items-start gap-6 bg-background-secondary">
 
-        <div className="listing-details-left">
+        <div className="w-full min-[925px]:flex-[1.2] flex flex-col gap-6 min-w-0">
           <PreviewImage images={imageList} isPremium={listing?.isPremium} listing={listing} />
 
-          <div className="likes-contact">
-            <div className="likes">
-              <div className="likes-count">
-                <i className="fa-solid fa-thumbs-up"></i>
+          <div className="w-full flex flex-col min-[1025px]:flex-row justify-between items-center gap-4 min-[1025px]:gap-20 rounded-[1rem] bg-surface border border-border p-[0.9rem_1rem] max-[924px]:p-[0.85rem_0.9rem] max-[924px]:rounded-[0.9rem] shadow-[0_4px_10px_rgba(15,92,63,0.226),0_1px_2px_rgba(0,0,0,0.11)]">
+            <div className="flex items-center justify-center gap-2 text-base font-semibold font-primary shrink-0 whitespace-nowrap text-text">
+              <div className="flex items-center gap-1.5">
+                <i className="fa-solid fa-thumbs-up text-primary"></i>
                 {listing.likes}
               </div>
-              <div className="views-count">({listing.views} Views)</div>
+              <div className="text-text-secondary font-medium">({listing.views} Views)</div>
             </div>
-            <div className="contact">
+            <div className="flex gap-3 w-full min-[1025px]:w-auto flex-1 min-w-0">
               <a 
                 href={`tel:${listing?.phone || listing?.alternatePhone}`}
-                className='call'
+                className='flex-1 flex items-center justify-center gap-2 rounded-[0.9rem] max-[924px]:rounded-[0.8rem] font-semibold text-sm min-[925px]:text-[0.95rem] font-primary whitespace-nowrap cursor-pointer py-3 px-4 bg-gradient-to-br from-primary to-primary-light text-text-on-dark border border-border shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all'
               >
-                <i className="fa-solid fa-phone"></i>
+                <i className="fa-solid fa-phone animate-[ring_1.5s_infinite]"></i>
                 {listing?.phone || listing?.alternatePhone}
               </a>
 
@@ -309,7 +310,7 @@ function ListingDetails() {
           </div>
 
           {/* Mobile-only: right content injected here in correct order */}
-          <div className="listing-details-right-mobile">
+          <div className="min-[925px]:hidden flex flex-col gap-4 w-full">
             {rightContent}
           </div>
 
@@ -325,7 +326,7 @@ function ListingDetails() {
         </div>
 
         {/* Desktop-only right column */}
-        <div className="listing-details-right">
+        <div className="hidden min-[925px]:flex min-[925px]:flex-1 flex-col self-start sticky top-5 gap-6 min-w-0">
           {rightContent}
         </div>
 
@@ -339,7 +340,7 @@ function ListingDetails() {
       {
         listing.listingId === "preview-listing"
           ? (
-            <div className='actionBar'>
+            <div className='sticky bottom-0 md:bottom-0 max-md:bottom-[66px] left-5 right-5 flex items-center justify-between gap-3 bg-white border border-[#e2e8f0] p-4 sm:px-6 sm:py-[18px] shadow-sm mb-5 z-20'>
               <Button type='button' variant='secondary' onClick={() => navigate(-1)}>
                 <BackIcon size={14}/>
                 Back To Edit

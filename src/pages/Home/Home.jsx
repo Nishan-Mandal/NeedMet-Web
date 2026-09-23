@@ -1,11 +1,30 @@
-import { Hero, CategorySection, ListingSection, HomeLoader, SystemState, TestimonialSection, Hyperlocal, TrendingSearches, BusinessCTA, Banner, SEO } from '../components'
-import ErrorImg from "../assets/error.png"
-import { getNewListings, getRecommendedListings, getListingByCategory } from '../services/firebase/firestore/listingService.js';
-import { useQuery, useQueries } from '@tanstack/react-query';
-import { getHomeDetails } from '../services/firebase/firestore/homeService.js';
-import { useEffect, Fragment } from 'react';
-import useInfo from '../contexts/infoContext.jsx';
-import { generateSlug } from "../utils/slugify.js";
+import {
+  Hero,
+  TestimonialSection,
+} from "./Sections";
+import {
+  CategorySection,
+  ListingSection,
+  SystemState,
+  Hyperlocal,
+  TrendingSearches,
+  BusinessCTA,
+  HomeLoader,
+  Banner,
+  SEO,
+} from "../../components";
+
+import ErrorImg from "../../assets/error.png";
+import {
+  getNewListings,
+  getRecommendedListings,
+  getListingByCategory,
+} from "../../services/firebase/firestore/listingService.js";
+import { useQuery, useQueries } from "@tanstack/react-query";
+import { getHomeDetails } from "../../services/firebase/firestore/homeService.js";
+import { useEffect, Fragment } from "react";
+import useInfo from "../../contexts/infoContext.jsx";
+import { generateSlug } from "../../utils/slugify.js";
 
 function Home() {
 

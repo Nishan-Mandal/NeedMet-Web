@@ -1,14 +1,15 @@
+import { lazy } from "react";
 import {
   Home,
   ListingDetails,
   ListingsPage,
   AllCategory,
-  LegalPage,
   SearchPage,
 } from "../pages";
 import { SystemState } from "../components";
-import ErrorImg from '../assets/error.png'
-import { Navigate } from "react-router-dom";
+import NoDataImg from "../assets/no_data.png";
+
+const LegalPage = lazy(() => import("../pages/LegalPage.jsx"));
 
 export const publicRoutes = [
   {
@@ -45,14 +46,18 @@ export const publicRoutes = [
   },
   {
     path: "*",
-    element: <Navigate to="/" replace />
-      // <SystemState
-      //   imageSrc={ErrorImg}
-      //   title="404 - Page"
-      //   highlight="Not Found"
-      //   message="The page you're looking for doesn't exist or may have been moved. Please check the URL or go back to the homepage."
-      //   actionType="navigate"
-      //   actionLabel="Go Home"
-      // />,
-  }
+    element: (
+      <div className="min-h-[70vh] flex items-center justify-center p-4">
+        <SystemState
+          imageSrc={NoDataImg}
+          title="404 - Page"
+          highlight="Not Found"
+          message="The page you're looking for doesn't exist or may have been moved. Please check the URL or go back to the homepage."
+          actionType="navigate"
+          actionLabel="Go Home"
+          actionTo="/"
+        />
+      </div>
+    ),
+  },
 ];

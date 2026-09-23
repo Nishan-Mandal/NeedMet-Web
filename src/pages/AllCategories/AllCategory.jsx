@@ -1,10 +1,10 @@
-import { CategorySection, AllCategoryLoader, SystemState, BusinessCTA, SEO } from "../components";
+import { CategorySection, AllCategoryLoader, SystemState, BusinessCTA, SEO } from "../../components";
 import { useMemo } from "react";
-import ErrorImg from "../assets/error.png"
-import NoDataImg from "../assets/no_data.png"
+import ErrorImg from "../../assets/error.png";
+import NoDataImg from "../../assets/no_data.png";
 import { useQuery } from "@tanstack/react-query";
-// import { getAllCategory } from "../services/firebase/firestore/categoryService.js";
-import { useCategories } from "../hooks/useAllCategories";
+// import { getAllCategory } from "../../services/firebase/firestore/categoryService.js";
+import { useCategories } from "../../hooks/useAllCategories";
 
 export default function AllCategory() {
 
@@ -56,13 +56,9 @@ export default function AllCategory() {
         title="Browse Business Categories | NeedMet"
         description="Explore all business and service categories on NeedMet. Find salons, repair services, retail stores, medical clinics, and more."
       />
-      <h1 style={{
-        textAlign: 'center', 
-        margin: '1rem 0 0rem', 
-        fontFamily: 'var(--font-heading)', 
-        color: 'var(--text-accent)', 
-        fontSize: '1.6rem'
-      }}>All Categories</h1>
+      <h1 className="text-center mt-4 mb-0 font-heading font-bold text-[1.6rem] text-[var(--text-accent)]">
+        All Categories
+      </h1>
       {Object.entries(groupedCategories).map(([section, items], index) => (
         <CategorySection
           key={section}

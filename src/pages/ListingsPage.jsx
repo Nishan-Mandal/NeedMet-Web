@@ -153,18 +153,18 @@ const ListingsPage = () => {
         description={seoDescription}
         canonicalUrl={canonicalUrl}
       />
-      <div className="listing-page-body">
+      <div className="listing-page-body min-h-screen">
         <ListingSection title={title} listings={listings} showSeeAll={false} />
 
         <>
           {isFetchingNextPage && (
-            <div style={{ padding: "0 16px" }}>
+            <div className="px-4">
               <ListingSectionLoader count={QUANTITY} showSeeAll={false} />
             </div>
           )}
           <div
             ref={sentinelRef}
-            style={{ height: "1px", width: "100%", marginBottom: "40px" }}
+            className="h-px w-full mb-10"
           />
         </>
       </div>

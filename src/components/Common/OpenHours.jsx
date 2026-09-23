@@ -1,5 +1,4 @@
-import styles from "../style/OpenHours.module.css";
-import { ToggleSwitch } from "../components";
+import ToggleSwitch from "./ToggleSwitch.jsx";
 
 // Default single slot shape
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -62,7 +61,7 @@ export default function OpenHours({ hours, onChange }) {
   };
 
   return (
-    <div className={styles.hoursGrid}>
+    <div className="flex flex-col border border-border rounded-xl overflow-hidden">
       {DAYS.map((day) => {
 
         const schedule = hours?.[day] ?? {
@@ -74,53 +73,42 @@ export default function OpenHours({ hours, onChange }) {
         const slots = schedule.slots ?? [];
 
         return (
-          <div key={day} className={`${styles.dayRow} ${isOpen ? styles.dayRowOpen : ""}`}>
+          <div key={day} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3.5 sm:px-[18px] sm:py-3.5 border-b border-border/60 last:border-b-0 transition-colors ${isOpen ? "bg-[#f8faff]" : "bg-white"}`}>
 
             {/* ── Left: toggle + day name ── */}
-            <div className={styles.dayLeft}>
-              {/* <button
-                type="button"
-                role="switch"
-                aria-checked={open}
-                aria-label={`${open ? "Close" : "Open"} ${day}`}
-                className={`${styles.toggle} ${open ? styles.toggleOn : ""}`}
-                onClick={() => toggleDay(day)}
-              >
-                <span className={styles.toggleThumb} />
-              </button> */}
-
+            <div className="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
               <ToggleSwitch
                 checked={isOpen}
                 onChange={() => toggleDay(day)}
               />
               
-              <span className={`${styles.dayName} ${isOpen ? styles.dayNameActive : ""}`}>
+              <span className={`text-[13.5px] transition-colors select-none ${isOpen ? "text-gray-900 font-semibold" : "text-gray-400 font-medium"}`}>
                 {day}
               </span>
             </div>
 
             {/* ── Right: slots or closed badge ── */}
-            <div className={styles.dayRight}>
+            <div className="flex items-start">
               {!isOpen ? (
-                <span className={styles.closedBadge}>Closed</span>
+                <span className="inline-flex items-center py-0.5 px-2.5 bg-slate-100 border border-slate-200 rounded-full text-xs font-medium text-slate-400">Closed</span>
               ) : (
-                <div className={styles.slotsWrap}>
+                <div className="flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto">
                   {slots?.map((slot, idx) => (
-                    <div key={idx} className={styles.slotRow}>
-                      <div className={styles.slotInputs}>
+                    <div key={idx} className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-1">
                         <input
                           type="time"
                           value={slot.open}
                           onChange={(e) => updateSlot(day, idx, "open", e.target.value)}
-                          className={styles.timeInput}
+                          className="h-9 px-2.5 border border-border rounded-lg text-xs sm:text-[13px] font-medium text-text bg-white outline-none cursor-pointer hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all w-[100px] sm:w-[116px]"
                           aria-label={`${day} slot ${idx + 1} start time`}
                         />
-                        <span className={styles.timeSep}>–</span>
+                        <span className="text-sm text-slate-400 font-medium shrink-0">–</span>
                         <input
                           type="time"
                           value={slot.close}
                           onChange={(e) => updateSlot(day, idx, "close", e.target.value)}
-                          className={styles.timeInput}
+                          className="h-9 px-2.5 border border-border rounded-lg text-xs sm:text-[13px] font-medium text-text bg-white outline-none cursor-pointer hover:border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all w-[100px] sm:w-[116px]"
                           aria-label={`${day} slot ${idx + 1} end time`}
                         />
                       </div>
@@ -129,7 +117,7 @@ export default function OpenHours({ hours, onChange }) {
                       {slots.length > 1 && (
                         <button
                           type="button"
-                          className={styles.removeSlot}
+                          className="w-[30px] h-[30px] rounded-lg border border-red-200 bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center shrink-0 cursor-pointer transition-colors"
                           onClick={() => removeSlot(day, idx)}
                           aria-label={`Remove slot ${idx + 1} for ${day}`}
                         >
@@ -142,7 +130,7 @@ export default function OpenHours({ hours, onChange }) {
                   {/* Add slot button */}
                   <button
                     type="button"
-                    className={styles.addSlot}
+                    className="inline-flex items-center gap-1.5 h-[30px] px-3 border border-dashed border-blue-300 rounded-lg text-blue-600 text-xs font-medium hover:bg-blue-50 transition-colors cursor-pointer"
                     onClick={() => addSlot(day)}
                     aria-label={`Add time slot for ${day}`}
                   >

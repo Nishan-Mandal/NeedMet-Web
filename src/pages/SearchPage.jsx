@@ -14,15 +14,13 @@ import {
   SearchAutocomplete,
 } from "../components";
 import searchImg from "../assets/search.png";
-import "../style/SearchPage.css";
-
 
 export default function SearchPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeQuery = searchParams.get("q") || "";
   const [query, setQuery] = useState(activeQuery);
-  const [isAutocompleteOpen, setIsAutocompleteOpen] = useState(false);
+  const [isAutocompleteOpen, setIsAutocompleteOpen] = useState(!activeQuery.trim());
   const inputContainerRef = useRef(null);
 
   const handleGoBack = () => {
@@ -149,10 +147,15 @@ export default function SearchPage() {
     );
   };
 
+  const clearAllRecentSearches = () => {
+    setRecentSearches([]);
+    localStorage.removeItem("recentSearches");
+  };
+
   const isLoading = listingsLoading;
 
   return (
-    <div className="search-page">
+    <div className="min-h-screen w-full bg-white box-border animate-[fadeIn_0.25s_ease-out]">
       <SEO 
         title={activeQuery.trim() ? `Search results for "${activeQuery}" | NeedMet` : "Search Local Businesses & Services | NeedMet"}
         description={activeQuery.trim() ? `Check search results for "${activeQuery}" on NeedMet. Explore local shops, reviews, timing schedules, and contact details.` : "Search for service providers and shops near you. Read ratings, find directions, and contact local sellers."}
@@ -160,11 +163,11 @@ export default function SearchPage() {
       />
 
       {/* Search Header */}
-      <div className="search-header">
-        <div className="search-input-row">
+      <div className="w-full px-[35px] max-[1024px]:px-3 max-[676px]:px-2.5 pt-5 max-[1024px]:pt-[26px] max-[676px]:pt-5 mb-4 max-[676px]:mb-[18px]">
+        <div className="w-full max-w-[780px] mx-auto flex items-center gap-3.5 max-[676px]:gap-0">
           <button
             type="button"
-            className="search-back-btn"
+            className="flex max-[676px]:hidden w-12 h-12 rounded-full bg-white border-[1.5px] border-primary/12 shadow-[0_4px_14px_rgba(15,92,62,0.06),0_1px_2px_rgba(0,0,0,0.03)] text-primary items-center justify-center text-[1.1rem] cursor-pointer shrink-0 transition-all hover:bg-[#f0f7f4] hover:border-primary hover:text-primary hover:-translate-x-0.5 hover:shadow-[0_6px_18px_rgba(15,92,62,0.14)] active:scale-95"
             onClick={handleGoBack}
             aria-label="Go back"
             title="Go back"
@@ -172,9 +175,9 @@ export default function SearchPage() {
             <i className="fa-solid fa-arrow-left"></i>
           </button>
 
-          <div className="search-input-container" ref={inputContainerRef}>
-            <div className="search-input-wrapper">
-              <i className="fa-solid fa-magnifying-glass search-icon"></i>
+          <div className="relative flex-1 min-w-0" ref={inputContainerRef}>
+            <div className="w-full max-w-[720px] mx-auto flex items-center gap-3 max-[676px]:gap-2.5 py-[15px] px-5 max-[1024px]:py-[13px] max-[1024px]:px-4 max-[676px]:py-3 max-[676px]:px-3.5 bg-gradient-to-b from-white to-[#f8fbf9] border-[1.5px] border-primary/12 rounded-[22px] max-[1024px]:rounded-[18px] max-[676px]:rounded-[16px] shadow-[0_4px_18px_rgba(15,92,62,0.05),0_1px_2px_rgba(0,0,0,0.03)] transition-all hover:border-primary/25 hover:shadow-[0_8px_24px_rgba(15,92,62,0.08)] focus-within:bg-white focus-within:border-primary focus-within:-translate-y-px">
+              <i className="fa-solid fa-magnifying-glass text-primary text-base max-[676px]:text-[0.95rem] flex items-center justify-center shrink-0"></i>
               <input
                 type="text"
                 autoFocus
@@ -191,6 +194,7 @@ export default function SearchPage() {
                     commitSearch(query);
                   }
                 }}
+                className="flex-1 bg-transparent border-none outline-none text-[15px] max-[1024px]:text-[14px] font-medium text-text placeholder:text-[#8b9b93]"
               />
               {query && (
                 <i 
@@ -199,7 +203,7 @@ export default function SearchPage() {
                     setSearchParams({}, { replace: true });
                     setIsAutocompleteOpen(false);
                   }} 
-                  className="fa-solid fa-xmark search-cancel"
+                  className="fa-solid fa-xmark w-[30px] h-[30px] max-[676px]:w-[26px] max-[676px]:h-[26px] rounded-full flex items-center justify-center cursor-pointer text-sm max-[676px]:text-xs text-[#7f9188] hover:bg-primary/10 hover:text-primary hover:scale-105 transition-all"
                   title="Clear search"
                 ></i>
               )}
@@ -217,74 +221,13 @@ export default function SearchPage() {
               onSelectCategory={(cat) => {
                 commitSearch(cat.name || "");
               }}
+              onRemoveRecentSearch={removeRecentSearch}
+              onClearAllRecentSearches={clearAllRecentSearches}
               wrapperRef={inputContainerRef}
             />
           </div>
         </div>
       </div>
-
-      {/* Recent Searches */}
-      {
-        recentSearches.length > 0 &&
-        !activeQuery.trim() && (
-          <>
-            <div className="recent-search-wrapper">
-              <div className="recent-search-section">
-                <div className="recent-search-container">
-                  <div className="recent-search-header">
-                    <div className="recent-search-title-group">
-                      <span className="recent-search-tag">
-                        CONTINUE EXPLORING
-                      </span>
-                      <h3>Recent Searches</h3>
-                    </div>
-                    <button
-                      className="clear-btn"
-                      onClick={() => {
-                        setRecentSearches([]);
-                        localStorage.removeItem("recentSearches");
-                      }}
-                    >
-                      Clear All
-                    </button>
-                  </div>
-                  <div className="recent-search-list">
-                    {recentSearches.map((item) => (
-                      <button
-                        key={item}
-                        className="recent-search-pill"
-                        onClick={() => {
-                          commitSearch(item);
-                        }}
-                      >
-                        <div className="recent-pill-left">
-                          <div className="recent-clock-icon">
-                            <i className="fa-regular fa-clock"></i>
-                          </div>
-
-                          <span className="recent-pill-text">
-                            {item}
-                          </span>
-                        </div>
-
-                        <span
-                          className="recent-pill-remove"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeRecentSearch(item);
-                          }}
-                        >
-                          <i className="fa-solid fa-xmark"></i>
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )
-      }
 
       {
         !activeQuery.trim() && (
@@ -295,7 +238,7 @@ export default function SearchPage() {
       {/* Loading */}
       {
         isLoading && (
-          <div className="search-loading">
+          <div className="w-full">
             <SearchPageLoader />
           </div>
         )
@@ -305,11 +248,11 @@ export default function SearchPage() {
       {
         !isLoading &&
         !activeQuery.trim() && (
-          <div className="search-empty-state">
-            <img src={searchImg} alt="search_img" loading="lazy" />
-            <h2>Search Listings & Services</h2>
+          <div className="w-full min-h-[300px] p-8 flex flex-col justify-center items-center text-center">
+            <img src={searchImg} alt="search_img" loading="lazy" className="w-[220px] sm:w-[300px] mb-3" />
+            <h2 className="font-heading font-bold text-2xl sm:text-[32px] mb-3 text-text">Search Listings &amp; Services</h2>
 
-            <p>
+            <p className="text-[#666] text-sm sm:text-base">
               Find rooms, salons, PGs,
               services and more instantly.
             </p>
@@ -321,7 +264,7 @@ export default function SearchPage() {
       {
         !isLoading &&
         activeQuery.trim() !== "" && (
-          <div className="search-results">
+          <div className="flex flex-col">
             <CategorySection
               title="Searched Categories"
               subTitle="DISCOVER RELEVANT SERVICES"

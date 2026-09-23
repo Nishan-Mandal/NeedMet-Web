@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import "../style/ImageSlider.css";
 import { useNavigate } from "react-router-dom";
 
 function ImageSlider({
@@ -16,7 +15,7 @@ function ImageSlider({
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!slide || !images.length) return;
@@ -46,7 +45,7 @@ function ImageSlider({
 
   return (
     <div
-      className="carousel-container"
+      className="relative overflow-hidden rounded-[12px] max-md:!rounded-[10px] max-[530px]:!rounded-[8px] aspect-video max-md:!w-full max-md:!h-[260px] max-[530px]:!h-[200px]"
       style={{ width }}
       onMouseEnter={() => clearInterval(intervalRef.current)}
       onMouseLeave={() => {
@@ -58,7 +57,7 @@ function ImageSlider({
       }}
     >
       <div
-        className="carousel-track"
+        className="flex h-full transition-transform duration-600 ease-in-out"
         style={{
           transform: `translateX(-${currentIndex * 100}%)`
         }}
@@ -68,26 +67,34 @@ function ImageSlider({
             src={img?.banner}
             alt={`slide-${index}`}
             key={index}
-            className="carousel-image"
+            className="w-full h-full object-fill shrink-0 cursor-pointer"
             onClick={() => {navigate(img?.route)}}
             loading={index === 0 ? "eager" : "lazy"}
           />
         ))}
       </div>
 
-      <button className="carousel-btn prev" onClick={prevSlide}>
+      <button
+        className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-2.5 bg-black/35 hover:bg-[#1c8c8c] hover:text-black text-white border-none cursor-pointer w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-sm sm:text-base md:text-xl rounded-full transition-colors flex items-center justify-center"
+        onClick={prevSlide}
+        aria-label="Previous slide"
+      >
         ❮
       </button>
-      <button className="carousel-btn next" onClick={nextSlide}>
+      <button
+        className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-2.5 bg-black/35 hover:bg-[#1c8c8c] hover:text-black text-white border-none cursor-pointer w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-sm sm:text-base md:text-xl rounded-full transition-colors flex items-center justify-center"
+        onClick={nextSlide}
+        aria-label="Next slide"
+      >
         ❯
       </button>
 
-      <div className="slides-counter">
+      <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2 bg-black/15 py-1 px-3 sm:py-1.5 sm:px-4 rounded-full">
         {images.map((_, index) => (
           <div
             key={index}
-            className={`single-counter ${
-              index === currentIndex ? "active-dot" : ""
+            className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full cursor-pointer transition-all ${
+              index === currentIndex ? "bg-[#1c8c8c] scale-125" : "bg-white/40 hover:bg-white"
             }`}
             onClick={() => setCurrentIndex(index)}
           />

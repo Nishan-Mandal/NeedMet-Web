@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import TestimonialCard from "./TestimonialCard";
-
-import "../../style/Testimonial/TestimonialSection.css";
+import TestimonialCard from "../../../components/Testimonial/TestimonialCard.jsx";
 
 const testimonials = [
   {
@@ -126,35 +124,43 @@ export default function TestimonialSection() {
   }, [pauseSlider]);
 
   return (
-    <section className="testimonial-section">
-      <div className="testimonial-bg testimonial-bg-left"></div>
+    <section className="relative isolate overflow-hidden font-primary bg-primary-surface py-[30px] sm:py-[35px] lg:py-[45px]">
+      <div
+        className="absolute rounded-full blur-[90px] opacity-45 pointer-events-none -top-[120px] -left-[100px] w-[260px] h-[260px] sm:w-[360px] sm:h-[360px] lg:w-[460px] lg:h-[460px]"
+        style={{ background: 'radial-gradient(circle, rgba(34, 196, 122, 0.28) 0%, transparent 70%)' }}
+      />
 
-      <div className="testimonial-bg testimonial-bg-right"></div>
+      <div
+        className="absolute rounded-full blur-[90px] opacity-45 pointer-events-none -bottom-[120px] -right-[80px] w-[220px] h-[220px] sm:w-[300px] sm:h-[300px] lg:w-[360px] lg:h-[360px]"
+        style={{ background: 'radial-gradient(circle, rgba(26, 138, 90, 0.22) 0%, transparent 70%)' }}
+      />
 
-      <div className="testimonial-header">
-        <span className="testimonial-subtitle">
+      <div className="px-[18px] md:px-8 lg:px-[70px] mb-6 md:mb-[34px] lg:mb-[52px]">
+        <span className="inline-block font-primary text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] text-primary-light mb-3 sm:mb-3.5">
           Real Stories
         </span>
 
-        <h2 className="testimonial-title">
+        <h2 className="m-0 font-display font-bold text-text-accent tracking-[-0.03em] leading-[1.1] text-[34px] sm:text-[clamp(30px,5vw,44px)] lg:text-[clamp(36px,5vw,58px)]">
           Loved by Users <br />
-
-          <span className="testimonial-title-highlight">
+          <span className="text-primary-light">
             Across India
           </span>
         </h2>
       </div>
 
-      <div className="testimonial-slider-container">
-        <div className="testimonial-fade testimonial-fade-left"></div>
+      <div className="relative overflow-hidden">
+        <div
+          className="absolute top-0 bottom-0 left-0 w-[40px] md:w-[70px] lg:w-[130px] z-[2] pointer-events-none"
+          style={{ background: 'linear-gradient(to right, var(--primary-surface, #e8f5ee) 0%, transparent 100%)' }}
+        />
 
         <div
-          className="testimonial-slider-wrapper"
+          className="overflow-hidden cursor-grab active:cursor-grabbing"
           onMouseEnter={() => setPauseSlider(true)}
           onMouseLeave={() => setPauseSlider(false)}
         >
           <div
-            className="testimonial-slider-track"
+            className="flex items-stretch gap-4 sm:gap-5 lg:gap-6 w-max px-[18px] py-[10px] pb-[18px] sm:px-7 sm:py-[14px] sm:pb-6 lg:px-[42px] lg:py-[18px] lg:pb-7 [will-change:transform] [transform:translate3d(0,0,0)] [backface-visibility:hidden] [-webkit-font-smoothing:antialiased]"
             ref={sliderRef}
           >
             {loopTestimonials.map((testimonial, index) => (
@@ -166,7 +172,10 @@ export default function TestimonialSection() {
           </div>
         </div>
 
-        <div className="testimonial-fade testimonial-fade-right"></div>
+        <div
+          className="absolute top-0 bottom-0 right-0 w-[40px] md:w-[70px] lg:w-[130px] z-[2] pointer-events-none"
+          style={{ background: 'linear-gradient(to left, var(--primary-surface, #e8f5ee) 0%, transparent 100%)' }}
+        />
       </div>
     </section>
   );

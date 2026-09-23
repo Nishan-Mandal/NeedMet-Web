@@ -1,5 +1,3 @@
-import styles from "../style/KeyValueFields.module.css";
-
 const ArrowIcon = () => (
   <svg
     width="16"
@@ -60,29 +58,24 @@ export default function KeyValueFields({
 }) {
   return (
     <>
-      <div className={styles.kvList}>
+      <div className="flex flex-col gap-3">
         {fields.map((field, index) => (
-          <div key={field.id} className={styles.kvRow}>
-            {/* <span className={styles.kvIndex}>
-              {index + 1}
-            </span> */}
-
-            <div className={styles.kvInputWrap}>
+          <div key={field.id} className="flex items-center gap-1 sm:gap-2 transition-all">
+            <div className="flex-1 min-w-0">
               <input
-                className={styles.kvInput}
+                className="w-full h-[42px] px-3.5 border border-border rounded-xl bg-surface text-text text-sm outline-none transition-all placeholder:text-text-secondary hover:border-primary-light focus:border-primary focus:ring-2 focus:ring-primary/15"
                 placeholder={keyPlaceholder}
                 {...register(`${name}.${index}.key`)}
               />
             </div>
 
-            <span className={styles.kvDivider}>
-              {/* <ArrowIcon /> */}
+            <span className="text-primary font-bold px-1">
               :
             </span>
 
-            <div className={styles.kvInputWrap}>
+            <div className="flex-1 min-w-0">
               <input
-                className={styles.kvInput}
+                className="w-full h-[42px] px-3.5 border border-border rounded-xl bg-surface text-text text-sm outline-none transition-all placeholder:text-text-secondary hover:border-primary-light focus:border-primary focus:ring-2 focus:ring-primary/15"
                 placeholder={valuePlaceholder}
                 {...register(`${name}.${index}.value`)}
               />
@@ -91,7 +84,7 @@ export default function KeyValueFields({
             {fields.length > 1 && (
               <button
                 type="button"
-                className={styles.kvRemove}
+                className="w-7 h-7 rounded-lg border-none bg-transparent text-accent-red hover:bg-red-100 flex items-center justify-center cursor-pointer shrink-0 transition-colors"
                 onClick={() => remove(index)}
               >
                 <CloseIcon />
@@ -103,7 +96,7 @@ export default function KeyValueFields({
 
       <button
         type="button"
-        className={styles.kvAdd}
+        className="mt-1 inline-flex items-center gap-2 self-start max-sm:w-full max-sm:justify-center h-10 px-4 border border-dashed border-primary-light rounded-xl bg-primary-surface text-primary text-[13px] font-semibold cursor-pointer hover:bg-surface-green hover:border-primary transition-all"
         onClick={() =>
           append({
             key: "",

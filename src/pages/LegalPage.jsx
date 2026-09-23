@@ -36,17 +36,12 @@ function LegalPage() {
           description={`Read our official ${page.title} document. Understand our community guidelines, listing policies, and terms of service.`}
         />
       )}
-      <div className="legal-page-body" style={{minHeight: '100vh'}}>
-        <p style={{
-            textAlign: 'center', 
-            fontSize: '1.7rem', 
-            marginTop: '1rem', 
-            fontWeight: 'bold'
-          }}
-        >
+      <div className="legal-page-body min-h-screen max-w-4xl mx-auto px-4 py-6">
+        <h1 className="text-center text-[1.7rem] mt-4 font-heading font-bold text-text-accent">
           {page.title}
-        </p>
+        </h1>
         <div
+          className="prose max-w-none mt-6 text-slate-700 dark:text-slate-300 leading-relaxed"
           dangerouslySetInnerHTML={{
             __html: page?.content || "",
           }}

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import styles from "../../style/Common/CurrentLocationPicker.module.css";
 import { Loader, Button } from "../../components";
 import { useToast } from "../../contexts/toastContext";
 
@@ -26,8 +25,6 @@ export default function CurrentLocationPicker({ onLocationSelect }) {
           );
 
           const data = await response.json();
-
-         
 
           if (data.status !== "OK" || !data.results?.length) {
             throw new Error(
@@ -73,18 +70,18 @@ export default function CurrentLocationPicker({ onLocationSelect }) {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className="flex flex-col gap-2">
       <Button
         type="button"
         variant="ghost"
         onClick={getCurrentLocation}
-        style={{ fontSize: "24px" }}
+        className="!text-2xl"
         disabled={loading}
         icon={
           loading ? (
             <Loader variant="button" />
           ) : (
-            <i className="fa-solid fa-location-crosshairs" style={{ color: "var(--text-accent)" }}></i>
+            <i className="fa-solid fa-location-crosshairs text-primary text-2xl"></i>
           )
         }
       />
