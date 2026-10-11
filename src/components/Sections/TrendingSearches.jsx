@@ -29,10 +29,10 @@ export default function TrendingSearches({
 
   return (
     <section 
-      className="trending-section pt-[50px] px-[35px] pb-0 max-[1024px]:pt-[35px] max-[1024px]:px-3 max-[576px]:pt-[30px] max-[576px]:px-1.5" 
+      className="trending-section shadow-md shadow-green-300/30 rounded-2xl  " 
       style={style}
     >
-      <div className="trending-container bg-background-secondary overflow-hidden rounded-[20px] p-[28px_35px] max-[1024px]:rounded-2xl max-[1024px]:p-[22px_20px] max-[576px]:rounded-[14px] max-[576px]:p-[18px_12px_20px]">
+      <div className="trending-container bg-background-secondary overflow-hidden rounded-[20px] px-5 py-8">
         
         <div className="trending-header flex flex-col mb-5 gap-1.5 max-[576px]:mb-3.5 max-[576px]:gap-1">
           <span className="trending-tag font-primary text-[11px] font-bold tracking-[0.2em] uppercase text-text-accent mb-1.5">

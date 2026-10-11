@@ -12,6 +12,8 @@ export {
 
 // ── Core Domain / Shared Widgets ──
 export { default as ListingCard } from './ListingCard.jsx';
+export { default as NewListingCard } from './NewListingCard.jsx';
+export { default as SpotlightListingCard } from './SpotlightListingCard.jsx';
 export { default as SearchAutocomplete } from './SearchAutocomplete.jsx';
 export { default as SystemState, InlineNoListingsFound } from './SystemState.jsx';
 export { default as SEO } from './SEO.jsx';
@@ -49,8 +51,10 @@ export { default as QrPosterModal } from './QR/QrPosterModal.jsx';
 // ── Page Sections (Backward Compatibility Re-exports) ──
 export { Hero, TestimonialSection } from '../pages/Home/Sections';
 export {
-  ListingBasicInfo,
-  RatingSection,
-  InfoTable,
-  PreviewImage,
+  HeroGallery,
+  ActionBar,
+  BusinessInfoCard,
+  OpeningHoursCard,
+  DetailInfoCard,
+  RatingsV2,
 } from '../pages/ListingDetails/Sections';

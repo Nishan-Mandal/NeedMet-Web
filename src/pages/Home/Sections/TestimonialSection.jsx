@@ -135,7 +135,7 @@ export default function TestimonialSection() {
         style={{ background: 'radial-gradient(circle, rgba(26, 138, 90, 0.22) 0%, transparent 70%)' }}
       />
 
-      <div className="px-[18px] md:px-8 lg:px-[70px] mb-6 md:mb-[34px] lg:mb-[52px]">
+      <div className="px-[18px] sm:px-8 lg:px-[70px] mb-6 md:mb-[34px] lg:mb-[52px]">
         <span className="inline-block font-primary text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.14em] sm:tracking-[0.18em] text-primary-light mb-3 sm:mb-3.5">
           Real Stories
         </span>

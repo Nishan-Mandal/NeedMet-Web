@@ -19,7 +19,7 @@ export default function Banner({ imageUrl, webUrl, route, alt = "Banner" }) {
 
   return (
     <div
-      className={`w-full overflow-hidden leading-none ${route ? "cursor-pointer" : "cursor-default"}`}
+      className={`w-full overflow-hidden leading-none px-[18px] sm:px-8 lg:px-[70px] py-4 bg-white ${route ? "cursor-pointer" : "cursor-default"}`}
       onClick={route ? handleClick : undefined}
     >
       <picture>
@@ -29,7 +29,7 @@ export default function Banner({ imageUrl, webUrl, route, alt = "Banner" }) {
         <img
           src={desktopImage}
           alt={alt}
-          className="w-full block object-fill aspect-16/9 min-[481px]:aspect-14/7 md:aspect-16/4 md:max-lg:h-[240px]"
+          className="w-full block object-fill aspect-16/9 min-[481px]:aspect-14/7 md:aspect-16/4 md:max-lg:h-[240px] rounded-2xl"
           loading="lazy"
         />
       </picture>

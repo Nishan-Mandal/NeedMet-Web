@@ -4,7 +4,7 @@ import play_store from '../../assets/play_store.png';
 import play_store_icon from '../../assets/play_store_icon.png';
 import { useAuth } from "../../contexts/authContext.jsx";
 import Button from "../Common/Button.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "../../contexts/toastContext.jsx";
 
 export default function Header() {
@@ -17,6 +17,30 @@ export default function Header() {
 
   const location = useLocation();
   const isSearchPage = location.pathname === '/search';
+  const isHomePage = location.pathname === '/';
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    if (!isHomePage) {
+      setIsScrolled(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      // Scrolling very little (> 20px) turns navbar white
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isHomePage]);
+
+  const isTransparent = isHomePage && !isScrolled;
 
   const handleLogout = async () => {
     try {
@@ -32,14 +56,26 @@ export default function Header() {
   return (
     <>
       {/* ── Desktop HEADER ── */}
-      <header className="sticky top-0 z-[9999] h-[68px] bg-white border-b border-border shadow-[0_1px_0_var(--color-border),0_4px_16px_rgba(15,92,62,0.06)] hidden md:flex items-center px-8 lg:px-[70px]">
+      <header
+        className={`sticky top-0 z-[9999] h-[68px] hidden md:flex items-center px-8 lg:px-[70px] transition-all duration-300 ease-in-out ${
+          isHomePage ? "md:-mb-[68px]" : ""
+        } ${
+          isTransparent
+            ? "bg-white/0 backdrop-blur-none border-b border-border/0 shadow-transparent"
+            : "bg-white/95 backdrop-blur-md border-b border-border shadow-[0_1px_0_var(--color-border),0_4px_16px_rgba(15,92,62,0.06)]"
+        }`}
+      >
         <div className="w-full h-full flex items-center justify-between gap-4">
 
           {/* Left: Logo + Nav */}
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 cursor-pointer select-none" onClick={() => navigate('/')}>
               <img src={companyLogo} alt="NeedMet logo" className="w-9 h-9 rounded-[10px] shadow-[0_2px_8px_rgba(15,92,62,0.18)]" />
-              <span className="font-heading font-bold text-[1.35rem] text-primary tracking-[-0.02em]">NeedMet</span>
+              <span className={`font-heading font-bold text-[1.35rem] tracking-[-0.02em] transition-colors duration-300 ease-in-out ${
+                isTransparent ? "text-white" : "text-primary"
+              }`}>
+                NeedMet
+              </span>
             </div>
 
             {/* Nav */}
@@ -47,8 +83,14 @@ export default function Header() {
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3 rounded-lg relative transition-colors ${
-                    isActive ? 'text-primary bg-primary-surface active' : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
+                  `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
+                    isTransparent
+                      ? (isActive
+                          ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
+                          : 'text-white/80 hover:text-white hover:bg-white/10')
+                      : (isActive
+                          ? 'text-primary bg-primary-surface font-semibold'
+                          : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
                   }`
                 }
               >
@@ -57,8 +99,14 @@ export default function Header() {
               <NavLink
                 to="/all_categories"
                 className={({ isActive }) =>
-                  `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3 rounded-lg relative transition-colors ${
-                    isActive ? 'text-primary bg-primary-surface active' : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
+                  `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
+                    isTransparent
+                      ? (isActive
+                          ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
+                          : 'text-white/80 hover:text-white hover:bg-white/10')
+                      : (isActive
+                          ? 'text-primary bg-primary-surface font-semibold'
+                          : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
                   }`
                 }
               >
@@ -67,8 +115,14 @@ export default function Header() {
               <NavLink
                 to="/contribute/listing"
                 className={({ isActive }) =>
-                  `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3 rounded-lg relative transition-colors ${
-                    isActive ? 'text-primary bg-primary-surface active' : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
+                  `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
+                    isTransparent
+                      ? (isActive
+                          ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
+                          : 'text-white/80 hover:text-white hover:bg-white/10')
+                      : (isActive
+                          ? 'text-primary bg-primary-surface font-semibold'
+                          : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
                   }`
                 }
               >
@@ -78,8 +132,14 @@ export default function Header() {
                 <NavLink
                   to="/admin/dashboard"
                   className={({ isActive }) =>
-                    `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3 rounded-lg relative transition-colors ${
-                      isActive ? 'text-primary bg-primary-surface active' : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
+                    `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
+                      isTransparent
+                        ? (isActive
+                            ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
+                            : 'text-white/80 hover:text-white hover:bg-white/10')
+                        : (isActive
+                            ? 'text-primary bg-primary-surface font-semibold'
+                            : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
                     }`
                   }
                 >
@@ -95,8 +155,10 @@ export default function Header() {
               <NavLink
                 to="/search"
                 className={({ isActive }) =>
-                  `flex items-center justify-center w-[38px] h-[38px] rounded-[10px] text-[1.2rem] transition-colors ${
-                    isActive ? 'bg-primary-surface text-primary' : 'text-primary hover:bg-primary-surface'
+                  `flex items-center justify-center w-[38px] h-[38px] rounded-[10px] text-[1.15rem] transition-all duration-300 ease-in-out ${
+                    isTransparent
+                      ? (isActive ? 'bg-white/20 text-white' : 'text-white/85 hover:text-white hover:bg-white/10')
+                      : (isActive ? 'bg-primary-surface text-primary' : 'text-primary hover:bg-primary-surface')
                   }`
                 }
               >
@@ -105,7 +167,11 @@ export default function Header() {
             )}
 
             <button
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-light text-text-on-dark flex items-center justify-center font-bold text-base cursor-pointer transition-transform active:scale-110 shadow-sm mr-1.5"
+              className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-base cursor-pointer transition-all duration-300 ease-in-out active:scale-110 shadow-sm mr-1.5 ${
+                isTransparent
+                  ? 'bg-white/20 text-white border border-white/30 hover:bg-white/30'
+                  : 'bg-gradient-to-br from-primary to-primary-light text-text-on-dark'
+              }`}
               onClick={() => setShowMenu(prev => !prev)}
               aria-label="User Profile"
             >
@@ -116,7 +182,9 @@ export default function Header() {
             </button>
 
             <a
-              className="hidden lg:flex items-center rounded-lg overflow-hidden transition-all hover:opacity-85 hover:-translate-y-0.5"
+              className={`hidden lg:flex items-center rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:opacity-90 hover:-translate-y-0.5 ${
+                isTransparent ? 'ring-1 ring-white/25' : ''
+              }`}
               href="https://play.google.com/store/apps/details?id=com.findon.app"
               target="_blank"
               rel="noopener noreferrer"
@@ -129,34 +197,54 @@ export default function Header() {
       </header>
 
       {/* ── MOBILE TOP HEADER ── */}
-      <header className="md:hidden flex justify-between items-center h-[58px] sticky top-0 bg-white/95 backdrop-blur-md border-b border-border shadow-[0_1px_0_var(--color-border)] z-[9999] px-[18px] sm:px-8">
-        <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/')}>
-          <img src={companyLogo} alt="NeedMet logo" className="w-8 h-8 rounded-[9px] shadow-[0_2px_6px_rgba(15,92,62,0.15)]" />
-          <span className="font-heading font-bold text-[1.2rem] text-primary tracking-[-0.02em]">NeedMet</span>
-        </div>
+      {!isSearchPage && (
+        <header
+          className={`md:hidden flex justify-between items-center h-[58px] sticky top-0 z-[9999] px-[18px] sm:px-8 transition-all duration-300 ease-in-out ${
+            isHomePage ? "-mb-[58px]" : ""
+          } ${
+            isTransparent
+              ? "bg-white/0 backdrop-blur-none border-b border-border/0 shadow-transparent"
+              : "bg-white/95 backdrop-blur-md border-b border-border shadow-[0_1px_0_var(--color-border)]"
+          }`}
+        >
+          <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/')}>
+            <img src={companyLogo} alt="NeedMet logo" className="w-8 h-8 rounded-[9px] shadow-[0_2px_6px_rgba(15,92,62,0.15)]" />
+            <span className={`font-heading font-bold text-[1.2rem] tracking-[-0.02em] transition-colors duration-300 ease-in-out ${
+              isTransparent ? "text-white" : "text-primary"
+            }`}>
+              NeedMet
+            </span>
+          </div>
 
-        <div className="flex items-center gap-[0.7rem]">
-          <a
-            href="https://play.google.com/store/apps/details?id=com.findon.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center"
-            aria-label="Get it on Play Store"
-          >
-            <img src={play_store_icon} alt="Play Store" className="h-6" />
-          </a>
-          <button
-            className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-light text-text-on-dark flex items-center justify-center font-bold text-sm cursor-pointer"
-            onClick={() => setShowMenu(prev => !prev)}
-            aria-label="User Profile"
-          >
-            {userLoggedIn ?
-              userData?.name?.charAt(0)?.toUpperCase() || "U" :
-              <i className="fa-solid fa-user text-xs"></i>
-            }
-          </button>
-        </div>
-      </header>
+          <div className="flex items-center gap-[0.7rem]">
+            <a
+              href="https://play.google.com/store/apps/details?id=com.findon.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center p-1 rounded-lg transition-all duration-300 ease-in-out ${
+                isTransparent ? "bg-white/15 border border-white/20" : ""
+              }`}
+              aria-label="Get it on Play Store"
+            >
+              <img src={play_store_icon} alt="Play Store" className="h-5 w-5 object-contain" />
+            </a>
+            <button
+              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm cursor-pointer transition-all duration-300 ease-in-out active:scale-110 shadow-sm ${
+                isTransparent
+                  ? "bg-white/20 text-white border border-white/30 hover:bg-white/30"
+                  : "bg-gradient-to-br from-primary to-primary-light text-text-on-dark"
+              }`}
+              onClick={() => setShowMenu(prev => !prev)}
+              aria-label="User Profile"
+            >
+              {userLoggedIn ?
+                userData?.name?.charAt(0)?.toUpperCase() || "U" :
+                <i className="fa-solid fa-user text-xs"></i>
+              }
+            </button>
+          </div>
+        </header>
+      )}
 
       {/* Profile / Side menu */}
       <div className={`fixed top-0 right-0 w-[290px] h-[100dvh] bg-surface z-[99999] border-l border-border shadow-[-8px_0_32px_rgba(15,92,62,0.12)] flex flex-col overflow-hidden transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${showMenu ? 'translate-x-0' : 'translate-x-full'}`}>

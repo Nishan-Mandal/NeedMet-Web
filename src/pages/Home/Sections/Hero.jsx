@@ -1,82 +1,100 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import ImageSlider from "../../../components/ImageSlider";
+import SearchAutocomplete from "../../../components/SearchAutocomplete";
 
-const CHIPS = [
-  { label: "Room Rent", emoji: "🏠" },
-  { label: "Salons", emoji: "💇" },
-  { label: "Restaurants", emoji: "🍽️" },
-  { label: "Auto Services", emoji: "🚗" },
-  { label: "Pharmacies", emoji: "💊" },
-  { label: "Fitness", emoji: "🏋️" },
+const POPULAR_SEARCHES = [
+  "Restaurants",
+  "Salons",
+  "Mechanics",
+  "PG & Hostels",
+  "Pharmacies",
+  "Home Cleaning",
 ];
 
-/* ── Stats ── */
-const Stats = () => (
-  <div className="flex w-full overflow-hidden border border-white/15 rounded-xl sm:rounded-[14px] bg-white/[0.08] backdrop-blur-md">
-    {[
-      { num: "500+", label: "Businesses Listed" },
-      { num: "50+", label: "Categories Covered" },
-      { num: "4.8★", label: "Avg. User Rating" },
-    ].map((s, i) => (
-      <div
-        key={i}
-        className={`flex-1 text-center py-3.5 sm:py-4 px-2 sm:px-[18px] ${
-          i !== 2 ? "border-r border-white/10" : ""
-        }`}
-      >
-        <div className="font-heading font-extrabold text-lg sm:text-2xl text-white leading-none">
-          {s.num}
-        </div>
-        <div className="mt-1 text-[8.5px] sm:text-[9.5px] font-bold tracking-[0.08em] uppercase text-white/50">
-          {s.label}
-        </div>
-      </div>
-    ))}
-  </div>
-);
+const RECENT_SEARCHES_KEY = "needmet_recent_searches";
 
-/* ── Slider Panel ── */
-function SliderPanel({ images }) {
-  return (
-    <div className="flex justify-center w-full p-1 sm:p-2 md:p-[18px] border border-white/15 rounded-lg sm:rounded-xl md:rounded-[22px] bg-white/[0.08] backdrop-blur-[14px] shadow-[0_20px_60px_rgba(0,0,0,0.28)]">
-      <ImageSlider width="100%" slide={true} images={images} />
-    </div>
-  );
-}
+const STATS = [
+  { value: "500+", label: "Verified Businesses" },
+  { value: "50+", label: "Service Categories" },
+  { value: "4.8", label: "Customer Satisfaction", hasStar: true },
+  { value: "100%", label: "Free to Search" },
+];
 
 export default function Hero({ data }) {
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [query, setQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [recentSearches, setRecentSearches] = useState([]);
   const navigate = useNavigate();
+  const searchWrapperRef = useRef(null);
 
-  const handleSearchClick = (term = "") => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
-    setTimeout(() => {
-      const q = typeof term === "string" ? term.trim() : "";
-      if (q) {
-        navigate(`/search?q=${encodeURIComponent(q)}`);
-      } else {
-        navigate("/search");
+  // Load recent searches from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
+      if (stored) {
+        setRecentSearches(JSON.parse(stored));
       }
-    }, 150);
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, []);
+
+  const saveRecentSearch = (term) => {
+    if (!term || !term.trim()) return;
+    const cleanTerm = term.trim();
+    setRecentSearches((prev) => {
+      const updated = [cleanTerm, ...prev.filter((item) => item.toLowerCase() !== cleanTerm.toLowerCase())].slice(0, 5);
+      try {
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+      } catch {
+        // Ignore storage errors
+      }
+      return updated;
+    });
   };
 
+  const handleRemoveRecentSearch = (termToRemove) => {
+    setRecentSearches((prev) => {
+      const updated = prev.filter((item) => item !== termToRemove);
+      try {
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+      } catch {
+        // Ignore storage errors
+      }
+      return updated;
+    });
+  };
+
+  const handleClearAllRecentSearches = () => {
+    setRecentSearches([]);
+    try {
+      localStorage.removeItem(RECENT_SEARCHES_KEY);
+    } catch {
+      // Ignore storage errors
+    }
+  };
+
+  const handleSearchSubmit = (searchTerm) => {
+    const finalQuery = typeof searchTerm === "string" ? searchTerm.trim() : query.trim();
+    setIsFocused(false);
+    if (finalQuery) {
+      saveRecentSearch(finalQuery);
+      navigate(`/search?q=${encodeURIComponent(finalQuery)}`);
+    } else {
+      navigate("/search");
+    }
+  };
+
+  // Typewriter placeholders for empty search bar
   const placeholders = [
-    "Rooms near me",
-    "Best restaurants",
-    "Medical shops",
-    "Salons in Haldia",
-    "Car repair center",
+    "Search businesses, services, or categories...",
+    "Search salons, parlors & spas in Haldia...",
+    "Search restaurants, cafes & dining...",
+    "Search car & bike mechanics...",
+    "Search electricians, plumbers & cleaning...",
   ];
 
-  const [placeholder, setPlaceholder] = useState("");
-
-  const images =
-    data?.promoBanners?.map((banner) => ({
-      banner: banner.imageUrl,
-      route: banner.route,
-    })) || [];
+  const [animatedPlaceholder, setAnimatedPlaceholder] = useState("");
 
   useEffect(() => {
     let wordIndex = 0;
@@ -86,16 +104,16 @@ export default function Hero({ data }) {
     const type = () => {
       const currentWord = placeholders[wordIndex];
       if (isDeleting) {
-        setPlaceholder(currentWord.substring(0, charIndex - 1));
+        setAnimatedPlaceholder(currentWord.substring(0, charIndex - 1));
         charIndex--;
       } else {
-        setPlaceholder(currentWord.substring(0, charIndex + 1));
+        setAnimatedPlaceholder(currentWord.substring(0, charIndex + 1));
         charIndex++;
       }
       if (!isDeleting && charIndex === currentWord.length) {
         setTimeout(() => {
           isDeleting = true;
-        }, 1200);
+        }, 1600);
       }
       if (isDeleting && charIndex === 0) {
         isDeleting = false;
@@ -103,123 +121,195 @@ export default function Hero({ data }) {
       }
     };
 
-    const interval = setInterval(type, 100);
+    const interval = setInterval(type, 85);
     return () => clearInterval(interval);
   }, []);
 
+  const categories = data?.listings || data?.categories || [];
+
   return (
-    <section className="relative flex items-center overflow-hidden font-heading rounded-b-[20px] max-[860px]:rounded-b-[20px] min-[861px]:rounded-b-[28px] py-9 px-5 max-[860px]:py-12 max-[860px]:px-8 min-[861px]:py-[50px] min-[861px]:px-12 min-[1081px]:py-20 min-[1081px]:px-[70px] bg-gradient-to-br from-[#0d3d2e] from-0% via-[#0f5c3e] via-38% to-[#1a8a5a] to-72%">
-      {/* Decorative blobs */}
-      <div
-        className="pointer-events-none rounded-full absolute -top-[60px] right-0 w-[260px] h-[260px] min-[481px]:-top-[100px] min-[481px]:right-40 min-[481px]:w-[420px] min-[481px]:h-[420px]"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(34, 196, 122, 0.16) 0%, transparent 70%)",
-        }}
-      />
-      <div
-        className="pointer-events-none rounded-full absolute -bottom-[60px] left-[28%] w-[300px] h-[300px] hidden min-[481px]:block"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(13, 61, 46, 0.5) 0%, transparent 70%)",
-        }}
-      />
+    <section
+      id="hero-section"
+      className="bg-primary relative z-20 w-full pt-[76px] pb-16 sm:pt-[88px] sm:pb-20 md:pt-[125px] md:pb-24 px-[18px] sm:px-8 lg:px-[70px] overflow-visible font-primary"
+    >
+      {/* Ambient Lighting & Glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden select-none">
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-emerald-400/15 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 -left-32 w-72 h-72 bg-emerald-300/10 rounded-full blur-2xl" />
+        <div className="absolute top-1/3 -right-32 w-80 h-80 bg-accent-emerald/10 rounded-full blur-2xl" />
+      </div>
 
-      {/* Inner layout */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto flex flex-col min-[861px]:flex-row items-stretch min-[861px]:items-center justify-between gap-0 min-[861px]:gap-16">
-        {/* ── LEFT ── */}
-        <div className="flex-1 w-full max-w-full min-[861px]:max-w-[540px] text-white flex flex-col items-center min-[861px]:items-start">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 w-max mb-6 py-[5px] px-4 rounded-full text-[11px] font-bold tracking-[0.08em] border border-white/22 bg-white/[0.08] text-[#cff0de] font-primary">
-            <span className="w-[7px] h-[7px] shrink-0 rounded-full bg-accent animate-pulse" />
-            Haldia, West Bengal
-          </div>
+      <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center text-center">
+        {/* Tagline Pill Badge */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-accent-emerald shadow-[0_0_8px_#4ade80] animate-pulse" />
+          <span className="font-primary text-[12px] sm:text-[13px] text-emerald-100 font-semibold tracking-wide">
+            Verified Local Discovery
+          </span>
+        </div>
 
-          {/* Headline */}
-          <h1 className="font-heading font-extrabold mb-5 leading-[1.12] tracking-[-0.025em] text-center min-[861px]:text-left text-[1.75rem] min-[481px]:text-[clamp(2.2rem,3.6vw,3.2rem)]">
-            Find Every Shop &amp; Service{" "}
-            <span className="text-accent">Near You</span>
-          </h1>
-
-          {/* Subtext */}
-          <p className="mb-5 min-[861px]:mb-8 text-center min-[861px]:text-left text-white/70 font-primary text-[0.95rem] leading-[1.65]">
-            Discover local businesses, book services, and connect with your
-            city — all in one place. From groceries to garages, NeedMet has you
-            covered.
-          </p>
-
-          {/* Mobile block — shows slider + stats between subtext & search on ≤860px */}
-          <div className="flex min-[861px]:hidden w-full flex-col gap-4 mb-7">
-            <div className="flex justify-center w-full p-1 sm:p-[5px] border border-white/15 rounded-lg sm:rounded-xl bg-white/[0.08] backdrop-blur-[14px]">
-              <ImageSlider width="100%" slide={true} images={images} />
-            </div>
-            <Stats />
-          </div>
-
-          {/* Search */}
-          <div
-            className={`relative z-10 flex items-center gap-2 mb-5 p-[5px] pl-[18px] rounded-full cursor-pointer bg-white w-full border-[1.5px] border-transparent hover:border-[#16684c]/20 shadow-[0_6px_28px_rgba(0,0,0,0.18)] hover:shadow-[0_10px_32px_rgba(13,92,58,0.24)] hover:-translate-y-0.5 transition-all duration-200 ${
-              isTransitioning
-                ? "scale-[1.025] shadow-[0_12px_38px_rgba(22,104,76,0.35)] border-[#16684c] opacity-90"
-                : ""
-            }`}
-            onClick={() => handleSearchClick()}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") handleSearchClick();
-            }}
-          >
+        {/* Hero Headline */}
+        <h1 className="mt-5 font-heading text-[2.2rem] sm:text-[3rem] md:text-[3.6rem] lg:text-[4rem] text-white tracking-tight font-extrabold leading-[1.12] max-w-4xl m-0">
+          Find what you need,{" "}
+          <span className="text-secondary-container relative inline-block">
+            right around you
             <svg
-              className="shrink-0 text-[#6b7280]"
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
+              className="absolute -bottom-2 left-0 w-full text-secondary-container/80"
               fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
+              height="8"
+              viewBox="0 0 200 8"
             >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.35-4.35" />
+              <path
+                d="M1 5.5C50 2 150 2 199 5.5"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="3.5"
+              />
             </svg>
-            <input
-              type="text"
-              className="flex-1 min-w-0 bg-transparent outline-none border-none text-[0.9rem] text-[#111827] placeholder:text-[#6b7280] font-primary"
-              placeholder={`Try "${placeholder}"`}
-              readOnly
-              tabIndex={-1}
-            />
-            <button
-              type="button"
-              className="whitespace-nowrap rounded-full font-bold text-[0.8rem] min-[481px]:text-[0.88rem] py-2.5 px-4 min-[481px]:py-[11px] min-[481px]:px-[22px] text-white bg-gradient-to-r from-primary to-primary-light hover:from-primary-light hover:to-primary-lighter hover:scale-105 active:scale-95 transition-all shadow-[0_4px_14px_rgba(13,92,58,0.35)]"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleSearchClick();
+          </span>
+          .
+        </h1>
+
+        {/* Supporting Subtitle */}
+        <p className="mt-4 font-primary text-[15px] sm:text-[17px] text-emerald-50/85 max-w-2xl leading-relaxed">
+          Discover trusted local businesses, services, and shops near you. Fast, verified, and community-recommended.
+        </p>
+
+        {/* Search Component Container with Functional Autocomplete */}
+        <div ref={searchWrapperRef} className="w-full max-w-3xl mt-8 sm:mt-10 relative z-30">
+          {/* Floating Input Container with directly attached Autocomplete */}
+          <div className="relative">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearchSubmit();
               }}
+              className="bg-white rounded-full shadow-[0_16px_40px_rgba(0,0,0,0.25),0_4px_16px_rgba(0,0,0,0.1)] p-2 sm:p-2.5 flex items-center gap-2 border border-white/30 focus-within:ring-4 focus-within:ring-white/20 transition-all duration-300 text-left relative z-20"
             >
-              Search Now
-            </button>
+              {/* Search Input Side */}
+              <div className="flex items-center gap-2.5 sm:gap-3 flex-1 w-full pl-3 sm:pl-4 py-1">
+                <span className="material-symbols-outlined text-primary text-[24px] sm:text-[26px] shrink-0">
+                  search
+                </span>
+                <input
+                  id="heroSearchInput"
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  placeholder={animatedPlaceholder || "Search businesses, services, or categories..."}
+                  className="w-full bg-transparent text-[#111827] font-primary text-[14px] sm:text-[15px] focus:outline-none placeholder:text-gray-400"
+                  autoComplete="off"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => setQuery("")}
+                    className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors shrink-0 border-0 bg-transparent cursor-pointer"
+                    title="Clear input"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">close</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Submit Action Button */}
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-1.5 px-5 sm:px-7 py-2.5 sm:py-3 rounded-full bg-primary hover:bg-primary-light active:scale-95 text-white font-semibold text-xs sm:text-sm tracking-wide transition-all shadow-md shrink-0 cursor-pointer"
+              >
+                <span>Search</span>
+                <span className="material-symbols-outlined text-[18px] hidden sm:inline-block">arrow_forward</span>
+              </button>
+            </form>
+
+            {/* Real Search Autocomplete Dropdown anchored directly to input */}
+            <SearchAutocomplete
+              query={query}
+              categories={categories}
+              recentSearches={recentSearches}
+              isOpen={isFocused}
+              isCompact={true}
+              onClose={() => setIsFocused(false)}
+              onSelectQuery={(selectedQuery) => {
+                setQuery(selectedQuery);
+                handleSearchSubmit(selectedQuery);
+              }}
+              onSelectCategory={(catName, catObj) => {
+                setIsFocused(false);
+                const name =
+                  typeof catName === "string" && catName.trim()
+                    ? catName.trim()
+                    : (catObj?.name || catObj?.category || catObj?.title || "").trim();
+                if (name) {
+                  saveRecentSearch(name);
+                  navigate(`/search?q=${encodeURIComponent(name)}`);
+                }
+              }}
+              onSelectListing={(listing) => {
+                setIsFocused(false);
+                const listingId = listing.objectID || listing.listingId || listing.id;
+                const listingTitle = listing.title || listing.name || listing.businessName || "";
+                if (listingTitle) {
+                  saveRecentSearch(listingTitle);
+                }
+                if (listingId) {
+                  const slug = (listingTitle || "service").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+                  navigate(`/listing/${listingId}/${slug}`, {
+                    state: { listing },
+                  });
+                } else if (listingTitle) {
+                  navigate(`/search?q=${encodeURIComponent(listingTitle)}`);
+                }
+              }}
+              onRemoveRecentSearch={handleRemoveRecentSearch}
+              onClearAllRecentSearches={handleClearAllRecentSearches}
+              wrapperRef={searchWrapperRef}
+            />
           </div>
 
-          {/* Chips */}
-          <div className="flex flex-wrap gap-2 min-[481px]:gap-2.5 justify-center min-[861px]:justify-start">
-            {CHIPS.map((c) => (
+          {/* Quick Popular Search Tags */}
+          <div className="mt-3.5 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+            <span className="text-[12px] font-medium text-emerald-100/70 mr-0.5">Popular:</span>
+            {POPULAR_SEARCHES.map((item) => (
               <button
-                key={c.label}
-                className="flex items-center gap-1.5 cursor-pointer rounded-full text-[11.5px] min-[481px]:text-[12.5px] font-medium py-1.5 px-3.5 min-[481px]:py-[7px] min-[481px]:px-4 border border-white/20 bg-white/[0.11] hover:bg-white/[0.22] hover:border-white/40 active:scale-95 text-white transition-all font-primary"
-                onClick={() => handleSearchClick(c.label)}
+                key={item}
+                type="button"
+                onClick={() => handleSearchSubmit(item)}
+                className="px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white/90 hover:text-white border border-white/15 transition-all text-[12px] font-medium cursor-pointer backdrop-blur-xs"
               >
-                <span>{c.emoji}</span> {c.label}
+                {item}
               </button>
             ))}
           </div>
         </div>
 
-        {/* ── RIGHT — desktop only ── */}
-        <div className="hidden min-[861px]:flex flex-1 flex-col items-center justify-center gap-4">
-          <SliderPanel images={images} />
-          <Stats />
-        </div>
+        {/* Subtle Stats Bar */}
+        <div className="mt-10 sm:mt-12 w-full max-w-3xl bg-white/[0.08] backdrop-blur-md rounded-2xl shadow-lg p-3 sm:p-4 grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 border border-white/15 divide-y md:divide-y-0 md:divide-x divide-white/10">
+          {STATS.map((stat, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col items-center text-center p-2 sm:p-2.5 rounded-xl hover:bg-white/[0.06] transition-colors"
+            >
+              <div className="flex items-center gap-1">
+                <span className="font-heading text-2xl sm:text-3xl text-white font-extrabold tracking-tight">
+                  {stat.value}
+                </span>
+                {stat.hasStar && (
+                  <span
+                    className="material-symbols-outlined text-amber-400 text-[22px]"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
+                    star
+                  </span>
+                )}
+              </div>
+              <span className="font-primary text-[12px] text-emerald-100/80 font-medium mt-0.5">
+                {stat.label}
+              </span>
+            </div>
+          ))}
+        </div> 
       </div>
     </section>
   );

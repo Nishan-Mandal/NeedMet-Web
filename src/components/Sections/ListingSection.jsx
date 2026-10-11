@@ -1,7 +1,9 @@
 import ListingCard from "../ListingCard.jsx";
+import NewListingCard from "../NewListingCard.jsx";
 import { Link, useLocation } from "react-router-dom";
 import NoDataImg from "../../assets/no_data.png";
 import SystemState, { InlineNoListingsFound } from "../SystemState.jsx";
+import SpotlightListingCard from "../SpotlightListingCard.jsx";
 
 function HeaderWithSeeAll({ title, subTitle = "", see_all_navigate }) {
   return (
@@ -51,15 +53,15 @@ export default function ListingSection({
   showSeeAll = true,
   see_all_navigate,
   bgColor,
-  CardComponent = ListingCard,
+  CardComponent = SpotlightListingCard,
 }) {
   const location = useLocation();
   const isListingPage = location.pathname.includes('/listings');
 
   return (
     <section
-      className="py-[50px] px-[70px] max-[1024px]:py-[35px] max-[1024px]:px-8 max-[576px]:py-[30px] max-[576px]:px-[18px] font-primary"
-      style={{ backgroundColor: bgColor }}
+      className="py-[50px] px-[70px] max-[1024px]:py-[35px] max-[1024px]:px-8 max-[576px]:py-[30px] max-[576px]:px-[18px] font-primary bg-white"
+      style={{ backgroundColor: bgColor || 'white' }}
     >
       {/* Header */}
       {showSeeAll && see_all_navigate && listings.length !== 0 ? (
@@ -88,7 +90,13 @@ export default function ListingSection({
           <InlineNoListingsFound />
         )
       ) : (
-        <div className="grid grid-cols-6 max-[1279px]:grid-cols-5 max-[1024px]:grid-cols-4 max-[768px]:grid-cols-3 max-[576px]:grid-cols-2 gap-y-4 gap-x-2 max-[1024px]:gap-3 max-[576px]:gap-2.5 w-full">
+        <div
+          className={
+            CardComponent === SpotlightListingCard
+              ? "grid grid-cols-2 min-[480px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5 lg:gap-6 w-full"
+              : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 w-full"
+          }
+        >
           {listings.map((listing) => (
             <CardComponent key={listing.listingId} listing={listing} />
           ))}

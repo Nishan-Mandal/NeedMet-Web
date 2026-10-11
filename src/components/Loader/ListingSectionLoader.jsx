@@ -10,16 +10,28 @@ function ListingSectionLoader({ count = 8, showSeeAll = true }) {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(180px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-2.5 sm:gap-3 md:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 w-full">
         {Array.from({ length: count }).map((_, i) => (
-          <div key={i} className="w-full p-2 sm:p-2.5 rounded-xl bg-surface border border-border/60">
-            <div className="w-full aspect-4/3 sm:aspect-video rounded-xl bg-gray-200 animate-pulse mb-2.5"></div>
+          <div key={i} className="w-full rounded-xl bg-surface-container-lowest border border-outline-variant/30 overflow-hidden flex flex-col">
+            <div className="w-full h-44 bg-surface-container-low animate-pulse"></div>
 
-            <div className="flex flex-col gap-2">
-              <div className="w-16 sm:w-20 h-3 bg-gray-200 rounded-md animate-pulse"></div>
-              <div className="w-24 sm:w-32 h-3.5 sm:h-4 bg-gray-200 rounded-md animate-pulse"></div>
-              <div className="w-11/12 h-3 bg-gray-200 rounded-md animate-pulse"></div>
-              <div className="w-14 h-3 bg-gray-200 rounded-md animate-pulse"></div>
+            <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <div className="w-3/5 h-4 bg-surface-container-high rounded animate-pulse"></div>
+                  <div className="w-14 h-4 bg-surface-container-high rounded-full animate-pulse"></div>
+                </div>
+                <div className="w-4/5 h-3 bg-surface-container-high rounded animate-pulse"></div>
+                <div className="w-1/2 h-3 bg-surface-container-high rounded animate-pulse"></div>
+                <div className="flex gap-1.5 pt-1">
+                  <div className="w-14 h-4 bg-surface-container-low rounded animate-pulse"></div>
+                  <div className="w-16 h-4 bg-surface-container-low rounded animate-pulse"></div>
+                </div>
+              </div>
+              <div className="pt-2 flex gap-2">
+                <div className="flex-1 h-8 bg-surface-container-low rounded-lg animate-pulse"></div>
+                <div className="flex-1 h-8 bg-surface-container-high rounded-lg animate-pulse"></div>
+              </div>
             </div>
           </div>
         ))}

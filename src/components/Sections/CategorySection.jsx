@@ -23,7 +23,7 @@ export default function CategorySection({ title, subTitle = "", fontSz, categori
 
   return (
     <section 
-      className="category-section px-[18px] py-[30px] sm:px-8 sm:py-[35px] lg:px-[70px] lg:py-[50px]" 
+      className="category-section px-[18px] py-[30px] sm:px-8 sm:py-[35px] lg:px-[70px] lg:py-[50px] bg-white" 
       style={style}
     >
       <div>

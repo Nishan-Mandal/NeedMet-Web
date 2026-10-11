@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function BusinessCTA() {
+export default function BusinessCTA({ className = "", bgColor = "" }) {
   const navigate = useNavigate();
 
   const goToAddListing = () => {
@@ -12,8 +12,11 @@ export default function BusinessCTA() {
   };
 
   return (
-    <section className="business-cta-section font-primary py-[20px] px-[35px] pb-[45px] max-[992px]:py-[20px] max-[992px]:px-[14px] max-[992px]:pb-[40px] max-[576px]:pt-[10px] max-[576px]:px-1 max-[576px]:pb-[35px]">
-      <div className="business-cta-container relative overflow-hidden isolate bg-gradient-to-br from-primary to-primary-light rounded-[28px] p-[56px_35px] max-[992px]:rounded-3xl max-[992px]:p-[42px_18px] max-[576px]:rounded-[22px] max-[576px]:p-[32px_14px]">
+    <section
+      className={`font-primary py-[20px] pb-[45px] max-[576px]:pt-[10px] max-[576px]:pb-[35px] px-[18px] sm:px-8 lg:px-[70px] ${className}`}
+      style={bgColor ? { backgroundColor: bgColor } : undefined}
+    >
+      <div className="relative overflow-hidden isolate bg-gradient-to-br from-primary to-primary-light rounded-[28px] p-[56px_35px] max-[992px]:rounded-3xl max-[992px]:p-[42px_18px] max-[576px]:rounded-[22px] max-[576px]:p-[32px_14px]">
 
         {/* Grid Background */}
         <div 

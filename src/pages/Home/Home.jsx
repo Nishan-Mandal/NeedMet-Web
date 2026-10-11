@@ -1,6 +1,8 @@
+import React, { useEffect, Fragment } from "react";
 import {
   Hero,
   TestimonialSection,
+  WhyDiscoverNeedMet,
 } from "./Sections";
 import {
   CategorySection,
@@ -12,6 +14,7 @@ import {
   HomeLoader,
   Banner,
   SEO,
+  SpotlightListingCard,
 } from "../../components";
 
 import ErrorImg from "../../assets/error.png";
@@ -22,49 +25,55 @@ import {
 } from "../../services/firebase/firestore/listingService.js";
 import { useQuery, useQueries } from "@tanstack/react-query";
 import { getHomeDetails } from "../../services/firebase/firestore/homeService.js";
-import { useEffect, Fragment } from "react";
 import useInfo from "../../contexts/infoContext.jsx";
 import { generateSlug } from "../../utils/slugify.js";
 
 function Home() {
-
   const { data: homeData, isLoading: homeLoading, error: homeError } = useQuery({
-    queryKey: ['homeDetails'],
+    queryKey: ["homeDetails"],
     queryFn: () => getHomeDetails(),
+    staleTime: 60 * 60 * 1000, // 1 hour
+    gcTime: 24 * 60 * 60 * 1000,
   });
-  
- 
+
   const { setContactNo } = useInfo();
   useEffect(() => {
     if (homeData?.whatsappSupport) {
       setContactNo(homeData.whatsappSupport);
     }
-  }, [homeData]);
+  }, [homeData, setContactNo]);
 
   const categoryList = homeData?.listings ?? [];
 
   const { data: recommendedListings = [] } = useQuery({
-    queryKey: ['recommendedListings', 'short'],
+    queryKey: ["recommendedListings", "short"],
     queryFn: () => getRecommendedListings({ quantity: 20 }),
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 24 * 60 * 60 * 1000,
   });
 
   const { data: newListings = [] } = useQuery({
-    queryKey: ['newListings', 'short'],
+    queryKey: ["newListings", "short"],
     queryFn: () => getNewListings({ quantity: 20 }),
+    staleTime: 15 * 60 * 1000, // 15 minutes
+    gcTime: 24 * 60 * 60 * 1000,
   });
 
   const categoryQueries = useQueries({
     queries: categoryList.map((category) => ({
-      queryKey: ['categoryListings', category],
+      queryKey: ["categoryListings", category],
       queryFn: () => getListingByCategory({ category: [category], quantity: 20 }),
       enabled: !!category,
+      staleTime: 30 * 60 * 1000, // 30 minutes
+      gcTime: 24 * 60 * 60 * 1000,
     })),
   });
 
-  if(homeLoading) 
+  if (homeLoading) {
     return <HomeLoader />;
+  }
 
-  if(homeError) {
+  if (homeError) {
     return (
       <SystemState
         imageSrc={ErrorImg}
@@ -77,87 +86,104 @@ function Home() {
     );
   }
 
-  const sectionBgColors = [
-    '#f7faf8', // light gray
-    'white',   // white
-  ];
-  
   return (
-    <>
-      <SEO 
+    <div className="w-full bg-background min-h-screen text-on-surface font-primary antialiased">
+      <SEO
         title="NeedMet | Find Local Businesses & Services Near You"
-        description="Search and discover trusted local service providers, shops, salons, electricians, and businesses in your area. Check reviews and contact them directly on NeedMet."
+        description="Search and discover trusted local service providers, shops, salons, electricians, and businesses in your area. Fast, verified, and community-recommended."
       />
-      <Hero data={homeData} />
-      <TrendingSearches />
-      <CategorySection 
-        title="Browse By Categories" 
-        subTitle='DISCOVER LOCAL SERVICES' 
-        data={homeData} 
-        see_all_navigate="/all_categories" 
-      />
-      {
-        recommendedListings.length > 0
-          ? <ListingSection 
-              title="Recommended For You"  
-              subTitle={"Handpicked For You"} 
-              listings={recommendedListings} 
-              see_all_navigate="/listings/recommended" 
-              bgColor={'var(--background-secondary)'}
-            />
-          : null
-      }
 
+      {/* 1. HERO SECTION */}
+      <Hero data={homeData} />
+
+      {/* 2. EXPLORE POPULAR CATEGORIES */}
+      <CategorySection
+        title="Explore Popular Categories"
+        subTitle="DISCOVER LOCAL SERVICES"
+        data={homeData}
+        see_all_navigate="/all_categories"
+      />
+
+      {/* 3. TRENDING SEARCHES */}
+      <div className="px-[18px] sm:px-8 lg:px-[70px] py-4 bg-background">
+        <TrendingSearches />
+      </div>
+
+      {/* 4. BUSINESSES NEAR YOU / RECOMMENDED */}
+      {recommendedListings.length > 0 && (
+        <ListingSection
+          title="Businesses Near You"
+          subTitle="LOCAL SPOTLIGHT"
+          listings={recommendedListings}
+          see_all_navigate="/listings/recommended"
+          bgColor="transparent"
+          CardComponent={SpotlightListingCard}
+        />
+      )}
+
+      {/* 5. EXPLORE BUSINESSES BY LOCATION (REGIONAL HUBS) */}
       <Hyperlocal />
 
-      {
-        newListings.length > 0
-          ? <ListingSection 
-              title="Newly Added" 
-              subTitle={"Fresh on NeedMet"}
-              listings={newListings} 
-              see_all_navigate="/listings/newly_added" 
-              bgColor={'var(--background-secondary)'}
-            />
-          : null
-      }
+      {/* 6. WHY DISCOVER WITH NEEDMET */}
+      <WhyDiscoverNeedMet />
 
-      <Banner 
-        imageUrl={homeData?.banners?.[0]?.imageUrl}
-        webUrl={homeData?.banners?.[0]?.webUrl}
-        route={homeData?.banners?.[0]?.route}
-      />
+      {/* 7. NEWLY ADDED LISTINGS */}
+      {newListings.length > 0 && (
+        <ListingSection
+          title="Newly Added"
+          subTitle="FRESH ON NEEDMET"
+          listings={newListings}
+          see_all_navigate="/listings/newly_added"
+          bgColor="var(--background-secondary)"
+          CardComponent={SpotlightListingCard}
+        />
+      )}
 
+      {/* 8. FIRST PROMO BANNER */}
+      {homeData?.banners?.[0] && (
+        <Banner
+          imageUrl={homeData.banners[0].imageUrl}
+          webUrl={homeData.banners[0].webUrl}
+          route={homeData.banners[0].route}
+        />
+      )}
+
+      {/* 9. CATEGORY LISTINGS & BANNERS */}
       {categoryList.map((category, index) => {
         const listings = categoryQueries[index]?.data ?? [];
 
         if (!listings || listings.length === 0) return null;
 
-        const bannerIndex = (index+1) % homeData?.banners?.length;
+        const bannerIndex = (index + 1) % (homeData?.banners?.length || 1);
 
         return (
           <Fragment key={category}>
             <ListingSection
               title={category}
-              subTitle='Specially For You'
+              subTitle="SPECIALLY FOR YOU"
               listings={listings}
               see_all_navigate={`/listings/category/${generateSlug(category)}`}
-              bgColor={'var(--background-secondary)'}
+              bgColor="transparent"
+              CardComponent={SpotlightListingCard}
             />
 
-            <Banner
-              imageUrl={homeData?.banners?.[bannerIndex]?.imageUrl}
-              webUrl={homeData?.banners?.[bannerIndex]?.webUrl}
-              route={homeData?.banners?.[bannerIndex]?.route}
-            />
-
+            {homeData?.banners?.[bannerIndex] && (
+              <Banner
+                imageUrl={homeData.banners[bannerIndex].imageUrl}
+                webUrl={homeData.banners[bannerIndex].webUrl}
+                route={homeData.banners[bannerIndex].route}
+              />
+            )}
           </Fragment>
         );
       })}
 
+      {/* 10. TESTIMONIALS */}
       <TestimonialSection />
-      <BusinessCTA />
-    </>
+
+      {/* 11. LIST YOUR BUSINESS CTA */}
+      <BusinessCTA bgColor="var(--primary-surface)" />
+    </div>
   );
 }
 
