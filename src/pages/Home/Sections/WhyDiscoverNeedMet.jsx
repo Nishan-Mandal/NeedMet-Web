@@ -38,10 +38,10 @@ const PILLARS = [
 export default function WhyDiscoverNeedMet({ bgColor = "var(--background, #ffffff)" }) {
   return (
     <section
-      className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 font-primary bg-white transition-colors"
+      className="py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-16 font-primary bg-white transition-colors"
       style={{ backgroundColor: bgColor || "#ffffff" }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         {/* Section Header */}
         <div className="flex flex-col mb-5 sm:mb-8">
           <span className="font-primary text-[11px] sm:text-[12px] font-bold tracking-[0.2em] uppercase text-[#0f5c3e] mb-1.5 sm:mb-2 block">

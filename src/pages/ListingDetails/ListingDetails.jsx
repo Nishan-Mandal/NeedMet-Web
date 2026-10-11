@@ -202,7 +202,7 @@ function ListingDetails() {
 
       {/* ── Page wrapper ───────────────────────────────────── */}
       <div className="min-h-screen bg-[#f8faf9] font-primary">
-        <div className="w-full px-3.5 sm:px-6 lg:px-[70px] py-3.5 sm:py-6 lg:py-8 max-w-7xl mx-auto">
+        <div className="w-full px-[18px] sm:px-8 lg:px-[70px] py-4 sm:py-6 lg:py-8">
 
           {/* ── Two-column Hero Section: Gallery on Left, Business Details on Right ── */}
           <div className="flex flex-col min-[925px]:grid min-[925px]:grid-cols-12 gap-3.5 sm:gap-5 lg:gap-6 items-start">
