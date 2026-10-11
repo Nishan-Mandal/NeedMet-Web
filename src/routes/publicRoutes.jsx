@@ -5,6 +5,7 @@ import {
   ListingsPage,
   AllCategory,
   SearchPage,
+  AboutPage,
 } from "../pages";
 import { SystemState } from "../components";
 import NoDataImg from "../assets/no_data.png";
@@ -35,6 +36,22 @@ export const publicRoutes = [
   {
     path: "all_categories",
     element: <AllCategory />,
+  },
+  {
+    path: "categories",
+    element: <AllCategory />,
+  },
+  {
+    path: "about",
+    element: <AboutPage />,
+  },
+  {
+    path: "about_us",
+    element: <AboutPage />,
+  },
+  {
+    path: "docs/about_us",
+    element: <AboutPage />,
   },
   {
     path: "docs/:legalDocument",

@@ -3,12 +3,13 @@ import ListingDetails from "./ListingDetails/ListingDetails";
 import ListingsPage from "./ListingsPage";
 import AllCategory from "./AllCategories/AllCategory";
 import LegalPage from "./LegalPage";
-import SearchPage from "./SearchPage";
+import SearchPage from "./Search/SearchPage";
 import LogIn from "./auth/LogIn.jsx";
 import SignUp from "./auth/SignUp.jsx";
 import AllListings from "./admin/AllListings.jsx";
 import Dashboard from "./admin/Dashboard.jsx";
 import AddListing from "./AddListing.jsx";
+import AboutPage from "./About/AboutPage.jsx";
 
 export {
     Home, 
@@ -21,5 +22,6 @@ export {
     SignUp, 
     AllListings, 
     Dashboard, 
-    AddListing
+    AddListing,
+    AboutPage
 }
