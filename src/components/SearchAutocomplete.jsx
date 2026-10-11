@@ -18,7 +18,7 @@ function HighlightMatch({ text, query }) {
     <span>
       {parts.map((part, index) =>
         regex.test(part) ? (
-          <span key={index} className="text-[#0d7049] font-bold bg-[#2ecc71]/15 rounded px-0.5">
+          <span key={index} className="text-[#0f5c3e] font-bold bg-[#e8f5ef] rounded px-0.5">
             {part}
           </span>
         ) : (
@@ -34,6 +34,8 @@ export default function SearchAutocomplete({
   categories = [],
   recentSearches = [],
   isOpen = false,
+  isCompact = false,
+  fullScreenOnMobile = !isCompact,
   onClose,
   onSelectQuery,
   onSelectCategory,
@@ -49,46 +51,53 @@ export default function SearchAutocomplete({
   const containerRef = useRef(null);
 
   const trimmedQuery = query.trim();
-  // 320ms debounce: optimal balance between instantaneous perception and minimal Algolia request cost
   const debouncedQuery = useDebounce(trimmedQuery, 320);
 
-  // 1. OPTIMIZATION: Filter Categories in-memory (0 Algolia requests!)
+  // 1. Filter Categories in-memory
   const matchedCategories = useMemo(() => {
     if (!categories?.length) return [];
     if (!trimmedQuery) {
-      // Show top categories immediately on click/focus
-      return categories.slice(0, 4);
+      // Show more categories on mobile full-screen so user has great discovery choices
+      const limit = fullScreenOnMobile ? 8 : (isCompact ? 3 : 5);
+      return categories.slice(0, limit);
     }
     const normalized = trimmedQuery.toLowerCase();
 
     return categories
       .filter((cat) => {
-        const nameMatch = cat.name?.toLowerCase().includes(normalized);
-        const tagMatch = cat.tags?.some((tag) =>
-          tag?.toLowerCase().includes(normalized)
-        );
+        const catName =
+          typeof cat === "string"
+            ? cat
+            : cat?.name || cat?.category || cat?.title || "";
+        const nameMatch = catName.toLowerCase().includes(normalized);
+        const tagMatch =
+          Array.isArray(cat?.tags) &&
+          cat.tags.some((tag) =>
+            typeof tag === "string" && tag.toLowerCase().includes(normalized)
+          );
         return nameMatch || tagMatch;
       })
-      .slice(0, 3);
-  }, [trimmedQuery, categories]);
+      .slice(0, 5);
+  }, [trimmedQuery, categories, isCompact, fullScreenOnMobile]);
 
-  // 2. Filter Recent Searches matching query, or show recent history on empty query
+  // 2. Filter Recent Searches
   const matchedRecent = useMemo(() => {
     if (!recentSearches?.length) return [];
     if (!trimmedQuery) {
-      return recentSearches.slice(0, 4);
+      return recentSearches.slice(0, fullScreenOnMobile ? 6 : 4);
     }
     const normalized = trimmedQuery.toLowerCase();
     return recentSearches
       .filter(
         (item) =>
+          typeof item === "string" &&
           item.toLowerCase().includes(normalized) &&
           item.toLowerCase() !== normalized
       )
-      .slice(0, 3);
-  }, [trimmedQuery, recentSearches]);
+      .slice(0, 4);
+  }, [trimmedQuery, recentSearches, fullScreenOnMobile]);
 
-  // 3. OPTIMIZATION: Query Algolia ONLY for Listings with min 3 chars + cache
+  // 3. Algolia listings search
   useEffect(() => {
     if (debouncedQuery.length < 3) {
       setListingHits([]);
@@ -99,10 +108,10 @@ export default function SearchAutocomplete({
     let active = true;
     setIsLoadingListings(true);
 
-    AlgoliaService.getSuggestions(debouncedQuery, { hitsPerPage: 4 })
+    AlgoliaService.getSuggestions(debouncedQuery, { hitsPerPage: 3 })
       .then((hits) => {
         if (active) {
-          setListingHits(hits);
+          setListingHits(hits || []);
         }
       })
       .catch((err) => {
@@ -119,7 +128,7 @@ export default function SearchAutocomplete({
     };
   }, [debouncedQuery]);
 
-  // Combine items for keyboard navigation index
+  // Flattened items for keyboard navigation
   const flattenedItems = useMemo(() => {
     const items = [];
 
@@ -142,34 +151,40 @@ export default function SearchAutocomplete({
     return items;
   }, [matchedRecent, matchedCategories, listingHits, trimmedQuery]);
 
-  // Reset active index when suggestions change
   useEffect(() => {
     setActiveIndex(-1);
   }, [trimmedQuery, listingHits]);
 
-  // Handle item selection
   const handleItemSelect = (item) => {
     if (!item) return;
 
     if (item.type === "recent" || item.type === "query") {
+      const term = typeof item.value === "string" ? item.value : String(item.value || "");
       if (onSelectQuery) {
-        onSelectQuery(item.value);
+        onSelectQuery(term);
       } else {
-        navigate(`/search?q=${encodeURIComponent(item.value)}`);
+        navigate(`/search?q=${encodeURIComponent(term)}`);
       }
     } else if (item.type === "category") {
+      const catName =
+        typeof item.value === "string"
+          ? item.value
+          : item.value?.name || item.value?.category || item.value?.title || "";
       if (onSelectCategory) {
-        onSelectCategory(item.value);
+        onSelectCategory(catName, item.value);
       } else {
-        navigate(`/search?q=${encodeURIComponent(item.value.name || "")}`);
+        navigate(`/search?q=${encodeURIComponent(catName)}`);
       }
     } else if (item.type === "listing") {
       if (onSelectListing) {
         onSelectListing(item.value);
       } else {
-        const id = item.value.objectID || item.value.listingId;
+        const id = item.value.objectID || item.value.listingId || item.value.id;
+        const name = item.value.title || item.value.name || item.value.businessName || "";
         if (id) {
           navigate(`/listing/${id}`);
+        } else if (name) {
+          navigate(`/search?q=${encodeURIComponent(name)}`);
         }
       }
     }
@@ -177,39 +192,8 @@ export default function SearchAutocomplete({
     if (onClose) onClose();
   };
 
-  // Keyboard navigation
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e) => {
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setActiveIndex((prev) =>
-          prev < flattenedItems.length - 1 ? prev + 1 : 0
-        );
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setActiveIndex((prev) =>
-          prev > 0 ? prev - 1 : flattenedItems.length - 1
-        );
-      } else if (e.key === "Enter") {
-        if (activeIndex >= 0 && activeIndex < flattenedItems.length) {
-          e.preventDefault();
-          handleItemSelect(flattenedItems[activeIndex]);
-        }
-      } else if (e.key === "Escape") {
-        if (onClose) onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, activeIndex, flattenedItems, onClose]);
-
   // Click outside to close
   useEffect(() => {
-    if (!isOpen) return;
-
     const handleClickOutside = (e) => {
       if (
         containerRef.current &&
@@ -220,46 +204,105 @@ export default function SearchAutocomplete({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
     };
   }, [isOpen, onClose, wrapperRef]);
 
-  if (!isOpen) {
-    return null;
-  }
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isOpen) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prev) =>
+          prev < flattenedItems.length - 1 ? prev + 1 : 0
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prev) =>
+          prev > 0 ? prev - 1 : flattenedItems.length - 1
+        );
+      } else if (e.key === "Enter" && activeIndex >= 0) {
+        e.preventDefault();
+        handleItemSelect(flattenedItems[activeIndex]);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        if (onClose) onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, activeIndex, flattenedItems]);
+
+  if (!isOpen) return null;
 
   const hasAnyMatches =
     matchedRecent.length > 0 ||
     matchedCategories.length > 0 ||
     listingHits.length > 0;
 
-  if (!hasAnyMatches && !trimmedQuery) {
-    return null;
-  }
+  if (!hasAnyMatches && !trimmedQuery) return null;
 
   let currentItemCounter = 0;
 
   return (
-    <div ref={containerRef} className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white rounded-2xl sm:rounded-[20px] border border-primary/15 shadow-[0_12px_36px_rgba(15,92,62,0.12),0_4px_12px_rgba(0,0,0,0.05)] max-h-[480px] overflow-y-auto text-left z-[1000]">
-      {/* Loading indicator bar */}
-      {isLoadingListings && <div className="h-0.5 w-full bg-gradient-to-r from-primary via-emerald-400 to-primary animate-pulse" />}
+    <div
+      ref={containerRef}
+      onMouseDown={(e) => {
+        // Prevent dropdown from losing focus prematurely
+        e.stopPropagation();
+      }}
+      className={`${
+        fullScreenOnMobile
+          ? "max-sm:fixed max-sm:inset-x-0 max-sm:top-[57px] max-sm:bottom-[68px] max-sm:rounded-none max-sm:border-0 max-sm:shadow-none max-sm:z-40 max-sm:bg-white"
+          : "absolute left-0 right-0"
+      } sm:absolute sm:left-0 sm:right-0 ${
+        isCompact
+          ? "sm:top-[calc(100%+6px)] sm:rounded-2xl sm:border sm:border-[#0f5c3e]/15 sm:shadow-[0_16px_36px_-4px_rgba(15,92,62,0.18),0_4px_14px_rgba(15,92,62,0.08)]"
+          : "sm:top-[calc(100%+10px)] sm:rounded-[24px] sm:border sm:border-[#0f5c3e]/20 sm:shadow-[0_20px_50px_-5px_rgba(15,92,62,0.22),0_6px_20px_rgba(15,92,62,0.10)]"
+      } bg-white text-left z-[1000] overflow-hidden`}
+    >
+      <div
+        className={`${
+          fullScreenOnMobile
+            ? "max-sm:h-full max-sm:max-h-none max-sm:p-4 max-sm:pb-8"
+            : ""
+        } ${
+          isCompact
+            ? "max-h-[290px] sm:max-h-[320px] p-2.5 sm:p-3"
+            : "max-h-[440px] p-4 sm:p-5"
+        } overflow-y-auto [scrollbar-width:thin] [scrollbar-color:theme(colors.gray.200)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-300`}
+      >
+      {/* Loading progress bar */}
+      {isLoadingListings && (
+        <div className={`h-0.5 w-full bg-[#0f5c3e] rounded-full ${isCompact ? "mb-2" : "mb-3"} animate-pulse opacity-70`} />
+      )}
 
-      {/* 1. Matching Recent Searches */}
+      {/* 1. Recent Searches (if available) */}
       {matchedRecent.length > 0 && (
-        <div className="py-2.5 border-b border-black/5 last:border-b-0">
-          <div className="flex items-center justify-between text-[0.72rem] font-bold tracking-[0.06em] uppercase py-1 px-[18px] max-[600px]:px-3.5 pb-2 text-[#7b8e84]">
-            <div className="flex items-center gap-1.5 text-primary">
-              <i className="fa-regular fa-clock"></i>
+        <div className={isCompact ? "mb-2.5" : "mb-4"}>
+          <div className={`flex items-center justify-between ${isCompact ? "mb-1 px-1.5 text-[11px]" : "mb-2 px-2 text-[12px]"} text-[#466a59] font-bold uppercase tracking-wider`}>
+            <div className="flex items-center gap-1.5">
+              <span className={`material-symbols-outlined ${isCompact ? "text-[15px]" : "text-[16px]"} text-[#0f5c3e]`}>history</span>
               <span>Recent Searches</span>
             </div>
             {onClearAllRecentSearches && (
               <button
                 type="button"
-                className="text-[0.7rem] font-medium normal-case text-[#7b8e84] hover:text-red-500 hover:underline bg-transparent border-none cursor-pointer p-0"
+                className={`${isCompact ? "text-[10.5px]" : "text-[11px]"} font-medium text-gray-400 hover:text-red-500 bg-transparent border-none cursor-pointer`}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  onClearAllRecentSearches();
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                   onClearAllRecentSearches();
@@ -269,191 +312,234 @@ export default function SearchAutocomplete({
               </button>
             )}
           </div>
-          {matchedRecent.map((term) => {
-            const itemIndex = currentItemCounter++;
-            const isActive = activeIndex === itemIndex;
-            return (
-              <div
-                key={`recent-${term}`}
-                className={`flex items-center justify-between py-2.5 px-[18px] max-[600px]:px-3.5 cursor-pointer select-none transition-colors ${isActive ? "bg-primary-surface" : "hover:bg-primary-surface"}`}
-                onClick={() =>
-                  handleItemSelect({ type: "recent", value: term })
-                }
-              >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-[34px] h-[34px] rounded-[10px] bg-primary/10 text-primary flex items-center justify-center shrink-0 overflow-hidden text-[0.9rem]">
-                    <i className="fa-regular fa-clock"></i>
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[0.92rem] font-semibold text-gray-900 truncate">
+
+          <div className={isCompact ? "space-y-0.5" : "space-y-1"}>
+            {matchedRecent.map((term) => {
+              const itemIndex = currentItemCounter++;
+              const isActive = activeIndex === itemIndex;
+              return (
+                <div
+                  key={`recent-${term}`}
+                  className={`${
+                    isCompact ? "px-2.5 py-1.5 rounded-xl gap-2.5" : "px-3 py-2 rounded-2xl gap-3"
+                  } cursor-pointer select-none flex items-center justify-between transition-colors ${
+                    isActive ? "bg-gray-100" : "hover:bg-gray-50"
+                  }`}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleItemSelect({ type: "recent", value: term });
+                  }}
+                  onClick={() => handleItemSelect({ type: "recent", value: term })}
+                >
+                  <div className={`flex items-center ${isCompact ? "gap-2.5" : "gap-3.5"} min-w-0 flex-1`}>
+                    <div className={`${isCompact ? "w-7 h-7 rounded-lg" : "w-10 h-10 rounded-xl"} bg-gray-50 flex items-center justify-center shrink-0 border border-gray-100 text-gray-500`}>
+                      <span className={`material-symbols-outlined ${isCompact ? "text-[15px]" : "text-[18px]"}`}>history</span>
+                    </div>
+                    <span className={`font-heading font-semibold ${isCompact ? "text-[13.5px]" : "text-[14px]"} text-gray-900 truncate`}>
                       <HighlightMatch text={term} query={trimmedQuery} />
                     </span>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0 ml-2.5">
-                  <span className="text-[0.72rem] font-semibold py-0.5 px-2 rounded-xl bg-primary/10 text-primary">History</span>
+
                   <button
                     type="button"
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-[#7b8e84] hover:text-red-500 hover:bg-red-50 transition-colors border-none bg-transparent cursor-pointer"
+                    className="p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-gray-200/50 transition-colors border-0 bg-transparent cursor-pointer"
                     title={`Remove "${term}"`}
-                    aria-label={`Remove "${term}" from recent searches`}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      if (onRemoveRecentSearch) onRemoveRecentSearch(term);
+                    }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (onRemoveRecentSearch) {
-                        onRemoveRecentSearch(term);
-                      }
+                      if (onRemoveRecentSearch) onRemoveRecentSearch(term);
                     }}
                   >
-                    <i className="fa-solid fa-xmark text-[11px]"></i>
+                    <span className={`material-symbols-outlined ${isCompact ? "text-[15px]" : "text-[16px]"}`}>close</span>
                   </button>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
-      {/* 2. Instant Categories (From local cache, 0 Algolia request cost) */}
+      {/* 2. Popular Categories */}
       {matchedCategories.length > 0 && (
-        <div className="py-2.5 border-b border-black/5 last:border-b-0">
-          <div className="flex items-center gap-1.5 text-[0.72rem] font-bold tracking-[0.06em] uppercase py-1 px-[18px] max-[600px]:px-3.5 pb-2 text-[#7b8e84]">
-            <i className="fa-solid fa-shapes text-primary"></i>
+        <div>
+          <div className={`flex items-center gap-1.5 ${isCompact ? "mb-1.5 px-1.5 text-[11px]" : "mb-2.5 px-2 text-[12px]"} text-[#466a59] font-bold uppercase tracking-wider`}>
+            <span className={`material-symbols-outlined ${isCompact ? "text-[16px]" : "text-[18px]"} text-[#0f5c3e]`}>category</span>
             <span>{!trimmedQuery ? "Popular Categories" : "Categories"}</span>
           </div>
-          {matchedCategories.map((cat) => {
-            const itemIndex = currentItemCounter++;
-            const isActive = activeIndex === itemIndex;
-            return (
-              <div
-                key={`cat-${cat.categoryId || cat.id || cat.name}`}
-                className={`flex items-center justify-between py-2.5 px-[18px] max-[600px]:px-3.5 cursor-pointer select-none transition-colors ${isActive ? "bg-primary-surface" : "hover:bg-primary-surface"}`}
-                onClick={() =>
-                  handleItemSelect({ type: "category", value: cat })
-                }
-              >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-[34px] h-[34px] rounded-[10px] bg-primary/10 text-primary flex items-center justify-center shrink-0 overflow-hidden text-[0.9rem]">
-                    {cat.imageUrl ? (
-                      <img src={cat.imageUrl} alt={cat.name} loading="lazy" className="w-full h-full object-cover" />
-                    ) : (
-                      <i className="fa-solid fa-tag"></i>
-                    )}
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[0.92rem] font-semibold text-gray-900 truncate">
-                      <HighlightMatch text={cat.name} query={trimmedQuery} />
-                    </span>
-                    {cat.description && (
-                      <span className="text-[0.78rem] text-text-secondary truncate">
-                        {cat.description}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <span className="text-[0.72rem] font-semibold py-0.5 px-2 rounded-xl bg-primary/10 text-primary shrink-0 ml-2.5">Explore</span>
-              </div>
-            );
-          })}
-        </div>
-      )}
 
-      {/* 3. Matching Listings (From Algolia Listings index with 320ms debounce) */}
-      {listingHits.length > 0 && (
-        <div className="py-2.5 border-b border-black/5 last:border-b-0">
-          <div className="flex items-center gap-1.5 text-[0.72rem] font-bold tracking-[0.06em] uppercase py-1 px-[18px] max-[600px]:px-3.5 pb-2 text-[#7b8e84]">
-            <i className="fa-solid fa-store text-primary"></i>
-            <span>Businesses & Services</span>
+          <div className={isCompact ? "space-y-1" : "space-y-1.5"}>
+            {matchedCategories.map((cat, index) => {
+              const itemIndex = currentItemCounter++;
+              const isActive = activeIndex === itemIndex;
+              const catName =
+                typeof cat === "string"
+                  ? cat
+                  : cat?.name || cat?.category || cat?.title || "Category";
+
+              return (
+                <div
+                  key={`cat-${cat.categoryId || cat.id || catName || index}`}
+                  className={`${
+                    isCompact ? "px-2.5 py-1.5 rounded-xl gap-2.5" : "px-3 py-2.5 rounded-2xl gap-3"
+                  } cursor-pointer select-none flex items-center justify-between transition-colors ${
+                    isActive ? "bg-gray-100" : "hover:bg-gray-50"
+                  }`}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleItemSelect({ type: "category", value: cat });
+                  }}
+                  onClick={() => handleItemSelect({ type: "category", value: cat })}
+                >
+                  <div className={`flex items-center ${isCompact ? "gap-2.5" : "gap-3.5"} min-w-0 flex-1`}>
+                    <div className={`${isCompact ? "w-8 h-8 rounded-lg" : "w-10 h-10 rounded-xl"} bg-gray-50 flex items-center justify-center shrink-0 overflow-hidden border border-gray-100`}>
+                      {cat.imageUrl ? (
+                        <img
+                          src={cat.imageUrl}
+                          alt={catName}
+                          loading="lazy"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className={`material-symbols-outlined ${isCompact ? "text-[17px]" : "text-[20px]"} text-[#0f5c3e]`}>
+                          storefront
+                        </span>
+                      )}
+                    </div>
+                    <span className={`font-heading font-bold ${isCompact ? "text-[13.5px]" : "text-[15px]"} text-gray-900 truncate`}>
+                      <HighlightMatch text={catName} query={trimmedQuery} />
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    className={`pointer-events-none ${
+                      isCompact ? "px-3 py-1 text-[11px]" : "px-4 py-1.5 text-[12px]"
+                    } rounded-full bg-[#f0f7f3] text-[#0f5c3e] group-hover:bg-[#0f5c3e] group-hover:text-white font-primary font-bold transition-all duration-200 border border-[#0f5c3e]/20 shadow-[0_1px_4px_rgba(15,92,62,0.12)] shrink-0`}
+                  >
+                    Explore
+                  </button>
+                </div>
+              );
+            })}
           </div>
-          {listingHits.map((listing) => {
-            const itemIndex = currentItemCounter++;
-            const isActive = activeIndex === itemIndex;
-            const listingTitle =
-              listing.title || listing.name || listing.businessName || "Listing";
-            const locationText = [listing.address, listing.city]
-              .filter(Boolean)
-              .join(", ");
-
-            return (
-              <div
-                key={`listing-${listing.objectID}`}
-                className={`flex items-center justify-between py-2.5 px-[18px] max-[600px]:px-3.5 cursor-pointer select-none transition-colors ${isActive ? "bg-primary-surface" : "hover:bg-primary-surface"}`}
-                onClick={() =>
-                  handleItemSelect({ type: "listing", value: listing })
-                }
-              >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-[34px] h-[34px] rounded-[10px] bg-primary/10 text-primary flex items-center justify-center shrink-0 overflow-hidden text-[0.9rem]">
-                    <i className="fa-solid fa-briefcase"></i>
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[0.92rem] font-semibold text-gray-900 truncate">
-                      <HighlightMatch
-                        text={listingTitle}
-                        query={trimmedQuery}
-                      />
-                    </span>
-                    {locationText && (
-                      <span className="text-[0.78rem] text-text-secondary truncate mt-px">
-                        <i
-                          className="fa-solid fa-location-dot mr-1 text-[0.7rem]"
-                        ></i>
-                        {locationText}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                {listing.category && (
-                  <span className="text-[0.72rem] font-semibold py-0.5 px-2 rounded-xl bg-primary/10 text-primary shrink-0 ml-2.5">
-                    {listing.category}
-                  </span>
-                )}
-              </div>
-            );
-          })}
         </div>
       )}
 
-      {/* 4. Default Search Option */}
+      {/* 3. Matching Businesses & Listings */}
+      {listingHits.length > 0 && (
+        <div className={isCompact ? "mt-2.5 pt-2 border-t border-gray-100" : "mt-4 pt-3 border-t border-gray-100"}>
+          <div className={`flex items-center gap-1.5 ${isCompact ? "mb-1.5 px-1.5 text-[11px]" : "mb-2 px-2 text-[12px]"} text-[#466a59] font-bold uppercase tracking-wider`}>
+            <span className={`material-symbols-outlined ${isCompact ? "text-[16px]" : "text-[18px]"} text-[#0f5c3e]`}>storefront</span>
+            <span>Businesses &amp; Services</span>
+          </div>
+
+          <div className={isCompact ? "space-y-1" : "space-y-1.5"}>
+            {listingHits.map((listing) => {
+              const itemIndex = currentItemCounter++;
+              const isActive = activeIndex === itemIndex;
+              const listingTitle =
+                listing.title || listing.name || listing.businessName || "Listing";
+              const locationText = [listing.address, listing.city]
+                .filter(Boolean)
+                .join(", ");
+
+              return (
+                <div
+                  key={`listing-${listing.objectID || listing.listingId || listing.id}`}
+                  className={`${
+                    isCompact ? "px-2.5 py-1.5 rounded-xl gap-2.5" : "px-3 py-2.5 rounded-2xl gap-3"
+                  } cursor-pointer select-none flex items-center justify-between transition-colors ${
+                    isActive ? "bg-gray-100" : "hover:bg-gray-50"
+                  }`}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    handleItemSelect({ type: "listing", value: listing });
+                  }}
+                  onClick={() => handleItemSelect({ type: "listing", value: listing })}
+                >
+                  <div className={`flex items-center ${isCompact ? "gap-2.5" : "gap-3.5"} min-w-0 flex-1`}>
+                    <div className={`${isCompact ? "w-8 h-8 rounded-lg" : "w-10 h-10 rounded-xl"} bg-gray-50 flex items-center justify-center shrink-0 border border-gray-100 text-[#0f5c3e]`}>
+                      <span className={`material-symbols-outlined ${isCompact ? "text-[17px]" : "text-[20px]"}`}>store</span>
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className={`font-heading font-bold ${isCompact ? "text-[13.5px]" : "text-[14px]"} text-gray-900 m-0 truncate`}>
+                        <HighlightMatch text={listingTitle} query={trimmedQuery} />
+                      </h4>
+                      {locationText && (
+                        <p className={`font-primary ${isCompact ? "text-[11px]" : "text-[12px]"} text-gray-500 m-0 truncate`}>
+                          {locationText}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    className={`pointer-events-none ${
+                      isCompact ? "px-3 py-1 text-[11px]" : "px-4 py-1.5 text-[12px]"
+                    } rounded-full bg-[#f0f7f3] text-[#0f5c3e] font-primary font-bold transition-all duration-200 border border-[#0f5c3e]/20 shadow-[0_1px_4px_rgba(15,92,62,0.12)] shrink-0`}
+                  >
+                    Explore
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 4. Fallback search trigger */}
       {trimmedQuery && (
-        <div className="py-2.5 border-b border-black/5 last:border-b-0">
+        <div className={isCompact ? "mt-2 pt-1.5 border-t border-gray-100" : "mt-3 pt-2 border-t border-gray-100"}>
           {(() => {
             const itemIndex = currentItemCounter++;
             const isActive = activeIndex === itemIndex;
             return (
               <div
-                className={`flex items-center justify-between py-2.5 px-[18px] max-[600px]:px-3.5 cursor-pointer select-none transition-colors ${isActive ? "bg-primary-surface" : "hover:bg-primary-surface"}`}
-                onClick={() =>
-                  handleItemSelect({ type: "query", value: trimmedQuery })
-                }
+                className={`${
+                  isCompact ? "px-2.5 py-1.5 rounded-xl gap-2.5" : "px-3 py-2 rounded-2xl gap-3"
+                } cursor-pointer select-none flex items-center justify-between transition-colors ${
+                  isActive ? "bg-gray-100" : "hover:bg-gray-50"
+                }`}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleItemSelect({ type: "query", value: trimmedQuery });
+                }}
+                onClick={() => handleItemSelect({ type: "query", value: trimmedQuery })}
               >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-[34px] h-[34px] rounded-[10px] bg-primary/10 text-primary flex items-center justify-center shrink-0 overflow-hidden text-[0.9rem]">
-                    <i className="fa-solid fa-magnifying-glass"></i>
+                <div className={`flex items-center ${isCompact ? "gap-2.5" : "gap-3.5"} min-w-0 flex-1`}>
+                  <div className={`${isCompact ? "w-8 h-8 rounded-lg" : "w-10 h-10 rounded-xl"} bg-[#f0f7f3] text-[#0f5c3e] flex items-center justify-center shrink-0`}>
+                    <span className={`material-symbols-outlined ${isCompact ? "text-[17px]" : "text-[20px]"}`}>search</span>
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[0.92rem] font-semibold text-gray-900 truncate">
-                      Search for &ldquo;<strong>{trimmedQuery}</strong>&rdquo;
-                    </span>
-                  </div>
+                  <span className={`font-heading font-semibold ${isCompact ? "text-[13px]" : "text-[14px]"} text-gray-900 truncate`}>
+                    Search all for &ldquo;<strong className="text-[#0f5c3e]">{trimmedQuery}</strong>&rdquo;
+                  </span>
                 </div>
-                <span className="text-[0.72rem] font-semibold py-0.5 px-2 rounded-xl bg-primary/10 text-primary shrink-0 ml-2.5">Press Enter</span>
+                <span className={`material-symbols-outlined text-gray-400 ${isCompact ? "text-[16px]" : "text-[18px]"}`}>
+                  arrow_forward
+                </span>
               </div>
             );
           })()}
         </div>
       )}
 
-      {/* Empty State when no results found */}
+      {/* 5. Zero matches */}
       {!hasAnyMatches && !isLoadingListings && trimmedQuery.length >= 3 && (
-        <div className="py-6 px-[18px] max-[600px]:px-3.5 text-center text-[0.88rem] text-[#7a8e84]">
-          <i className="fa-solid fa-magnifying-glass block text-2xl mb-2 text-[#b0c2b9]"></i>
-          <p>
-            No quick suggestions found for &ldquo;{trimmedQuery}&rdquo;.<br />
-            Press <strong>Enter</strong> to search all listings.
+        <div className="py-6 px-4 text-center text-gray-500">
+          <span className="material-symbols-outlined text-3xl mb-1 text-gray-400">search_off</span>
+          <p className="text-sm font-medium m-0">
+            No suggestions found for &ldquo;{trimmedQuery}&rdquo;.
           </p>
         </div>
       )}
-
+      </div>
     </div>
   );
 }
