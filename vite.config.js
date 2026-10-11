@@ -7,9 +7,16 @@ import dns from 'dns'
 dns.setDefaultResultOrder('verbatim') 
 
 export default defineConfig({
-  plugins: [tailwindcss(),react()],
+  plugins: [tailwindcss(), react()],
   server: {
     host: '127.0.0.1',
-    port: 5173 // Or your preferred port
-  }
+    port: 5173,
+    watch: {
+      usePolling: true,
+      interval: 100,
+    },
+    hmr: {
+      host: '127.0.0.1',
+    },
+  },
 })

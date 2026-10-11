@@ -5,15 +5,19 @@ const API_KEY = import.meta.env.VITE_ALGOLIA_SEARCH_KEY;
 const suggestionCache = new Map();
 const MAX_CACHE_SIZE = 60;
 
+// In-memory cache for search listings queries
+const searchCache = new Map();
+const MAX_SEARCH_CACHE = 50;
+
 let currentAbortController = null;
 
 export class AlgoliaService {
-  static async searchListings(query) {
-    return this._search(query, "Listings");
+  static async searchListings(query, options = {}) {
+    return this._search(query, "Listings", { hitsPerPage: 100, ...options });
   }
 
-  static async searchCategories(query) {
-    return this._search(query, "categories");
+  static async searchCategories(query, options = {}) {
+    return this._search(query, "categories", { hitsPerPage: 10, ...options });
   }
 
   /**
@@ -90,8 +94,14 @@ export class AlgoliaService {
     }
   }
 
-  static async _search(query, index) {
-    if (!query.trim()) return [];
+  static async _search(query, index, { hitsPerPage = 100 } = {}) {
+    const trimmed = query?.trim() || "";
+    if (!trimmed) return [];
+
+    const cacheKey = `${index}:${trimmed.toLowerCase()}:${hitsPerPage}`;
+    if (searchCache.has(cacheKey)) {
+      return searchCache.get(cacheKey);
+    }
     
     const url = `https://${APP_ID}-dsn.algolia.net/1/indexes/${index}/query`;
     
@@ -103,13 +113,20 @@ export class AlgoliaService {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            query,
-            hitsPerPage: 10,
+            query: trimmed,
+            hitsPerPage,
         }),
     });
     
     const data = await response.json();
+    const hits = data.hits || [];
+
+    if (searchCache.size >= MAX_SEARCH_CACHE) {
+      const firstKey = searchCache.keys().next().value;
+      searchCache.delete(firstKey);
+    }
+    searchCache.set(cacheKey, hits);
     
-    return data.hits || [];
+    return hits;
   }
 }
