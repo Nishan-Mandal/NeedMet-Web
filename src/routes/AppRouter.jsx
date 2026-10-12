@@ -12,10 +12,11 @@ import { publicRoutes } from "./publicRoutes";
 import { authRoutes } from "./authRoutes";
 import { userRoutes } from "./userRoutes";
 import { redirectRoutes } from "./redirectRoutes";
+import RouteErrorBoundary from "./RouteErrorBoundary";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />}>
+    <Route path="/" element={<App />} errorElement={<RouteErrorBoundary />}>
 
       {/* Public Pages */}
       {publicRoutes.map((route) => (

@@ -1,22 +1,20 @@
-import { useState } from 'react'
-import './App.css'
-import { Header, Footer, ScrollToTop } from './components'
-import { Outlet } from 'react-router-dom'
-
+import { Suspense } from 'react';
+import { Header, Footer, ScrollToTop, Loader } from './components';
+import { Outlet } from 'react-router-dom';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
       <ScrollToTop />
       <Header />
-        <main>
+      <main>
+        <Suspense fallback={<Loader message="Loading..." />}>
           <Outlet />
-        </main>
+        </Suspense>
+      </main>
       <Footer />
     </>
-  )
+  );
 }
 
 export default App;

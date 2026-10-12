@@ -4,6 +4,7 @@
 
 .business-cta-section {
   padding: 20px 35px 45px;
+  font-family: var(--font-primary);
 }
 
 /* ===================================
@@ -110,6 +111,8 @@
   margin: 0 0 18px;
 
   color: var(--text-on-dark);
+
+  font-family: var(--font-heading);
 
   font-size: clamp(2rem, 5vw, 3.4rem);
 

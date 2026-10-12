@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import styles from "../../style/Common/SearchableSelect.module.css";
 
 export default function SearchableSelect({
   id,
@@ -115,43 +114,55 @@ export default function SearchableSelect({
   }, [onBlur]);
 
   return (
-    <div
-      ref={wrapperRef}
-      className={`${styles.fieldWrap} ${error ? styles.fieldError : ""}`}
-    >
+    <div ref={wrapperRef} className="flex flex-col gap-1.5 w-full">
       <div
-        className={[
-          styles.box,
-          focused ? styles.boxFocused : "",
-          error ? styles.boxErr : "",
-          disabled ? styles.boxDisabled : "",
-        ].join(" ")}
+        className={`relative flex items-center gap-2.5 min-h-14 px-3.5 bg-surface border-[1.5px] rounded-xl transition-all cursor-text ${
+          error
+            ? "border-accent-red shadow-[0_0_0_3.5px_rgba(239,68,68,0.09)]"
+            : focused
+            ? "border-primary shadow-[0_0_0_3.5px_rgba(15,92,62,0.11)]"
+            : "border-border hover:border-primary-light"
+        } ${disabled ? "bg-background-secondary opacity-60 cursor-not-allowed" : ""}`}
         onClick={handleBoxClick}
       >
-        {icon && <span className={styles.icon}>{icon}</span>}
+        {icon && (
+          <span
+            className={`flex items-center shrink-0 transition-colors ${
+              focused ? "text-primary" : "text-text-secondary"
+            }`}
+          >
+            {icon}
+          </span>
+        )}
 
         {selectedOption?.image && (
           <img
             src={selectedOption.image}
             alt={selectedOption.label}
-            className={styles.selectedImage}
+            className="w-7 h-7 rounded-lg object-cover shrink-0"
           />
         )}
 
-        <div className={styles.inner}>
+        <div className="relative flex-1 min-h-14 flex items-center">
           <label
             htmlFor={id}
-            className={`${styles.lbl} ${hasValue || focused ? styles.lblUp : ""}`}
+            className={`absolute left-0 whitespace-nowrap leading-none pointer-events-none transition-all ${
+              hasValue || focused
+                ? "top-2 text-[10.5px] font-bold text-primary uppercase tracking-wider"
+                : "top-1/2 -translate-y-1/2 text-[14.5px] font-normal text-text-secondary"
+            } ${error && (hasValue || focused) ? "!text-accent-red" : ""}`}
           >
             {label}
-            {required && <span className={styles.req}> *</span>}
+            {required && <span className="text-accent-red font-bold"> *</span>}
           </label>
 
           <input
             ref={inputRef}
             id={id}
             type="text"
-            className={`${styles.inp} ${hasValue || focused ? styles.inpActive : ""}`}
+            className={`w-full h-full border-none outline-none bg-transparent text-[14.5px] font-medium text-text caret-primary placeholder:text-text-secondary disabled:cursor-not-allowed ${
+              hasValue || focused ? "pt-4" : "p-0"
+            }`}
             value={search}
             placeholder={focused ? searchPlaceholder : placeholder}
             onFocus={handleFocus}
@@ -168,7 +179,9 @@ export default function SearchableSelect({
         </div>
 
         <span
-          className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`}
+          className={`flex items-center shrink-0 transition-all ${
+            open ? "rotate-180 text-primary" : "text-text-secondary"
+          }`}
           aria-hidden="true"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -183,14 +196,16 @@ export default function SearchableSelect({
         </span>
 
         {open && !disabled && !loading && (
-          <div className={styles.dropdown}>
+          <div className="absolute top-[calc(100%+8px)] left-0 right-0 max-h-60 overflow-y-auto z-40 bg-surface border border-border rounded-2xl shadow-xl p-1.5">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((item) => (
                 <button
                   key={item.value}
                   type="button"
-                  className={`${styles.option} ${
-                    item.value === value ? styles.optionActive : ""
+                  className={`w-full border-none bg-transparent text-left cursor-pointer p-2.5 rounded-xl flex items-center gap-2.5 text-sm font-medium transition-colors ${
+                    item.value === value
+                      ? "bg-primary-surface text-primary"
+                      : "text-text hover:bg-primary-surface hover:text-primary"
                   }`}
                   onMouseDown={(e) => {
                     e.preventDefault();
@@ -205,24 +220,24 @@ export default function SearchableSelect({
                     <img
                       src={item.image}
                       alt={item.label}
-                      className={styles.optionImage}
+                      className="w-8 h-8 rounded-lg object-cover shrink-0 border border-border p-1"
                     />
                   )}
 
-                  <span className={styles.optionLabel}>{item.label}</span>
+                  <span className="flex-1 min-w-0">{item.label}</span>
                 </button>
               ))
             ) : (
-              <div className={styles.empty}>{noOptionsText}</div>
+              <div className="p-3 text-[13px] text-text-secondary">{noOptionsText}</div>
             )}
           </div>
         )}
       </div>
 
       {error ? (
-        <p className={styles.errMsg}>{error}</p>
+        <p className="m-0 pl-1 text-xs font-medium leading-normal text-accent-red">{error}</p>
       ) : helperText ? (
-        <p className={styles.helperMsg}>{helperText}</p>
+        <p className="m-0 pl-1 text-xs leading-normal text-text-secondary">{helperText}</p>
       ) : null}
     </div>
   );

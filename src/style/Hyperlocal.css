@@ -10,6 +10,7 @@
   padding: 45px 0;
   overflow: hidden;
   isolation: isolate;
+  font-family: var(--font-primary);
 }
 
 /* ===================================
@@ -56,6 +57,7 @@
 }
 
 .section-tag {
+  font-family: var(--font-primary);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -68,12 +70,14 @@
   color: var(--text-on-dark);
   font-family: var(--font-heading);
   font-size: clamp(36px, 5vw, 58px);
+  font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.03em;
 }
 
 .section-description {
   margin: 0;
+  font-family: var(--font-primary);
   font-size: 14.5px;
   line-height: 1.65;
   color: var(--text-light);
@@ -99,6 +103,7 @@
   border: 1px solid rgba(255,255,255,0.2);
   background: rgba(255,255,255,0.08);
   color: var(--text-on-dark);
+  font-family: var(--font-primary);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -251,6 +256,7 @@
   transform: translateX(-50%);
   background: white;
   color: var(--primary);
+  font-family: var(--font-primary);
   font-size: 10px;
   font-weight: 600;
   white-space: nowrap;
@@ -279,6 +285,7 @@
   border: 1px solid rgba(74,222,128,0.3);
   padding: 5px 10px;
   border-radius: 999px;
+  font-family: var(--font-primary);
   font-size: 10px;
   font-weight: 600;
   color: var(--accent);

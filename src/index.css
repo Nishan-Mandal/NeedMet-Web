@@ -1,19 +1,208 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: sans-serif;
+/* ==========================================================================
+   Google Fonts
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap");
+
+/* ==========================================================================
+   Tailwind v4
+   ========================================================================== */
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design System Tokens  (@theme → becomes Tailwind utility classes)
+   ========================================================================== */
+@theme {
+
+  /* ── Colors ─────────────────────────────────────────────── */
+
+  /* Primary green brand palette */
+  --color-primary:          #0f5c3e;
+  --color-primary-light:    #1a8a5a;
+  --color-primary-lighter:  #22c47a;
+  --color-primary-surface:  #e8f5ee;
+
+  /* Accent palette */
+  --color-accent-emerald:   #4ade80;
+  --color-accent-yellow:    #f59e0b;
+  --color-accent-orange:    #f97316;
+  --color-accent-red:       #ef4444;
+
+  /* Backgrounds */
+  --color-background:           #ffffff;
+  --color-background-secondary: #f7faf8;
+  --color-background-dark:      #0d3d2e;
+
+  /* Surfaces */
+  --color-surface:          #ffffff;
+  --color-surface-green:    #d1fae5;
+  --color-surface-overlay:  rgba(255, 255, 255, 0.08);
+
+  /* Text */
+  --color-text:             #111827;
+  --color-text-secondary:   #6b7280;
+  --color-text-light:       rgba(255, 255, 255, 0.68);
+  --color-text-on-dark:     #ffffff;
+  --color-text-accent:      #0f5c3e;
+
+  /* Status badges */
+  --color-status-open:          #15803d;
+  --color-status-open-bg:       #dcfce7;
+  --color-status-new:           #b45309;
+  --color-status-new-bg:        #fef3c7;
+  --color-status-available:     #1d4ed8;
+  --color-status-available-bg:  #dbeafe;
+
+  /* Borders */
+  --color-border:                 #e5e7eb;
+  --color-border-green:           rgba(255, 255, 255, 0.14);
+  --color-border-primary-surface: #bfdbfe;
+
+  /* Navigation */
+  --color-nav-bg:          #ffffff;
+  --color-nav-text:        #111827;
+  --color-nav-btn-outline: #0f5c3e;
+  --color-nav-btn-fill:    #0f5c3e;
+
+  /* Material / Card Design Tokens (from Temp/search.html) */
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-low:     #ecf6ec;
+  --color-surface-container:         #e6f1e7;
+  --color-surface-container-high:    #e1ebe1;
+  --color-surface-container-highest: #dbe5db;
+
+  --color-secondary:                 #356a31;
+  --color-secondary-container:       #b3efa7;
+  --color-on-secondary:              #ffffff;
+  --color-on-secondary-container:    #396e34;
+
+  --color-primary-container:         #02542d;
+  --color-primary-dark:              #003b1d;
+  --color-on-primary:                #ffffff;
+  --color-on-surface:                #151e18;
+  --color-on-surface-variant:        #404941;
+
+  /* ── Typography ──────────────────────────────────────────── */
+
+  --font-primary: "DM Sans", sans-serif;
+  --font-heading: "Sora", sans-serif;
+  --font-display: "Fraunces", serif;
+  --font-serif:   Georgia, serif;
+  --font-jakarta: "Plus Jakarta Sans", sans-serif;
 }
 
-html {
-  scroll-behavior: smooth;
+/* ==========================================================================
+   CSS Variable Bridge  (keeps existing components using var(--primary) etc. 
+   working without any changes, until they are migrated to Tailwind classes)
+   ========================================================================== */
+:root {
+  /* Primary */
+  --primary:          #0f5c3e;
+  --primary-light:    #1a8a5a;
+  --primary-lighter:  #22c47a;
+  --primary-surface:  #e8f5ee;
+
+  /* Accent */
+  --accent:           #4ade80;
+  --accent-yellow:    #f59e0b;
+  --accent-orange:    #f97316;
+  --accent-red:       #ef4444;
+
+  /* Backgrounds */
+  --background:           #ffffff;
+  --background-secondary: #f7faf8;
+  --background-dark:      #0d3d2e;
+
+  /* Surfaces */
+  --surface:          #ffffff;
+  --surface-green:    #d1fae5;
+  --surface-overlay:  rgba(255, 255, 255, 0.08);
+
+  /* Text */
+  --text:             #111827;
+  --text-secondary:   #6b7280;
+  --text-light:       rgba(255, 255, 255, 0.68);
+  --text-on-dark:     #ffffff;
+  --text-accent:      #0f5c3e;
+
+  /* Status */
+  --status-open:          #15803d;
+  --status-open-bg:       #dcfce7;
+  --status-new:           #b45309;
+  --status-new-bg:        #fef3c7;
+  --status-available:     #1d4ed8;
+  --status-available-bg:  #dbeafe;
+
+  /* Borders */
+  --border:                 #e5e7eb;
+  --border-green:           rgba(255, 255, 255, 0.14);
+  --border-primary-surface: #bfdbfe;
+
+  /* Nav */
+  --nav-bg:          #ffffff;
+  --nav-text:        #111827;
+  --nav-btn-outline: #0f5c3e;
+  --nav-btn-fill:    #0f5c3e;
+
+  /* Fonts (kept for legacy var() references in old CSS) */
+  --font-primary: "DM Sans", sans-serif;
+  --font-heading: "Sora", sans-serif;
+  --font-display: "Fraunces", serif;
+  --font-serif:   Georgia, serif;
+}
+
+/* ==========================================================================
+   Global Base Styles
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-primary);
+    color: var(--text);
+    background-color: var(--background);
+  }
+
+  /* Mobile body padding for bottom nav */
+  @media (max-width: 768px) {
+    body {
+      padding-bottom: 72px;
+    }
+  }
+
+  /* Base typography defaults for headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+}
+
+/* ==========================================================================
+   Typography Utility Classes
+   (kept for components that use .font-heading, .font-primary etc.)
+   ========================================================================== */
+@layer utilities {
+  .font-heading  { font-family: var(--font-heading); }
+  .font-display  { font-family: var(--font-display); }
+  .font-primary  { font-family: var(--font-primary); }
+  .font-serif    { font-family: var(--font-serif); }
+
+  .font-headline-sm { font-family: var(--font-heading); }
+  .font-body-sm,
+  .font-label-sm,
+  .font-label-md { font-family: var(--font-primary); }
+
+  .shadow-xs {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
 }
 
 /* ==========================================================================
    Custom Slick Scrollbar
    ========================================================================== */
 
-/* Firefox support */
+/* Firefox */
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(15, 92, 62, 0.35) transparent;
@@ -55,4 +244,309 @@ html {
 
 ::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+/* ==========================================================================
+   Utility — Hide scrollbars while preserving scrolling functionality
+   ========================================================================== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+
+/* ==========================================================================
+   Header — Nav Link animated underline (pseudo-element; can't be Tailwind)
+   ========================================================================== */
+@layer components {
+  .nav-link {
+    color: var(--text-secondary);
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--primary-lighter);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--primary);
+    background: var(--primary-surface);
+  }
+
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    transform: scaleX(1);
+  }
+
+  /* Sidebar nav item — left active bar (pseudo-element) */
+  .sidebar-nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 3px;
+    height: 60%;
+    background: var(--primary);
+    border-radius: 0 3px 3px 0;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .sidebar-nav-item:hover::before {
+    transform: translateY(-50%) scaleY(1);
+  }
+}
+
+
+
+/* ==========================================================================
+   TrendingSearches — infinite scroll animation (keyframe stays in CSS)
+   ========================================================================== */
+@keyframes trendingInfiniteScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-50% - 5px)); }
+}
+
+/* ==========================================================================
+   BusinessCTA — rotating border animation (needs @property + @keyframes)
+   ========================================================================== */
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotateBorder {
+  to { --angle: 360deg; }
+}
+
+/* ==========================================================================
+   Hero / Hyperlocal — live pulse animation
+   ========================================================================== */
+@keyframes livePulse {
+  0%   { transform: scale(1);   box-shadow: 0 0 0 0   rgba(74,222,128,0.8); }
+  70%  { transform: scale(1.2); box-shadow: 0 0 0 6px rgba(74,222,128,0); }
+  100% { transform: scale(1);   box-shadow: 0 0 0 0   rgba(74,222,128,0); }
+}
+
+/* ==========================================================================
+   Hyperlocal map — dot pulse animation
+   ========================================================================== */
+@keyframes mapDotPulse {
+  0%   { transform: scale(1);   opacity: 0.45; }
+  70%  { transform: scale(3.4); opacity: 0; }
+  100% { transform: scale(1);   opacity: 0; }
+}
+
+/* ==========================================================================
+   SystemState — fadeIn animation
+   ========================================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Spinning icon */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+/* Phone ring animation */
+@keyframes ring {
+  0% { transform: rotate(0); }
+  10% { transform: rotate(20deg); }
+  20% { transform: rotate(-15deg); }
+  30% { transform: rotate(20deg); }
+  40% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0); }
+  100% { transform: rotate(0); }
+}
+
+/* ==========================================================================
+   CategorySection — repeating soft color system (nth-child; can't be Tailwind)
+   ========================================================================== */
+.category-card:nth-child(12n + 1)  { background: #f3edff; border: 1.5px solid #d8c7ff; }
+.category-card:nth-child(12n + 2)  { background: #edf9f2; border: 1.5px solid #b8e5ca; }
+.category-card:nth-child(12n + 3)  { background: #fff1f6; border: 1.5px solid #ffc6e0; }
+.category-card:nth-child(12n + 4)  { background: #fff6e9; border: 1.5px solid #ffd7a3; }
+.category-card:nth-child(12n + 5)  { background: #f0f7ff; border: 1.5px solid #c6dbff; }
+.category-card:nth-child(12n + 6)  { background: #fffcec; border: 1.5px solid #ffe7a6; }
+.category-card:nth-child(12n + 7)  { background: #e9fbfa; border: 1.5px solid #b5ece8; }
+.category-card:nth-child(12n + 8)  { background: #f6f0ff; border: 1.5px solid #d8c6ff; }
+.category-card:nth-child(12n + 9)  { background: #fff3f0; border: 1.5px solid #ffc9c0; }
+.category-card:nth-child(12n + 10) { background: #f2fff2; border: 1.5px solid #c7efc7; }
+.category-card:nth-child(12n + 11) { background: #eef4ff; border: 1.5px solid #c3d5ff; }
+.category-card:nth-child(12n + 12) { background: #fff5ef; border: 1.5px solid #ffd4bf; }
+
+/* ==========================================================================
+   BusinessCTA — rotating arc border on primary button (pseudo-elements)
+   ========================================================================== */
+.business-cta-primary-btn::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 999px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    transparent   0deg,
+    rgba(74,222,128,0.9)   60deg,
+    rgba(255,255,255,0.95) 90deg,
+    rgba(74,222,128,0.9)   120deg,
+    transparent   180deg,
+    transparent   360deg
+  );
+  animation: rotateBorder 2.8s linear infinite;
+  z-index: -1;
+}
+
+.business-cta-primary-btn::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 999px;
+  background: var(--surface);
+  z-index: -1;
+}
+
+/* ==========================================================================
+   Material Symbols Outlined - Explicit Font & Alignment
+   ========================================================================== */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+  vertical-align: middle;
+}
+
+/* ==========================================================================
+   Scoped Legal & Documentation Typography (.legal-doc-prose)
+   ========================================================================== */
+.legal-doc-prose {
+  color: #374151;
+  line-height: 1.75;
+  font-size: 0.95rem;
+  font-family: var(--font-primary, "DM Sans", sans-serif);
+}
+
+.legal-doc-prose h1,
+.legal-doc-prose h2 {
+  color: var(--color-primary, #0f5c3e);
+  font-family: var(--font-heading, "Sora", sans-serif);
+  font-weight: 700;
+  font-size: 1.35rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.legal-doc-prose h3 {
+  color: #111827;
+  font-family: var(--font-heading, "Sora", sans-serif);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-doc-prose p {
+  margin-bottom: 1rem;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.legal-doc-prose ul,
+.legal-doc-prose ol {
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+  color: #4b5563;
+}
+
+.legal-doc-prose ul {
+  list-style-type: disc;
+}
+
+.legal-doc-prose ol {
+  list-style-type: decimal;
+}
+
+.legal-doc-prose li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.legal-doc-prose a {
+  color: var(--color-primary, #0f5c3e);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.legal-doc-prose a:hover {
+  color: var(--color-primary-light, #1a8a5a);
+}
+
+.legal-doc-prose strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+.legal-doc-prose blockquote {
+  border-left: 3px solid var(--color-primary, #0f5c3e);
+  padding-left: 1rem;
+  margin: 1.25rem 0;
+  font-style: italic;
+  color: #4b5563;
+  background-color: var(--color-primary-surface, #e8f5ee);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.legal-doc-prose .section {
+  background: transparent;
+  padding: 0;
+  margin-top: 1.5rem;
+  border: none;
+  box-shadow: none;
+}
+
+.legal-doc-prose .pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: var(--color-primary-surface, #e8f5ee);
+  color: var(--color-primary, #0f5c3e);
+  font-weight: 600;
+  font-size: 0.75rem;
 }
