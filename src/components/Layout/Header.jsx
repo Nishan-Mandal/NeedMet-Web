@@ -113,6 +113,22 @@ export default function Header() {
                 Categories
               </NavLink>
               <NavLink
+                to="/articles"
+                className={({ isActive }) =>
+                  `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
+                    isTransparent
+                      ? (isActive
+                          ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
+                          : 'text-white/80 hover:text-white hover:bg-white/10')
+                      : (isActive
+                          ? 'text-primary bg-primary-surface font-semibold'
+                          : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
+                  }`
+                }
+              >
+                Blogs
+              </NavLink>
+              <NavLink
                 to="/contribute/listing"
                 className={({ isActive }) =>
                   `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
@@ -300,6 +316,13 @@ export default function Header() {
           >
             <i className="fa-solid fa-plus w-4 text-center"></i>
             <span>Add Business</span>
+          </button>
+          <button
+            onClick={() => { navigate("/articles"); setShowMenu(false); }}
+            className="w-[calc(100%-16px)] mx-2 my-0.5 flex items-center gap-2.5 px-3 py-2.5 rounded-[9px] text-[0.875rem] font-medium text-text-secondary hover:text-primary hover:bg-primary-surface transition-colors cursor-pointer text-left"
+          >
+            <i className="fa-solid fa-newspaper w-4 text-center"></i>
+            <span>Blogs</span>
           </button>
           <button
             onClick={() => { navigate("/docs/about_us"); setShowMenu(false); }}

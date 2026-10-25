@@ -3,6 +3,7 @@ import {
   Hero,
   TestimonialSection,
   WhyDiscoverNeedMet,
+  ArticleHomeSection,
 } from "./Sections";
 import {
   CategorySection,
@@ -178,10 +179,13 @@ function Home() {
         );
       })}
 
-      {/* 10. TESTIMONIALS */}
+      {/* 10. LOCAL GUIDES & ARTICLES */}
+      <ArticleHomeSection />
+
+      {/* 11. TESTIMONIALS */}
       <TestimonialSection />
 
-      {/* 11. LIST YOUR BUSINESS CTA */}
+      {/* 12. LIST YOUR BUSINESS CTA */}
       <BusinessCTA bgColor="var(--primary-surface)" />
     </div>
   );

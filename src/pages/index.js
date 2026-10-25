@@ -10,6 +10,7 @@ import AllListings from "./admin/AllListings.jsx";
 import Dashboard from "./admin/Dashboard.jsx";
 import AddListing from "./AddListing.jsx";
 import AboutPage from "./About/AboutPage.jsx";
+import { ArticlesPage, ArticleDetails } from "./Articles";
 
 export {
     Home, 
@@ -23,5 +24,7 @@ export {
     AllListings, 
     Dashboard, 
     AddListing,
-    AboutPage
+    AboutPage,
+    ArticlesPage,
+    ArticleDetails
 }

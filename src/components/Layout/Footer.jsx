@@ -8,6 +8,7 @@ const SOCIAL_LINKS = [
 ];
 
 const FOOTER_LINKS = [
+  { to: "/articles", label: "Blogs" },
   { to: "/docs/privacy_policy", label: "Privacy" },
   { to: "/docs/safety", label: "Safety" },
   { to: "/docs/terms_service", label: "Terms" },
