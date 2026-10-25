@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import "../style/Banner.css";
 
 export default function Banner({ imageUrl, webUrl, route, alt = "Banner" }) {
   const navigate = useNavigate();
@@ -20,15 +19,19 @@ export default function Banner({ imageUrl, webUrl, route, alt = "Banner" }) {
 
   return (
     <div
-      className="banner-section"
+      className={`w-full overflow-hidden leading-none px-[18px] sm:px-8 lg:px-[70px] py-4 bg-white ${route ? "cursor-pointer" : "cursor-default"}`}
       onClick={route ? handleClick : undefined}
-      style={{ cursor: route ? "pointer" : "default" }}
     >
       <picture>
         {phoneImage && phoneImage !== desktopImage && (
           <source media="(max-width: 768px)" srcSet={phoneImage} />
         )}
-        <img src={desktopImage} alt={alt} className="banner-image" loading="lazy" />
+        <img
+          src={desktopImage}
+          alt={alt}
+          className="w-full block object-fill aspect-16/9 min-[481px]:aspect-14/7 md:aspect-16/4 md:max-lg:h-[240px] rounded-2xl"
+          loading="lazy"
+        />
       </picture>
     </div>
   );

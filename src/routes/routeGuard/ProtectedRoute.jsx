@@ -1,12 +1,18 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
+import { Loader } from "../../components";
 
 export default function ProtectedRoute() {
-  const { userLoggedIn } = useAuth();
+  const { userLoggedIn, loading } = useAuth();
+  const location = useLocation();
 
-  return (
-    userLoggedIn ? 
-      <Outlet /> : 
-      <Navigate to="/login" replace />
+  if (loading) {
+    return <Loader message="Verifying authentication..." />;
+  }
+
+  return userLoggedIn ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" state={{ from: location }} replace />
   );
 }

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styles from "../../style/Auth/SignUp.module.css";
 import { Button, Loader } from "../../components";
 import { sendOTP, verifyOTP } from "../../services/firebase/auth/authService";
 import { resetRecaptcha } from "../../services/firebase/auth/recaptchaService";
@@ -8,7 +7,7 @@ import { saveUserData, getUserByPhone } from "../../services/firebase/firestore/
 import { useToast } from "../../contexts/toastContext";
 
 export default function SignUp() {
-  const [formData, setFormData] = useState({name: "", phone: "",});
+  const [formData, setFormData] = useState({ name: "", phone: "" });
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [confirmationResult, setConfirmationResult] = useState(null);
@@ -18,12 +17,10 @@ export default function SignUp() {
   const [resendTimer, setResendTimer] = useState(0);
 
   const { showToast } = useToast();
-
   const Navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -50,11 +47,9 @@ export default function SignUp() {
 
       setConfirmationResult(result);
       setOtpSent(true);
-
       setResendTimer(30);
 
       showToast("OTP sent successfully", "regular");
-
     } catch (error) {
       console.error(error);
       showToast("Failed to send OTP", "error");
@@ -67,27 +62,18 @@ export default function SignUp() {
     if (isVerifyingOtp) return;
 
     if (!confirmationResult) {
-      showToast("OTP session expired. Please resend OTP.", 'error');
+      showToast("OTP session expired. Please resend OTP.", "error");
       return;
     }
 
     try {
       setIsVerifyingOtp(true);
 
-      const user = await verifyOTP(
-        confirmationResult,
-        otp
-      );
+      const user = await verifyOTP(confirmationResult, otp);
+      await saveUserData(user, formData.name.trim(), formData.phone);
 
-      await saveUserData(
-        user,
-        formData.name.trim(),
-        formData.phone
-      );
-
-      showToast('Signed up successfully', 'regular');
+      showToast("Signed up successfully", "regular");
       Navigate("/");
-
     } catch (error) {
       console.error(error);
       showToast("Invalid OTP. Please check and try again.", "error");
@@ -105,11 +91,9 @@ export default function SignUp() {
 
       const result = await sendOTP(formData.phone);
       setConfirmationResult(result);
-
       setResendTimer(30);
 
       showToast("OTP resent successfully", "regular");
-
     } catch (error) {
       console.error(error);
       showToast("Failed to resend OTP. Try again later.", "error");
@@ -123,7 +107,7 @@ export default function SignUp() {
 
     if (resendTimer > 0) {
       interval = setInterval(() => {
-        setResendTimer(prev => prev - 1);
+        setResendTimer((prev) => prev - 1);
       }, 1000);
     }
 
@@ -139,37 +123,34 @@ export default function SignUp() {
   }, []);
 
   return (
-    <div className={styles.signupContainer}>
-
+    <div className="min-h-[94vh] flex bg-background">
       {/* LEFT FORM SECTION */}
-      <div className={styles.signupLeft}>
-        <div className={styles.formWrapper}>
-
-          <p className={styles.step}>
+      <div className="flex-1 bg-background flex items-center justify-center p-10 max-[900px]:p-8 max-[488px]:p-4">
+        <div className="w-full max-w-[500px] p-[3rem] max-[488px]:p-8 border border-border rounded-[14px] bg-surface shadow-sm">
+          <div className="text-primary-light font-bold tracking-widest text-xs flex items-center mb-3">
             {otpSent && (
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 onClick={() => {
                   setOtpSent(false);
                   setOtp("");
                   setConfirmationResult(null);
                   setResendTimer(0);
                 }}
-                style={{width: '18%'}}
+                className="!w-12 !h-9 mr-3"
                 icon={<i className="fa-solid fa-arrow-left"></i>}
               />
-                
             )}
             <span>
-              {otpSent ? 
-                <>&nbsp;&nbsp;STEP 2 OF 2</> : 
-                "STEP 1 OF 2"}
+              {otpSent ? "STEP 2 OF 2" : "STEP 1 OF 2"}
             </span>
-          </p>
+          </div>
 
-          <h2>Create Account</h2>
+          <h2 className="mt-3 text-[3rem] max-[900px]:text-[2.3rem] max-[488px]:text-[1.8rem] font-heading font-bold text-text-accent">
+            Create Account
+          </h2>
 
-          <p className={styles.subtitle}>
+          <p className="mt-3 mb-8 text-sm sm:text-base text-text-secondary leading-relaxed">
             Join NeedMet and connect with your local community.
           </p>
 
@@ -177,9 +158,11 @@ export default function SignUp() {
 
           {!otpSent ? (
             <>
-              <label className={styles.inputLabel}>Full Name</label>
+              <label className="block font-semibold mb-2.5 text-text text-sm">
+                Full Name
+              </label>
               <input
-                className={styles.textInput}
+                className="w-full border border-border rounded-xl p-3.5 sm:p-4 text-base text-text bg-transparent mb-5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                 type="text"
                 maxLength={50}
                 name="name"
@@ -188,10 +171,14 @@ export default function SignUp() {
                 onChange={handleChange}
               />
 
-              <label className={styles.inputLabel}>Mobile Number</label>
+              <label className="block font-semibold mb-2.5 text-text text-sm">
+                Mobile Number
+              </label>
 
-              <div className={styles.phoneInput}>
-                <div className={styles.countryCode}>+91</div>
+              <div className="flex border border-border rounded-xl overflow-hidden mb-5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all">
+                <div className="p-3.5 sm:p-4 bg-background-secondary font-semibold text-text border-r border-border">
+                  +91
+                </div>
 
                 <input
                   type="tel"
@@ -200,11 +187,12 @@ export default function SignUp() {
                   value={formData.phone}
                   maxLength={10}
                   onChange={(e) =>
-                    setFormData(prev => ({
+                    setFormData((prev) => ({
                       ...prev,
                       phone: e.target.value.replace(/\D/g, ""),
                     }))
                   }
+                  className="flex-1 border-none outline-none p-3.5 sm:p-4 text-base text-text bg-transparent min-w-0"
                 />
               </div>
 
@@ -216,7 +204,7 @@ export default function SignUp() {
                   formData.phone.length !== 10 ||
                   isSendingOtp
                 }
-                className={styles.authButton}
+                className="w-full"
               >
                 {isSendingOtp ? (
                   <>
@@ -230,10 +218,12 @@ export default function SignUp() {
             </>
           ) : (
             <>
-              <label className={styles.inputLabel}>Enter OTP</label>
+              <label className="block font-semibold mb-2.5 text-text text-sm">
+                Enter OTP
+              </label>
 
               <input
-                className={styles.otpInput}
+                className="w-full border border-border rounded-xl p-3.5 sm:p-4 text-base text-center tracking-[0.5em] font-mono mb-5 outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
                 type="text"
                 maxLength={6}
                 placeholder="••••••"
@@ -248,14 +238,14 @@ export default function SignUp() {
                 variant="primary"
                 onClick={handleVerifyOTP}
                 disabled={isVerifyingOtp || otp.length !== 6 || !confirmationResult}
-                className={styles.authButton}
+                className="w-full"
               >
                 {isVerifyingOtp ? (
                   <>
                     <Loader variant="button" />
                     Verifying...
                   </>
-                ): (
+                ) : (
                   "Create Account"
                 )}
               </Button>
@@ -268,7 +258,7 @@ export default function SignUp() {
                   isResendingOtp ||
                   resendTimer > 0
                 }
-                className={styles.resendButton}
+                className="w-full mt-3"
               >
                 {isResendingOtp ? (
                   <>
@@ -284,53 +274,56 @@ export default function SignUp() {
             </>
           )}
 
-          <p className={styles.switchAuth}>
+          <p className="mt-6 text-center text-text-secondary text-sm">
             Already have an account?
-            <Link to="/login"> Log in</Link>
+            <Link to="/login" className="text-primary font-semibold hover:text-primary-light transition-colors"> Log in</Link>
           </p>
 
-          <p className={styles.terms}>
+          <p className="mt-6 text-center text-text-secondary text-xs sm:text-sm leading-relaxed">
             By creating an account,
             <br />
             you agree to our{" "}
-            <Link to="/docs/terms_service">Terms of Service</Link>
-            {" "}and{" "}
-            <Link to="/docs/privacy_policy">Privacy Policy</Link>.
+            <Link to="/docs/terms_service" className="text-primary underline">Terms of Service</Link>{" "}
+            and{" "}
+            <Link to="/docs/privacy_policy" className="text-primary underline">Privacy Policy</Link>.
           </p>
-
         </div>
       </div>
 
       {/* RIGHT DESIGN SECTION */}
-      <div className={styles.signupRight}>
-        <div className={styles.rightContent}>
-          <h1>Become a part of NeedMet.</h1>
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-primary to-[#05281a] text-white p-[60px] flex-col justify-center items-center relative overflow-hidden">
+        <div className="absolute w-[420px] h-[420px] rounded-full bg-white/5 -top-[100px] -right-[120px] pointer-events-none"></div>
+        <div className="absolute w-[300px] h-[300px] rounded-full bg-white/[0.04] -bottom-[100px] -left-[100px] pointer-events-none"></div>
 
-          <p>
+        <div className="max-w-[520px] z-10">
+          <h1 className="font-heading font-bold text-4xl lg:text-[3.5rem] leading-[1.1] mb-6">
+            Become a part of NeedMet.
+          </h1>
+
+          <p className="text-white/85 text-lg leading-[1.8]">
             Discover trusted local services,
             connect with your community and
             help others find what they need.
           </p>
 
-          <div className={styles.features}>
-            <div className={styles.featureCard}>
-              <i className="fa-solid fa-location-dot"></i>
-              <p>Find local services nearby</p>
+          <div className="mt-12 flex flex-col gap-[18px]">
+            <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-[18px] px-[22px] py-[18px] flex items-center gap-3.5">
+              <i className="fa-solid fa-location-dot text-xl text-primary-light"></i>
+              <p className="text-white m-0 font-semibold">Find local services nearby</p>
             </div>
 
-            <div className={styles.featureCard}>
-              <i className="fa-solid fa-star"></i>
-              <p>Trusted reviews & ratings</p>
+            <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-[18px] px-[22px] py-[18px] flex items-center gap-3.5">
+              <i className="fa-solid fa-star text-xl text-primary-light"></i>
+              <p className="text-white m-0 font-semibold">Trusted reviews & ratings</p>
             </div>
 
-            <div className={styles.featureCard}>
-              <i className="fa-solid fa-users"></i>
-              <p>Grow with your community</p>
+            <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-[18px] px-[22px] py-[18px] flex items-center gap-3.5">
+              <i className="fa-solid fa-users text-xl text-primary-light"></i>
+              <p className="text-white m-0 font-semibold">Grow with your community</p>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   );
 }
