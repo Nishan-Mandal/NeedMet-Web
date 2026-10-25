@@ -1,12 +1,11 @@
 import React from "react";
-import "../../style/QR/PosterTemplate.css";
-import bgImage   from "../../assets/poster-template.png";
-import igIcon    from "../../assets/instagram.svg";
-import fbIcon    from "../../assets/facebook.png";
-import waIcon    from "../../assets/whatsapp.svg";
-import webIcon   from "../../assets/website.svg";
-import linkedinIcon  from "../../assets/linkedin.svg";
-import mapsIcon  from "../../assets/maps.png";
+import bgImage from "../../assets/poster-template.png";
+import igIcon from "../../assets/instagram.svg";
+import fbIcon from "../../assets/facebook.png";
+import waIcon from "../../assets/whatsapp.svg";
+import webIcon from "../../assets/website.svg";
+import linkedinIcon from "../../assets/linkedin.svg";
+import mapsIcon from "../../assets/maps.png";
 
 const IcUser = () => (
   <svg viewBox="0 0 24 24" fill="white" width="30" height="30">
@@ -25,169 +24,175 @@ const IcLocation = () => (
 );
 
 export default function SriSaiPoster({listing = {}, qrImage, socialQrs = {}}) {
+  const nameH1Class =
+    listing?.name?.length >= 30
+      ? "text-[60px] font-black text-[#1a5c2e] tracking-tight leading-none text-center mb-6"
+      : listing?.name?.length >= 19
+      ? "text-[80px] font-black text-[#1a5c2e] tracking-tight leading-none text-center mb-6"
+      : "text-[100px] font-black text-[#1a5c2e] tracking-tight leading-none text-center mb-6";
+
+  const ownerClass =
+    listing?.ownerName?.length >= 30
+      ? "text-[1.2rem] font-bold text-[#111]"
+      : "text-[1.5rem] font-bold text-[#111]";
+
+  const addressClass =
+    listing?.address?.length >= 50
+      ? "text-[1rem] font-bold text-[#111]"
+      : listing?.address?.length >= 30
+      ? "text-[1.2rem] font-bold text-[#111]"
+      : "text-[1.5rem] font-bold text-[#111]";
+
   return (
-    <div className="sp-root">
-      <img src={bgImage} alt="" className="sp-bg" draggable={false} />
-      <div className="sp-overlay">
-        <div className="sp-block sp-name">
-          <div className="sp-name-main-row">
-            <h1
-              className={
-                listing?.name?.length >= 30
-                  ? "sp-name-h1-long"
-                  : listing?.name?.length >= 19
-                  ? "sp-name-h1-mid"
-                  : "sp-name-h1"
-              }
-            >
+    <div className="relative w-[1240px] max-w-full bg-white inline-block font-sans">
+      <img src={bgImage} alt="" className="block w-full h-auto select-none pointer-events-none" draggable={false} />
+      <div className="absolute inset-0">
+        <div className="absolute top-[14%] left-1/2 -translate-x-1/2 w-[88%] flex flex-col items-center gap-[3px]">
+          <div className="flex items-center gap-3.5">
+            <h1 className={nameH1Class}>
               {listing?.name}
             </h1>
           </div>
 
-          <div className="sp-name-sub-row">
-            <h2 className="sp-name-h2">{listing.category}</h2>
+          <div className="flex items-center gap-2.5">
+            <h2 className="font-extrabold text-[clamp(16px,2.9vw,26px)] text-[#1a5c2e] tracking-[3px] uppercase border-y-[2.5px] border-[#1a5c2e] px-8 py-1 whitespace-nowrap mb-4">
+              {listing.category}
+            </h2>
           </div>
         </div>
 
-        <div className="sp-block sp-main-qr">
-          <img src={qrImage} alt="Scan to Review" className="sp-main-qr-img" />
+        <div className="absolute top-[52.5%] left-[49.7%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+          <img src={qrImage} alt="Scan to Review" className="w-[clamp(160px,70%,300px)] h-[clamp(160px,70%,300px)] object-contain rounded-[10px]" />
         </div>
 
-        <div className="sp-block sp-contact">
-          <div className="sp-contact-cell">
-            <div className="sp-contact-circle"><IcUser /></div>
-            <div>
-              <p className="sp-clabel">OWNER</p>
-              <p 
-                className={
-                  listing?.ownerName?.length >= 30
-                    ? "sp-cval-long"
-                    : "sp-cval"
-                }
-              >
-                {listing?.ownerName}
-              </p>
+        <div className="absolute top-[64%] left-[7.3%] w-[85%] flex items-stretch bg-[#e8f5eeaa] border-[1.5px] border-[#ddd] rounded-[13px] overflow-hidden py-3">
+          <div className="flex items-start gap-3 flex-1 px-4">
+            <div className="w-[55px] h-[55px] rounded-full bg-[#1a5c2e] flex items-center justify-center shrink-0">
+              <IcUser />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className="text-[1.6rem] font-bold text-[#888] tracking-wider uppercase mb-[3px]">OWNER</p>
+              <p className={ownerClass}>{listing?.ownerName}</p>
             </div>
           </div>
-          <div className="sp-contact-sep" />
-          <div className="sp-contact-cell">
-            <div className="sp-contact-circle"><IcPhone /></div>
-            <div>
-              <p className="sp-clabel">PHONE</p>
-              <p className="sp-cval">+91 {listing.phone || listing.alternatePhone}</p>
+
+          <div className="w-[1.5px] self-stretch bg-[#ddd] shrink" />
+
+          <div className="flex items-start gap-3 flex-1 px-4">
+            <div className="w-[55px] h-[55px] rounded-full bg-[#1a5c2e] flex items-center justify-center shrink-0">
+              <IcPhone />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className="text-[1.6rem] font-bold text-[#888] tracking-wider uppercase mb-[3px]">PHONE</p>
+              <p className="text-[1.5rem] font-bold text-[#111]">+91 {listing.phone || listing.alternatePhone}</p>
             </div>
           </div>
-          <div className="sp-contact-sep" />
-          <div className="sp-contact-cell">
-            <div className="sp-contact-circle"><IcLocation /></div>
-            <div>
-              <p className="sp-clabel">LOCATION</p>
-              <p 
-                className={
-                  listing?.address?.length >= 50
-                    ? "sp-cval-long-long"
-                    : listing?.address?.length >= 30
-                    ? "sp-cval-long"
-                    : "sp-cval"
-                }
-              >
-                {listing?.address}
-              </p>
+
+          <div className="w-[1.5px] self-stretch bg-[#ddd] shrink" />
+
+          <div className="flex items-start gap-3 flex-1 px-4">
+            <div className="w-[55px] h-[55px] rounded-full bg-[#1a5c2e] flex items-center justify-center shrink-0">
+              <IcLocation />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className="text-[1.6rem] font-bold text-[#888] tracking-wider uppercase mb-[3px]">LOCATION</p>
+              <p className={addressClass}>{listing?.address}</p>
             </div>
           </div>
         </div>
 
-        <div className="sp-social">
-          <div className="sp-social-container">
-            <p>FOLLOW US ON SOCIAL MEDIA</p>
+        <div className="absolute top-[72.2%] left-[3.8%] w-[92.4%] flex flex-col items-center">
+          <div className="w-full text-center text-[clamp(12px,1.6vw,16px)] font-extrabold tracking-wider text-[#1a5c2e] mb-3">
+            <p className="text-[2rem] border-t-[2.5px] border-[#1a5c2e54] inline pt-1">FOLLOW US ON SOCIAL MEDIA</p>
           </div>
-          <div className="sp-block">
+
+          <div className="relative w-full flex justify-center items-start gap-20">
             {socialQrs.instagram && (
-              <div className="sp-social-item">
+              <div className="flex flex-col items-center gap-2">
                 <img
                   src={igIcon}
                   alt="Instagram"
-                  className="sp-social-icon"
+                  className="w-[30px] h-[30px] object-contain"
                 />
                 <img
                   src={socialQrs.instagram}
                   alt="Instagram QR"
-                  className="sp-social-qr"
+                  className="w-[110px] h-[110px] object-contain rounded-lg border-[1.5px] border-[#e5e5e5] bg-white p-1"
                 />
               </div>
             )}
 
             {socialQrs.facebook && (
-              <div className="sp-social-item">
+              <div className="flex flex-col items-center gap-2">
                 <img
                   src={fbIcon}
                   alt="Facebook"
-                  className="sp-social-icon"
+                  className="w-[30px] h-[30px] object-contain"
                 />
                 <img
                   src={socialQrs.facebook}
                   alt="Facebook QR"
-                  className="sp-social-qr"
+                  className="w-[110px] h-[110px] object-contain rounded-lg border-[1.5px] border-[#e5e5e5] bg-white p-1"
                 />
               </div>
             )}
 
             {socialQrs.whatsapp && (
-              <div className="sp-social-item">
+              <div className="flex flex-col items-center gap-2">
                 <img
                   src={waIcon}
                   alt="WhatsApp"
-                  className="sp-social-icon"
+                  className="w-[30px] h-[30px] object-contain"
                 />
                 <img
                   src={socialQrs.whatsapp}
                   alt="WhatsApp QR"
-                  className="sp-social-qr"
+                  className="w-[110px] h-[110px] object-contain rounded-lg border-[1.5px] border-[#e5e5e5] bg-white p-1"
                 />
               </div>
             )}
 
             {socialQrs.website && (
-              <div className="sp-social-item">
+              <div className="flex flex-col items-center gap-2">
                 <img
                   src={webIcon}
                   alt="Website"
-                  className="sp-social-icon"
+                  className="w-[30px] h-[30px] object-contain"
                 />
                 <img
                   src={socialQrs.website}
                   alt="Website QR"
-                  className="sp-social-qr"
+                  className="w-[110px] h-[110px] object-contain rounded-lg border-[1.5px] border-[#e5e5e5] bg-white p-1"
                 />
               </div>
             )}
 
             {socialQrs.linkedin && (
-              <div className="sp-social-item">
+              <div className="flex flex-col items-center gap-2">
                 <img
                   src={linkedinIcon}
                   alt="LinkedIn"
-                  className="sp-social-icon"
+                  className="w-[30px] h-[30px] object-contain"
                 />
                 <img
                   src={socialQrs.linkedin}
                   alt="LinkedIn QR"
-                  className="sp-social-qr"
+                  className="w-[110px] h-[110px] object-contain rounded-lg border-[1.5px] border-[#e5e5e5] bg-white p-1"
                 />
               </div>
             )}
 
             {socialQrs.maps && (
-              <div className="sp-social-item">
+              <div className="flex flex-col items-center gap-2">
                 <img
                   src={mapsIcon}
                   alt="Maps"
-                  className="sp-social-icon"
+                  className="w-[30px] h-[30px] object-contain"
                 />
                 <img
                   src={socialQrs.maps}
                   alt="Maps QR"
-                  className="sp-social-qr"
+                  className="w-[110px] h-[110px] object-contain rounded-lg border-[1.5px] border-[#e5e5e5] bg-white p-1"
                 />
               </div>
             )}

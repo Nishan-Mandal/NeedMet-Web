@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import styles from "../style/pages/AddListing.module.css";
 import { Listing, Geo, DaySchedule } from "../data/model/listingModel";
 import { uploadListingImages } from "../services/firebase/storage/listingImageService";
 import { createListingPipeline } from "../services/firebase/listing/listingPipeline.js";
@@ -23,9 +22,10 @@ import {
   CurrentLocationPicker, 
   Button, 
   SearchableSelect,
+  OpenHours,
+  defaultHours,
 } from "../components";
 import { useCategories } from "../hooks/useAllCategories";
-import OpenHours, { defaultHours } from "../components/OpenHours";
 
 /* ─── Validation Schema ─────────────────────────────────── */
 const schema = z.object({
@@ -167,7 +167,6 @@ export default function AddListing() {
     navigate("/contribute/listing/preview");
   };
 
-
   const onError = (errs) => {
     const firstKey = Object.keys(errs)[0];
     document.getElementById(firstKey)?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -178,21 +177,26 @@ export default function AddListing() {
   };
 
   return (
-    <div className={styles.page}>
-
+    <div className="min-h-screen font-sans">
       {/* ── Hero ── */}
-      <div className={styles.hero}>
-        <div className={styles.heroInner}>
-          <div className={styles.heroBadge}>Free Listing</div>
-          <h1 className={styles.heroTitle}>List Your Business on NeedMet</h1>
-          <p className={styles.heroSub}>
+      <div className="bg-gradient-to-br from-background-dark via-primary to-primary-light py-14 px-6 md:px-10 relative overflow-hidden">
+        <div className="max-w-[860px] mx-auto relative z-10 flex flex-col justify-center items-center">
+          <div className="inline-flex items-center px-3.5 py-1 bg-white/15 border border-white/25 rounded-full text-xs font-semibold tracking-wider uppercase text-blue-100 mb-4 backdrop-blur-sm">
+            Free Listing
+          </div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight leading-tight text-center font-heading">
+            List Your Business on NeedMet
+          </h1>
+          <p className="text-xs sm:text-sm text-blue-100 mb-9 max-w-[400px] leading-relaxed text-center">
             Reach thousands of local customers. Fill in your details below and go live in minutes.
           </p>
-          <div className={styles.heroSteps}>
+          <div className="flex flex-wrap justify-center items-center gap-2.5">
             {["Basic Info", "Contact", "Social", "Details", "Info", "Hours", "Images", "Tags"].map((s, i) => (
-              <div key={s} className={styles.heroStep}>
-                <span className={styles.heroStepNum}>{i + 1}</span>
-                <span className={styles.heroStepLabel}>{s}</span>
+              <div key={s} className="flex justify-center items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-3.5 py-1.5 backdrop-blur-sm">
+                <span className="w-[22px] h-[22px] rounded-full bg-white/20 text-white text-[11px] font-bold flex items-center justify-center shrink-0">
+                  {i + 1}
+                </span>
+                <span className="text-[12.5px] font-medium text-blue-50">{s}</span>
               </div>
             ))}
           </div>
@@ -200,7 +204,7 @@ export default function AddListing() {
       </div>
 
       <form
-        className={styles.formWrap}
+        className="max-w-[860px] mx-auto pt-8 px-2.5 sm:px-4 pb-10 flex flex-col gap-6"
         onSubmit={handleSubmit(goToPreview, onError)}
         onKeyDown={(e) => {
           const tag = e.target.tagName;
@@ -213,10 +217,9 @@ export default function AddListing() {
         }}
         noValidate
       >
-
         {/* ── 1. Basic Details ── */}
         <SectionCard step={1} title="Basic Details" subtitle="Tell us about your shop or service." icon={Ico.store} sectionStyle={{overflow: 'visible'}}>
-          <div className={styles.grid2}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="shopName"
               control={control}
@@ -252,8 +255,7 @@ export default function AddListing() {
               )}
             />
           </div>
-          <div className={styles.grid2}>
-
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="category"
               control={control}
@@ -277,7 +279,7 @@ export default function AddListing() {
               )}
             />
 
-            <div className={styles.locationCard}>
+            <div className="grid grid-cols-[1fr_auto] items-center gap-4">
               <Controller
                 name="address"
                 control={control}
@@ -324,7 +326,7 @@ export default function AddListing() {
 
         {/* ── 2. Contact Details ── */}
         <SectionCard step={2} title="Contact Details" subtitle="How customers can reach you." icon={Ico.contact}>
-          <div className={styles.grid3}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Controller
               name="phone"
               control={control}
@@ -377,7 +379,7 @@ export default function AddListing() {
 
         {/* ── 3. Social Media ── */}
         <SectionCard step={3} title="Social Media Info" subtitle="Help customers find and follow you online." icon={Ico.social}>
-          <div className={styles.grid2}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="whatsapp"
               control={control}
@@ -412,7 +414,7 @@ export default function AddListing() {
             />
           </div>
 
-          <div className={styles.grid3}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Controller
               name="instagram"
               control={control}
@@ -468,7 +470,7 @@ export default function AddListing() {
 
         {/* ── 4. Common Details ── */}
         <SectionCard step={4} title="Common Details" subtitle="A bit more about your business." icon={Ico.info}>
-          <div className={styles.grid2}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Controller
               name="since"
               control={control}
@@ -484,10 +486,10 @@ export default function AddListing() {
                 />
               )}
             />
-            <div className={styles.toggleCard}>
+            <div className="flex items-center justify-between gap-4 bg-[#f8faff] border border-border rounded-xl p-4 min-h-[64px]">
               <div>
-                <p className={styles.toggleCardTitle}>Accept Online Payments</p>
-                <p className={styles.toggleCardSub}>UPI, cards, wallets, net banking</p>
+                <p className="text-sm font-semibold text-text mb-0.5">Accept Online Payments</p>
+                <p className="text-xs text-text-secondary m-0">UPI, cards, wallets, net banking</p>
               </div>
               <Controller name="onlinePayments" control={control} render={({ field }) => (
                 <ToggleSwitch name={field.name} checked={field.value}
@@ -513,17 +515,15 @@ export default function AddListing() {
 
         {/* ── 5. Detailed Info — key/value pairs ── */}
         <SectionCard step={5} title="Detailed Info" subtitle="Add any details specific to your business as label–value pairs." icon={Ico.detail}>
-
-              <KeyValueFields
-                fields={fields}
-                register={register}
-                append={append}
-                remove={remove}
-                name="detailFields"
-                keyPlaceholder="Label (e.g. Cuisine, Speciality)"
-                valuePlaceholder="Value (e.g. Indian, Dermatology)"
-              />
-        
+          <KeyValueFields
+            fields={fields}
+            register={register}
+            append={append}
+            remove={remove}
+            name="detailFields"
+            keyPlaceholder="Label (e.g. Cuisine, Speciality)"
+            valuePlaceholder="Value (e.g. Indian, Dermatology)"
+          />
         </SectionCard>
 
         {/* ── 6. Open Hours ── */}
@@ -569,10 +569,16 @@ export default function AddListing() {
                   placeholder="Type a tag and press Enter…" 
                 />
                 
-                <p className={styles.tagHint}>
+                <p className="text-xs text-text-secondary mt-2.5 flex flex-wrap items-center gap-1.5">
                   Examples:{" "}
                   {["home delivery", "24/7", "parking available", "AC"].map((t) => (
-                    <span key={t} onClick={() => quickAddTag(t, field.value, field.onChange)}>{t}</span>
+                    <span
+                      key={t}
+                      onClick={() => quickAddTag(t, field.value, field.onChange)}
+                      className="inline-block px-2.5 py-0.5 bg-background-secondary border border-border rounded-full text-xs text-text cursor-pointer hover:bg-primary-surface hover:border-primary-light hover:text-primary transition-colors"
+                    >
+                      {t}
+                    </span>
                   ))}
                 </p>
               </>
@@ -581,28 +587,24 @@ export default function AddListing() {
         </SectionCard>
 
         {/* ── Action Bar ── */}
-        <div className={styles.actionBar}>
-          <Button type='button' variant='outline' onClick={handleCancel} className={styles.resetBtn}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface border border-border rounded-2xl p-[18px] sm:p-6 shadow-sm">
+          <Button type='button' variant='outline' onClick={handleCancel} className="w-full sm:w-1/4">
             <ResetIcon size={14}/>
             Reset
           </Button>
 
-          <div className={styles.actionRight}>
-
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-1/2">
             <Button type="button" variant="secondary" style={{width: '100%'}} onClick={handleSaveDraft}>
               <DraftIcon size={14}/>
               Save Draft
             </Button>
 
-
             <Button type="submit" variant="primary" style={{width: '100%'}}>
               <PreviewIcon size={14}/>
               Preview
             </Button>
-
           </div>
         </div>
-
       </form>
     </div>
   );

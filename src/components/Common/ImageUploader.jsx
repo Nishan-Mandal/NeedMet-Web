@@ -1,5 +1,3 @@
-import styles from "../../style/Common/ImageUploader.module.css";
-
 export default function ImageUploader({
   images,
   onAdd,
@@ -44,8 +42,8 @@ export default function ImageUploader({
   };
 
   return (
-    <div className={styles.wrapper}>
-      <label className={styles.uploadBox}>
+    <div className="flex flex-col gap-4">
+      <label className="flex flex-col items-center justify-center gap-2 py-8 px-5 border-2 border-dashed border-border rounded-xl bg-background-secondary cursor-pointer text-center transition-colors text-text-secondary hover:border-primary-light hover:bg-primary-surface hover:text-primary">
         <input
           type="file"
           multiple
@@ -54,7 +52,7 @@ export default function ImageUploader({
           hidden
         />
 
-        <div className={styles.icon}>
+        <div className="text-text-secondary">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
             <rect
               x="3"
@@ -74,25 +72,29 @@ export default function ImageUploader({
           </svg>
         </div>
 
-        <p className={styles.title}>
-          Drop images here or <span>browse</span>
+        <p className="text-[14.5px] font-medium text-text m-0">
+          Drop images here or <span className="text-primary font-semibold">browse</span>
         </p>
 
-        <p className={styles.sub}>
+        <p className="text-xs text-text-secondary m-0">
           JPG, PNG, WEBP · max {maxSizeMB}MB · up to {maxFiles} images
         </p>
       </label>
 
       {images?.length > 0 && (
-        <div className={styles.grid}>
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] gap-2.5">
           {images.map((img, i) => (
-            <div key={i} className={styles.card}>
-              <img src={img.src} alt={img.name} />
+            <div key={i} className="relative aspect-square rounded-xl overflow-hidden border-[1.5px] border-border bg-surface">
+              <img src={img.src} alt={img.name} className="w-full h-full object-cover" />
 
-              {i === 0 && <span className={styles.cover}>Cover</span>}
+              {i === 0 && (
+                <span className="absolute bottom-1.5 left-1.5 bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+                  Cover
+                </span>
+              )}
 
               <button
-                className={styles.remove}
+                className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full border-none bg-black/60 hover:bg-accent-red text-white text-base cursor-pointer flex items-center justify-center transition-colors leading-none"
                 onClick={() => onRemove(i)}
                 type="button"
               >
