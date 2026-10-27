@@ -96,7 +96,7 @@ export default function ArticlesPage() {
       <SEO
         title="Local Guides & Articles — NeedMet"
         description="Explore local business insights, how-to guides, repair checklists, and neighbourhood recommendations from NeedMet."
-        canonicalUrl="https://needmet.in/articles"
+        canonicalUrl="https://needmet.in/blogs"
       />
 
       {/* ── 1. Hero Showcase Header ── */}

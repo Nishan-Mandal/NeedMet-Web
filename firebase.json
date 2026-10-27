@@ -2,7 +2,7 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "default",
+      "codebase": "share-preview",
       "ignore": [
         "node_modules",
         ".git",
@@ -29,6 +29,10 @@
       {
         "source": "/listing/**",
         "function": "shareListing"
+      },
+      {
+        "source": "/blog/**",
+        "function": "shareArticle"
       },
       {
         "source": "**",
