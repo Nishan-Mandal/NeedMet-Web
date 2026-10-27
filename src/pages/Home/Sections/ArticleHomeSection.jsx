@@ -27,7 +27,7 @@ export default function ArticleHomeSection() {
           </div>
 
           <Link
-            to="/articles"
+            to="/blogs"
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-primary-light transition-colors group no-underline self-start sm:self-auto"
           >
             <span>Explore All Guides</span>
