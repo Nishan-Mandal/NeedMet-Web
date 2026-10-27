@@ -214,7 +214,7 @@ function OtherArticlesCard({
           </div>
         </div>
         <Link
-          to="/articles"
+          to="/blogs"
           className="text-xs font-bold text-primary hover:text-primary-light no-underline"
         >
           View all
@@ -270,7 +270,7 @@ function OtherArticlesCard({
       {/* Footer Explore Link */}
       <div className="pt-2 border-t border-border/80 text-center">
         <Link
-          to="/articles"
+          to="/blogs"
           className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-light no-underline transition-colors"
         >
           <span>Explore all {articles.length} guides</span>
@@ -374,7 +374,7 @@ export default function ArticleDetails() {
           message="The guide or article you're looking for doesn't exist or may have been removed."
           actionType="navigate"
           actionLabel="Browse All Guides"
-          actionTo="/articles"
+          actionTo="/blogs"
         />
       </div>
     );
@@ -388,7 +388,7 @@ export default function ArticleDetails() {
       })
     : "Recently published";
 
-  const canonicalUrl = `https://needmet.in/articles/${article.id}/${article.slug || generateSlug(article.title)}`;
+  const canonicalUrl = `https://needmet.in/blog/${article.id}/${article.slug || generateSlug(article.title)}`;
   const currentUrl = typeof window !== "undefined" ? window.location.href : canonicalUrl;
 
   const jsonLdSchema =
@@ -504,8 +504,8 @@ export default function ArticleDetails() {
                   Home
                 </Link>
                 <span>/</span>
-                <Link to="/articles" className="hover:text-primary transition-colors no-underline text-inherit shrink-0">
-                  Articles
+                <Link to="/blogs" className="hover:text-primary transition-colors no-underline text-inherit shrink-0">
+                  Blogs
                 </Link>
                 {article.category && (
                   <>

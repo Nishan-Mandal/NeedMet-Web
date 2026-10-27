@@ -113,7 +113,7 @@ export default function Header() {
                 Categories
               </NavLink>
               <NavLink
-                to="/articles"
+                to="/blogs"
                 className={({ isActive }) =>
                   `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
                     isTransparent
@@ -318,7 +318,7 @@ export default function Header() {
             <span>Add Business</span>
           </button>
           <button
-            onClick={() => { navigate("/articles"); setShowMenu(false); }}
+            onClick={() => { navigate("/blogs"); setShowMenu(false); }}
             className="w-[calc(100%-16px)] mx-2 my-0.5 flex items-center gap-2.5 px-3 py-2.5 rounded-[9px] text-[0.875rem] font-medium text-text-secondary hover:text-primary hover:bg-primary-surface transition-colors cursor-pointer text-left"
           >
             <i className="fa-solid fa-newspaper w-4 text-center"></i>

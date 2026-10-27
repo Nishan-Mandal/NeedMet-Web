@@ -20,11 +20,11 @@ export const publicRoutes = [
     element: <Home />,
   },
   {
-    path: "articles",
+    path: "blogs",
     element: <ArticlesPage />,
   },
   {
-    path: "articles/:articleId/:slug?",
+    path: "blog/:articleId/:slug?",
     element: <ArticleDetails />,
   },
   {

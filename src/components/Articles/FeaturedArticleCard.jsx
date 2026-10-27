@@ -23,7 +23,7 @@ export default function FeaturedArticleCard({ article, badgeText = "Latest Guide
     }
   };
 
-  const articleUrl = `/articles/${article.id}/${article.slug || ""}`;
+  const articleUrl = `/blog/${article.id}/${article.slug || ""}`;
 
   const formattedDate = article.publishedAt
     ? new Date(article.publishedAt).toLocaleDateString("en-US", {

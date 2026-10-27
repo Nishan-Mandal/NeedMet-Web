@@ -23,7 +23,7 @@ export default function ArticleCard({ article }) {
     }
   };
 
-  const articleUrl = `/articles/${article.id}/${article.slug || ""}`;
+  const articleUrl = `/blog/${article.id}/${article.slug || ""}`;
 
   // Format date nicely (e.g., Oct 21, 2026)
   const formattedDate = article.publishedAt
