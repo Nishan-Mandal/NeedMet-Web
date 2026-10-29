@@ -6,3 +6,5 @@ export { default as ArticleSkeleton } from "./ArticleSkeleton.jsx";
 export { default as FeaturedArticleSkeleton } from "./FeaturedArticleSkeleton.jsx";
 export { default as ArticleDetailsSkeleton } from "./ArticleDetailsSkeleton.jsx";
 export { default as ArticlesPageSkeleton } from "./ArticlesPageSkeleton.jsx";
+export { default as FullscreenViewer } from "./FullscreenViewer.jsx";
+export { default as GuideEndSection } from "./GuideEndSection.jsx";
