@@ -821,6 +821,14 @@
   border: 1px solid var(--border, #e5e7eb);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
   display: block;
+  cursor: zoom-in;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.article-prose img:hover,
+.article-prose .blog-image:hover {
+  transform: scale(1.008);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 }
 
 /* Inline Code & Code Blocks */
