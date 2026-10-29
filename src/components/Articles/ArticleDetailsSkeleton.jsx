@@ -17,15 +17,6 @@ export default function ArticleDetailsSkeleton() {
           {/* ── LEFT SIDE: Main Article Content Skeleton ── */}
           {/* ══════════════════════════════════════════════════════════ */}
           <article className="lg:col-span-8 space-y-4 sm:space-y-6 lg:space-y-7 min-w-0">
-            
-            {/* 1. Breadcrumb Navigation Skeleton */}
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-10 h-3.5 rounded skeleton-shimmer-subtle" />
-              <span className="text-border">/</span>
-              <div className="w-14 h-3.5 rounded skeleton-shimmer-subtle" />
-              <span className="text-border">/</span>
-              <div className="w-24 h-3.5 rounded skeleton-shimmer-subtle" />
-            </div>
 
             {/* 2. Badges Row: Category, Reading Time, Published Date */}
             <div className="flex flex-wrap items-center gap-2.5">
@@ -119,60 +110,6 @@ export default function ArticleDetailsSkeleton() {
                 <div key={t} className="w-20 h-7 rounded-full skeleton-shimmer-subtle shadow-2xs" />
               ))}
             </div>
-
-            {/* 9. Verified Sources & Citations Box Skeleton */}
-            <div className="p-6 sm:p-7 rounded-2xl bg-white border border-border/80 shadow-2xs space-y-3.5">
-              <div className="w-56 h-5 rounded-md skeleton-shimmer" />
-              <div className="w-4/5 h-3.5 rounded skeleton-shimmer-subtle" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                {[1, 2].map((c) => (
-                  <div key={c} className="p-3.5 rounded-xl bg-surface-container-low/60 border border-border space-y-2">
-                    <div className="w-32 h-4 rounded skeleton-shimmer" />
-                    <div className="w-full h-3 rounded skeleton-shimmer-subtle" />
-                    <div className="w-3/4 h-3 rounded skeleton-shimmer-subtle" />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ══════════════════════════════════════════════════════════ */}
-            {/* ── MOBILE VIEW ONLY: Feedback, Other Articles Skeleton ── */}
-            {/* ══════════════════════════════════════════════════════════ */}
-            <div className="lg:hidden space-y-6 pt-4">
-              {/* Mobile Feedback Card Skeleton */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-white border border-border/80 shadow-2xs space-y-3.5">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl skeleton-shimmer shrink-0" />
-                  <div className="space-y-1.5 flex-1">
-                    <div className="w-40 h-4 rounded skeleton-shimmer" />
-                    <div className="w-48 h-3 rounded skeleton-shimmer-subtle" />
-                  </div>
-                </div>
-                <div className="flex items-center gap-2.5 pt-1">
-                  <div className="flex-1 h-10 rounded-xl skeleton-shimmer" />
-                  <div className="flex-1 h-10 rounded-xl skeleton-shimmer-subtle" />
-                </div>
-              </div>
-
-              {/* Mobile Other Articles Skeleton */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-white border border-border/80 shadow-2xs space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-36 h-5 rounded skeleton-shimmer" />
-                  <div className="w-14 h-4 rounded skeleton-shimmer-subtle" />
-                </div>
-                <div className="w-full h-9 rounded-xl skeleton-shimmer-subtle" />
-                <div className="space-y-3 pt-1">
-                  {[1, 2].map((i) => (
-                    <div key={i} className="p-3 rounded-2xl bg-surface-container-low/50 space-y-2">
-                      <div className="w-full h-36 rounded-xl skeleton-shimmer" />
-                      <div className="w-4/5 h-4 rounded skeleton-shimmer" />
-                      <div className="w-2/3 h-3 rounded skeleton-shimmer-subtle" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
           </article>
 
           {/* ══════════════════════════════════════════════════════════ */}
@@ -237,6 +174,40 @@ export default function ArticleDetailsSkeleton() {
             </div>
           </aside>
 
+        </div>
+
+        {/* ── 2. Guide End Section Skeleton ── */}
+        <div className="mt-12 sm:mt-16 pt-10 sm:pt-14 border-t border-border/80 space-y-8 sm:space-y-10">
+          {/* Guide Completion Banner Skeleton */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-border/80 shadow-2xs space-y-4">
+            <div className="w-36 h-5 rounded-full skeleton-shimmer-subtle" />
+            <div className="w-2/3 h-7 rounded-lg skeleton-shimmer" />
+            <div className="w-4/5 h-4 rounded skeleton-shimmer-subtle" />
+            <div className="pt-4 border-t border-border/60 flex items-center justify-between">
+              <div className="w-48 h-4 rounded skeleton-shimmer-subtle" />
+              <div className="flex gap-2">
+                <div className="w-24 h-8 rounded-xl skeleton-shimmer-subtle" />
+                <div className="w-24 h-8 rounded-xl skeleton-shimmer-subtle" />
+              </div>
+            </div>
+          </div>
+
+          {/* Recommended Next Guides Grid Skeleton */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="w-52 h-6 rounded skeleton-shimmer" />
+              <div className="w-24 h-4 rounded skeleton-shimmer-subtle" />
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+              {[1, 2, 3].map((k) => (
+                <div key={k} className="p-3.5 rounded-2xl bg-white border border-border/80 shadow-2xs space-y-3">
+                  <div className="w-full h-44 rounded-xl skeleton-shimmer" />
+                  <div className="w-3/4 h-5 rounded skeleton-shimmer" />
+                  <div className="w-full h-3.5 rounded skeleton-shimmer-subtle" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* ── 3. Bottom Business CTA Section Skeleton ── */}

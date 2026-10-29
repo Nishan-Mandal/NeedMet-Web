@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { marked } from "marked";
 import { SEO, SystemState, BusinessCTA } from "../../components";
@@ -7,6 +7,8 @@ import {
   ArticleProgressBar,
   ArticleShareBar,
   ArticleDetailsSkeleton,
+  FullscreenViewer,
+  GuideEndSection,
 } from "../../components/Articles";
 import {
   useArticleDetails,
@@ -184,6 +186,8 @@ function OtherArticlesCard({
   searchQuery,
   onSearchChange,
   onClearSearch,
+  title = "Top Guides",
+  subtitle = "Most loved by readers",
 }) {
   const filtered = useMemo(() => {
     if (!searchQuery?.trim()) return articles;
@@ -201,15 +205,15 @@ function OtherArticlesCard({
     <div className="p-5 sm:p-6 rounded-2xl bg-white border border-border/80 shadow-2xs space-y-4">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-primary-surface text-primary flex items-center justify-center text-xs">
-            <i className="fa-solid fa-book-open"></i>
+          <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-500 border border-amber-200/60 flex items-center justify-center text-xs shadow-2xs">
+            <i className="fa-solid fa-fire text-amber-500"></i>
           </div>
           <div>
             <h3 className="font-heading font-bold text-sm sm:text-base text-text m-0">
-              More Local Guides
+              {title}
             </h3>
             <p className="text-[11px] text-text-secondary m-0">
-              Explore other verified local stories
+              {subtitle}
             </p>
           </div>
         </div>
@@ -260,7 +264,7 @@ function OtherArticlesCard({
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 sm:gap-5">
+        <div className="grid grid-cols-1 gap-4">
           {filtered.map((otherArt) => (
             <ArticleCard key={otherArt.id} article={otherArt} />
           ))}
@@ -287,11 +291,53 @@ export default function ArticleDetails() {
   const { userLoggedIn } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [showFloatingShare, setShowFloatingShare] = useState(false);
+  const [fullscreenViewer, setFullscreenViewer] = useState({
+    isOpen: false,
+    images: [],
+    index: 0,
+    title: "",
+  });
 
-  // Show floating share bar on all devices once scrolled down past the top section
+  const handleOpenFullscreen = (selectedSrc, imageTitle = "") => {
+    if (!selectedSrc) return;
+    const list = [];
+    if (article?.coverImage) list.push(article.coverImage);
+    if (Array.isArray(article?.articleImages)) {
+      article.articleImages.forEach((img) => {
+        const url = typeof img === "string" ? img : img?.url;
+        if (url && !list.includes(url)) list.push(url);
+      });
+    }
+    if (!list.includes(selectedSrc)) {
+      list.push(selectedSrc);
+    }
+    const idx = Math.max(0, list.indexOf(selectedSrc));
+    setFullscreenViewer({
+      isOpen: true,
+      images: list.length ? list : [selectedSrc],
+      index: idx,
+      title: imageTitle || article?.title || "",
+    });
+  };
+
+  const guideEndRef = useRef(null);
+
+  // Show floating share bar on all devices while reading, but hide it once the guide has ended
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 260) {
+      const scrollY = window.scrollY;
+      const endEl = guideEndRef.current || document.getElementById("guide-end-section");
+
+      let isPastEnd = false;
+      if (endEl) {
+        const rect = endEl.getBoundingClientRect();
+        // When guide end section enters the viewport, hide the floating bar
+        if (rect.top <= window.innerHeight - 60) {
+          isPastEnd = true;
+        }
+      }
+
+      if (scrollY > 260 && !isPastEnd) {
         setShowFloatingShare(true);
       } else {
         setShowFloatingShare(false);
@@ -321,6 +367,11 @@ export default function ArticleDetails() {
     currentId: article?.id,
     quantity: 20,
   });
+
+  // Sort top guides by like count (descending) for sidebar explorer
+  const topGuides = useMemo(() => {
+    return [...otherArticles].sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
+  }, [otherArticles]);
 
   const handleToggleLike = () => {
     if (!userLoggedIn) {
@@ -498,31 +549,8 @@ export default function ArticleDetails() {
             {/* ══════════════════════════════════════════════════════════ */}
             <article className="lg:col-span-8 space-y-4 sm:space-y-6 lg:space-y-7 min-w-0">
               
-              {/* 1. Breadcrumb Navigation */}
-              <nav className="flex items-center gap-1.5 sm:gap-2 text-xs text-text-secondary font-medium overflow-x-auto scrollbar-none pb-0.5">
-                <Link to="/" className="hover:text-primary transition-colors no-underline text-inherit shrink-0">
-                  Home
-                </Link>
-                <span>/</span>
-                <Link to="/blogs" className="hover:text-primary transition-colors no-underline text-inherit shrink-0">
-                  Blogs
-                </Link>
-                {article.category && (
-                  <>
-                    <span>/</span>
-                    <span className="text-text font-semibold truncate max-w-[200px]">
-                      {article.category}
-                    </span>
-                  </>
-                )}
-              </nav>
-
-              {/* 2. Badges Row: Category, Reading Time, Published Date */}
+              {/* 2. Badges Row: Reading Time, Published Date */}
               <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold font-heading bg-primary text-white shadow-2xs">
-                  {article.category}
-                </span>
-
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-white border border-border text-text-secondary shadow-2xs">
                   <i className="fa-regular fa-clock text-[10px] text-primary"></i>
                   <span>{article.readingTime || 4} min read</span>
@@ -537,13 +565,6 @@ export default function ArticleDetails() {
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold font-heading text-text leading-[1.3] sm:leading-[1.25] tracking-tight m-0">
                 {article.title}
               </h1>
-
-              {/* 4. Excerpt / Lead Summary */}
-              {article.summary && (
-                <p className="text-xs sm:text-sm md:text-base text-text-secondary leading-relaxed m-0 font-normal">
-                  {article.summary}
-                </p>
-              )}
 
               {/* 5. Author Byline Row & Quick Share / Like Bar */}
               <div className="pt-3.5 pb-1 border-t border-border/70 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-2.5">
@@ -600,9 +621,9 @@ export default function ArticleDetails() {
                 </div>
               </div>
 
-              {/* 6. Cover Hero Image */}
+              {/* 6. Cover Hero Image with Fullscreen Button */}
               {article.coverImage && (
-                <div className="relative w-full h-52 sm:h-72 md:h-[420px] lg:h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm bg-gradient-to-br from-primary-surface to-surface-green/20 border border-border/80">
+                <div className="relative w-full h-52 sm:h-72 md:h-[420px] lg:h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm bg-gradient-to-br from-primary-surface to-surface-green/20 border border-border/80 group/hero">
                   <img
                     src={article.coverImage}
                     alt={article.title}
@@ -613,15 +634,39 @@ export default function ArticleDetails() {
                         e.target.src = `https://wsrv.nl/?url=${encodeURIComponent(article.coverImage)}`;
                       }
                     }}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover cursor-zoom-in transition-transform duration-500 group-hover/hero:scale-[1.015]"
+                    onClick={() => handleOpenFullscreen(article.coverImage, article.title)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
+
+                  {/* Top-Right: Fullscreen Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenFullscreen(article.coverImage, article.title);
+                    }}
+                    className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/55 hover:bg-black/80 backdrop-blur-md text-white border border-white/20 shadow-md flex items-center justify-center text-xs sm:text-sm transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer"
+                    aria-label="View photo fullscreen"
+                    title="View Fullscreen"
+                  >
+                    <i className="fa-solid fa-expand"></i>
+                  </button>
                 </div>
               )}
 
               {/* 7. Actual Article Content Body */}
               <div
                 className="article-prose w-full pt-2"
+                onClick={(e) => {
+                  const target = e.target;
+                  if (target && target.tagName === "IMG") {
+                    const src = target.currentSrc || target.src;
+                    if (src) {
+                      handleOpenFullscreen(src, target.alt || article.title);
+                    }
+                  }
+                }}
                 dangerouslySetInnerHTML={{ __html: formattedBody }}
               />
 
@@ -642,66 +687,16 @@ export default function ArticleDetails() {
                 </div>
               )}
 
-              {/* 9. Verified Sources & Citations Box */}
-              {article.citations?.length > 0 && (
-                <div className="p-6 sm:p-7 rounded-2xl bg-white border border-border/80 shadow-2xs space-y-3.5">
-                  <div className="flex items-center gap-2 text-primary font-heading font-bold text-sm sm:text-base">
-                    <i className="fa-solid fa-certificate text-accent-emerald text-base"></i>
-                    <span>Verified Local Sources & Citations</span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-text-secondary m-0">
-                    This guide references information, verified reviews, and directory listings from the following local sources:
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    {article.citations.map((cite, cIdx) => (
-                      <a
-                        key={cIdx}
-                        href={cite.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/cite block p-3.5 rounded-xl bg-surface-container-low/60 hover:bg-primary-surface border border-border hover:border-primary/30 transition-all no-underline"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-xs font-bold text-text group-hover/cite:text-primary transition-colors line-clamp-1">
-                            {cite.source_name || "Verified Local Source"}
-                          </span>
-                          <i className="fa-solid fa-arrow-up-right-from-square text-[10px] text-text-secondary group-hover/cite:text-primary shrink-0"></i>
-                        </div>
-                        {cite.snippet && (
-                          <p className="text-[11px] text-text-secondary leading-snug line-clamp-2 mt-1 m-0">
-                            {cite.snippet}
-                          </p>
-                        )}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-
-              {/* ══════════════════════════════════════════════════════════ */}
-              {/* ── MOBILE VIEW ONLY: Feedback, Other Articles ── */}
-              {/* (Displayed in natural reading progression at bottom of content) */}
-              {/* ══════════════════════════════════════════════════════════ */}
-              <div className="lg:hidden space-y-6 pt-4">
-                {/* Mobile Feedback Card */}
-                <FeedbackCard
-                  isLiked={isLiked}
-                  likesCount={article.likesCount || 0}
-                  onToggleLike={handleToggleLike}
-                  userLoggedIn={userLoggedIn}
-                  isPending={toggleLikeMutation.isPending}
-                />
-
-                {/* Mobile Other Articles with Search */}
-                <OtherArticlesCard
-                  articles={otherArticles}
-                  searchQuery={searchQuery}
-                  onSearchChange={setSearchQuery}
-                  onClearSearch={() => setSearchQuery("")}
-                />
+              {/* End of Guide Marker */}
+              <div className="pt-6 border-t border-border/80 flex items-center justify-between text-xs text-text-secondary">
+                <span className="inline-flex items-center gap-2 font-medium">
+                  <i className="fa-solid fa-flag-checkered text-primary"></i>
+                  <span>End of Guide</span>
+                </span>
+                <span className="text-[11px] text-text-secondary/70">
+                  {article.readingTime || 4} min read completed
+                </span>
               </div>
-
             </article>
 
             {/* ══════════════════════════════════════════════════════════ */}
@@ -721,14 +716,29 @@ export default function ArticleDetails() {
 
               {/* 2. Other Articles with Live Search */}
               <OtherArticlesCard
-                articles={otherArticles}
+                articles={topGuides}
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
                 onClearSearch={() => setSearchQuery("")}
+                title="Top Guides"
+                subtitle="Popular neighborhood stories"
               />
 
             </aside>
 
+          </div>
+
+          {/* ── 2. Guide End Section (Before Business CTA) ── */}
+          <div ref={guideEndRef} id="guide-end-section">
+            <GuideEndSection
+            article={article}
+            isLiked={isLiked}
+            likesCount={article.likesCount || 0}
+            onToggleLike={handleToggleLike}
+            userLoggedIn={userLoggedIn}
+            isLikePending={toggleLikeMutation.isPending}
+            allGuides={otherArticles}
+          />
           </div>
 
           {/* ── 3. Bottom Business CTA Section (Full Width, Existing Component) ── */}
@@ -738,6 +748,18 @@ export default function ArticleDetails() {
 
         </div>
       </div>
+
+      {/* Fullscreen Photo Lightbox Modal */}
+      {fullscreenViewer.isOpen && (
+        <FullscreenViewer
+          images={fullscreenViewer.images}
+          startIndex={fullscreenViewer.index}
+          title={fullscreenViewer.title}
+          onClose={() =>
+            setFullscreenViewer({ isOpen: false, images: [], index: 0, title: "" })
+          }
+        />
+      )}
     </>
   );
 }
