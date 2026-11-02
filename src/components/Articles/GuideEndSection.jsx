@@ -142,7 +142,7 @@ export default function GuideEndSection({
 
             <div className="grid grid-cols-3 sm:flex sm:items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
               <Link
-                to="/categories"
+                to="/all_categories"
                 className="inline-flex items-center justify-center gap-1.5 py-2 px-3 sm:px-3.5 rounded-xl bg-white hover:bg-primary-surface border border-border hover:border-primary/40 text-[11px] sm:text-xs font-semibold text-text hover:text-primary transition-all text-center no-underline shadow-2xs active:scale-95"
               >
                 <i className="fa-solid fa-store text-[11px] sm:text-xs text-primary shrink-0"></i>

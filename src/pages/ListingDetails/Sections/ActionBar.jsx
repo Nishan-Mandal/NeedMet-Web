@@ -53,13 +53,11 @@ export default function ActionBar({ listing = {} }) {
 
   const handleShare = async () => {
     const url = window.location.href;
-    const shareTitle = listing?.name ? `${listing.name} on NeedMet` : 'NeedMet Listing';
-    const shareText = `Check out ${listing?.name || 'this business'} on NeedMet:`;
+    const shareTitle = listing?.name || 'Business';
     if (navigator.share) {
       try {
         await navigator.share({
           title: shareTitle,
-          text: shareText,
           url,
         });
       } catch (_) {
