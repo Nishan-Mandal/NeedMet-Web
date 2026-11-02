@@ -20,12 +20,18 @@
   },
   "hosting": {
     "public": "dist",
+    "cleanUrls": true,
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
     "rewrites": [
+      {
+        "source": "/sitemap*.xml",
+        "function": "sitemap"
+      },
       {
         "source": "/listing/**",
         "function": "shareListing"

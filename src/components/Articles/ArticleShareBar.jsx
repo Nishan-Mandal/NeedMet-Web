@@ -12,7 +12,7 @@ export default function ArticleShareBar({
   const [copied, setCopied] = useState(false);
 
   const cleanUrl = url || (typeof window !== "undefined" ? window.location.href : "");
-  const shareText = `${title} - Read more on NeedMet: ${cleanUrl}`;
+  const shareText = cleanUrl;
 
   const handleCopyLink = async () => {
     try {
@@ -30,7 +30,6 @@ export default function ArticleShareBar({
       try {
         await navigator.share({
           title,
-          text: `Check out this article on NeedMet: ${title}`,
           url: cleanUrl,
         });
       } catch (err) {
