@@ -63,7 +63,6 @@ export default function ArticleCard({ article }) {
       try {
         await navigator.share({
           title: article.title,
-          text: `Read "${article.title}" on NeedMet`,
           url: fullUrl,
         });
       } catch (err) {

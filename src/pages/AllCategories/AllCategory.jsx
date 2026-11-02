@@ -104,6 +104,7 @@ export default function AllCategory() {
       <SEO
         title="Browse All Business Categories | NeedMet"
         description="Explore all business and service categories on NeedMet. Find salons, repair services, retail stores, healthcare clinics, restaurants, and more."
+        canonicalUrl="https://needmet.in/all_categories"
       />
 
       {/* ── 1. Hero Banner ── */}

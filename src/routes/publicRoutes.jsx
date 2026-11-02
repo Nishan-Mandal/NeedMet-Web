@@ -1,11 +1,11 @@
 import { lazy } from "react";
+import { Navigate } from "react-router-dom";
 import {
   Home,
   ListingDetails,
   ListingsPage,
   AllCategory,
   SearchPage,
-  AboutPage,
   ArticlesPage,
   ArticleDetails,
 } from "../pages";
@@ -49,19 +49,7 @@ export const publicRoutes = [
   },
   {
     path: "categories",
-    element: <AllCategory />,
-  },
-  {
-    path: "about",
-    element: <AboutPage />,
-  },
-  {
-    path: "about_us",
-    element: <AboutPage />,
-  },
-  {
-    path: "docs/about_us",
-    element: <AboutPage />,
+    element: <Navigate to="/all_categories" replace />,
   },
   {
     path: "docs/:legalDocument",
