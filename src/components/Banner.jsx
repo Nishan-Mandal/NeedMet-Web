@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function Banner({ imageUrl, webUrl, route, alt = "Banner" }) {
   const navigate = useNavigate();
-
   const desktopImage = webUrl;
   const phoneImage = imageUrl;
 
