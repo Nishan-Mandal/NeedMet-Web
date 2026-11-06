@@ -137,7 +137,7 @@ export default function BusinessInfoCard({ listing = {}, className = '' }) {
   const isLongDescription = Boolean(listing.description && listing.description.length > 200);
 
   return (
-    <div className={`bg-white border border-border/80 rounded-2xl shadow-xs sm:shadow-sm overflow-hidden font-primary transition-all ${className}`}>
+    <div className={`bg-white border border-slate-200/80 rounded-2xl shadow-md sm:shadow-lg overflow-hidden font-primary transition-all ${className}`}>
       {/* Card body */}
       <div className="p-4 sm:p-5 lg:p-6 flex flex-col gap-3.5 sm:gap-4">
 
