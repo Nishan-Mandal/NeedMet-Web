@@ -18,5 +18,12 @@ export default defineConfig({
     hmr: {
       host: '127.0.0.1',
     },
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_PROXY_TARGET || 'https://us-central1-needmet-partial.cloudfunctions.net',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 })
