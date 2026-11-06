@@ -1,11 +1,13 @@
 import { lazy } from "react";
+import { Navigate } from "react-router-dom";
 import {
   Home,
   ListingDetails,
   ListingsPage,
   AllCategory,
   SearchPage,
-  AboutPage,
+  ArticlesPage,
+  ArticleDetails,
 } from "../pages";
 import { SystemState } from "../components";
 import NoDataImg from "../assets/no_data.png";
@@ -16,6 +18,14 @@ export const publicRoutes = [
   {
     path: "",
     element: <Home />,
+  },
+  {
+    path: "blogs",
+    element: <ArticlesPage />,
+  },
+  {
+    path: "blog/:articleId/:slug?",
+    element: <ArticleDetails />,
   },
   {
     path: "listing/:listingId/:slug?",
@@ -39,19 +49,7 @@ export const publicRoutes = [
   },
   {
     path: "categories",
-    element: <AllCategory />,
-  },
-  {
-    path: "about",
-    element: <AboutPage />,
-  },
-  {
-    path: "about_us",
-    element: <AboutPage />,
-  },
-  {
-    path: "docs/about_us",
-    element: <AboutPage />,
+    element: <Navigate to="/all_categories" replace />,
   },
   {
     path: "docs/:legalDocument",

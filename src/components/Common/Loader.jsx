@@ -5,10 +5,12 @@ const spinnerSizes = {
   lg: "w-5 h-5 border-2",
 };
 
-export function Skeleton({ className = "", ...props }) {
+export function Skeleton({ className = "", shimmer = true, ...props }) {
   return (
     <div
-      className={`animate-pulse bg-slate-200/90 rounded-xl ${className}`}
+      className={`${
+        shimmer ? "skeleton-shimmer" : "bg-surface-container-low animate-pulse"
+      } rounded-xl ${className}`}
       role="status"
       aria-label="Loading content..."
       {...props}

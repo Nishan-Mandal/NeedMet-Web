@@ -2,7 +2,7 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "default",
+      "codebase": "share-preview",
       "ignore": [
         "node_modules",
         ".git",
@@ -20,6 +20,8 @@
   },
   "hosting": {
     "public": "dist",
+    "cleanUrls": true,
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -27,8 +29,16 @@
     ],
     "rewrites": [
       {
+        "source": "/sitemap*.xml",
+        "function": "sitemap"
+      },
+      {
         "source": "/listing/**",
         "function": "shareListing"
+      },
+      {
+        "source": "/blog/**",
+        "function": "shareArticle"
       },
       {
         "source": "**",

@@ -1,7 +1,7 @@
 import React from "react";
 
 const Box = ({ className = "" }) => (
-  <div className={`bg-gray-200 animate-pulse rounded-lg ${className}`}></div>
+  <div className={`skeleton-shimmer rounded-lg ${className}`}></div>
 );
 
 const HomeLoader = () => {

@@ -111,6 +111,7 @@ export default function AboutPage() {
       <SEO
         title="About Us — Hyperlocal Discovery & Community Platform | NeedMet"
         description="Learn about NeedMet, India's community-driven local discovery network. Discover nearby stores, services, rental rooms, events, and neighborhood updates in one place."
+        canonicalUrl="https://needmet.in/docs/about_us"
       />
 
       <div className="min-h-screen bg-[#f8faf9] font-primary text-text">

@@ -53,12 +53,11 @@ export default function ActionBar({ listing = {} }) {
 
   const handleShare = async () => {
     const url = window.location.href;
-    const shareText = `Check out ${listing?.name || 'this business'} on NeedMet:\n${url}`;
+    const shareTitle = listing?.name || 'Business';
     if (navigator.share) {
       try {
         await navigator.share({
-          title: listing?.name || 'NeedMet Listing',
-          text: shareText,
+          title: shareTitle,
           url,
         });
       } catch (_) {
@@ -75,7 +74,7 @@ export default function ActionBar({ listing = {} }) {
 
   /* ── 1. Contributor Profile ── */
   const renderContributorProfile = () => (
-    <div className="flex min-w-0 items-center gap-2 sm:gap-2.5 flex-1 sm:flex-initial">
+    <div className="flex min-w-0 items-center gap-2 sm:gap-2.5 shrink-0">
       <div
         className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full text-xs sm:text-sm font-bold text-white shadow-xs select-none ring-2 ring-primary/20"
         style={{
@@ -85,10 +84,10 @@ export default function ActionBar({ listing = {} }) {
         {getOwnerLogo(listing.ownerName || "U")}
       </div>
 
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0">
         <div className="flex items-center gap-1.5 min-w-0">
           <p
-            className="m-0 truncate max-w-full sm:max-w-[200px] md:max-w-[260px] lg:max-w-none text-xs sm:text-sm font-bold text-text font-heading"
+            className="m-0 truncate max-w-[95px] min-[400px]:max-w-[130px] sm:max-w-none text-xs sm:text-sm font-bold text-text font-heading"
             title={listing.ownerName || "Community Contributor"}
           >
             {listing.ownerName || "Community Contributor"}
@@ -113,7 +112,7 @@ export default function ActionBar({ listing = {} }) {
       {/* Likes */}
       <button
         type="button"
-        className="flex h-8 sm:h-8.5 items-center gap-1.5 rounded-full border border-border/80 bg-white sm:bg-gray-50/90 hover:bg-gray-100 hover:border-gray-300 px-2 sm:px-2.5 text-xs font-semibold text-text transition-all duration-150 active:scale-95 shrink-0 cursor-pointer box-shadow"
+        className="flex h-8 sm:h-8.5 items-center gap-1.5 rounded-full border border-border/80 bg-white sm:bg-gray-50/90 hover:bg-gray-100 hover:border-gray-300 px-2 sm:px-2.5 text-xs font-semibold text-text transition-all duration-150 active:scale-95 shrink-0 cursor-pointer shadow-2xs"
         aria-label={`${listing.likes ?? 0} likes`}
         title={`${listing.likes ?? 0} likes`}
       >
@@ -123,7 +122,7 @@ export default function ActionBar({ listing = {} }) {
 
       {/* Views */}
       <div
-        className="flex h-8 sm:h-8.5 items-center gap-1.5 rounded-full border border-border/80 bg-white sm:bg-gray-50/90 px-2 sm:px-2.5 text-xs font-semibold text-text select-none shrink-0 box-shadow"
+        className="flex h-8 sm:h-8.5 items-center gap-1.5 rounded-full border border-border/80 bg-white sm:bg-gray-50/90 px-2 sm:px-2.5 text-xs font-semibold text-text select-none shrink-0 shadow-2xs"
         title={`${listing.views ?? 0} views`}
       >
         <i className="fa-regular fa-eye text-primary text-[11px] sm:text-xs" />
@@ -142,7 +141,7 @@ export default function ActionBar({ listing = {} }) {
           onClick={handleShare}
           aria-label="Share listing"
           title="Share"
-          className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full border border-border/80 bg-white sm:bg-gray-50 hover:bg-primary-surface hover:text-primary hover:border-primary/40 text-text flex items-center justify-center transition-all duration-150 active:scale-95 box-shadow cursor-pointer shrink-0"
+          className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full border border-border/80 bg-white sm:bg-gray-50 hover:bg-primary-surface hover:text-primary hover:border-primary/40 text-text flex items-center justify-center transition-all duration-150 active:scale-95 shadow-2xs cursor-pointer shrink-0"
         >
           <i className="fa-solid fa-share-nodes text-[11px] sm:text-xs text-primary" />
         </button>
@@ -160,7 +159,7 @@ export default function ActionBar({ listing = {} }) {
         onClick={handleHelp}
         aria-label="Help on WhatsApp"
         title="Need help? Chat on WhatsApp"
-        className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full border border-border/80 bg-white sm:bg-gray-50 hover:bg-primary-surface hover:text-primary hover:border-primary/40 text-text flex items-center justify-center transition-all duration-150 active:scale-95 box-shadow cursor-pointer shrink-0"
+        className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full border border-border/80 bg-white sm:bg-gray-50 hover:bg-primary-surface hover:text-primary hover:border-primary/40 text-text flex items-center justify-center transition-all duration-150 active:scale-95 shadow-2xs cursor-pointer shrink-0"
       >
         <i className="fa-regular fa-circle-question text-[11px] sm:text-xs text-primary" />
       </button>
@@ -171,7 +170,7 @@ export default function ActionBar({ listing = {} }) {
         onClick={() => setShowQrPoster(true)}
         aria-label="Generate QR poster"
         title="QR Code Poster"
-        className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full border border-border/80 bg-white sm:bg-gray-50 hover:bg-primary-surface hover:text-primary hover:border-primary/40 text-text flex items-center justify-center transition-all duration-150 active:scale-95 box-shadow cursor-pointer shrink-0"
+        className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full border border-border/80 bg-white sm:bg-gray-50 hover:bg-primary-surface hover:text-primary hover:border-primary/40 text-text flex items-center justify-center transition-all duration-150 active:scale-95 shadow-2xs cursor-pointer shrink-0"
       >
         <i className="fa-solid fa-qrcode text-[11px] sm:text-xs text-primary" />
       </button>
@@ -191,7 +190,7 @@ export default function ActionBar({ listing = {} }) {
         href={`tel:${phoneNumber}`}
         aria-label={`Call: ${phoneNumber}`}
         title={`Call: ${phoneNumber}`}
-        className={`flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-all duration-150 active:scale-95 box-shadow text-xs sm:text-sm font-bold no-underline ${
+        className={`flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-all duration-150 active:scale-95 shadow-xs text-xs sm:text-sm font-bold no-underline ${
           isMobile ? "w-full" : "shrink-0"
         }`}
       >
@@ -216,7 +215,7 @@ export default function ActionBar({ listing = {} }) {
         rel="noopener noreferrer"
         aria-label="Get directions"
         title="Directions on Google Maps"
-        className={`flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-primary/25 bg-primary-surface text-primary hover:bg-primary hover:text-white transition-all duration-150 active:scale-95 box-shadow text-xs sm:text-sm font-bold no-underline ${
+        className={`flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-primary/25 bg-primary-surface text-primary hover:bg-primary hover:text-white transition-all duration-150 active:scale-95 shadow-2xs text-xs sm:text-sm font-bold no-underline ${
           isMobile ? "w-full" : "shrink-0"
         }`}
       >
@@ -228,27 +227,22 @@ export default function ActionBar({ listing = {} }) {
 
   return (
     <>
-      <div className="w-full min-w-0 rounded-2xl bg-white border border-slate-200/80 shadow-md sm:shadow-lg p-3 sm:p-3.5 sm:px-5 lg:px-6 font-primary transition-all overflow-hidden">
+      <div className="w-full min-w-0 rounded-2xl bg-white border border-border shadow-sm p-3.5 sm:px-5 lg:px-6 font-primary transition-all">
         
-        {/* ── Mobile Layout (<sm): 3 Clean Rows ── */}
+        {/* ── Mobile Layout (<sm): 2-Row Stack with Transparent Background ── */}
         <div className="flex flex-col gap-2.5 sm:hidden w-full">
-          {/* Row 1: Contributor Profile (Full width - generous room for big names) */}
+          {/* Row 1: Contributor Profile (Left) | Likes & Views, Share, Help, QR (Right) */}
           <div className="flex items-center justify-between gap-2 min-w-0 w-full">
             {renderContributorProfile()}
-          </div>
 
-          {/* Row 2: Metrics (Likes, Views) & Secondary Utility Icons (Share, Help, QR) */}
-          <div className="flex items-center justify-between gap-2 min-w-0 w-full pt-0.5">
-            <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shrink-0 py-0.5 max-w-[62%] justify-end">
               {renderLikesAndViews()}
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
               {renderSecondaryIcons()}
             </div>
           </div>
 
-          {/* Row 3: Phone Number and Direction (2-Column Grid CTA) */}
-          <div className={`grid ${hasPhone && hasGeo ? "grid-cols-2" : "grid-cols-1"} gap-2 min-w-0 w-full pt-0.5`}>
+          {/* Row 2: Phone Number and Direction (2-Column Grid CTA) */}
+          <div className={`grid ${hasPhone && hasGeo ? "grid-cols-2" : "grid-cols-1"} gap-2 min-w-0 w-full`}>
             {renderPhoneButton(true)}
             {renderDirectionsButton(true)}
           </div>

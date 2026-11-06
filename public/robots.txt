@@ -2,6 +2,9 @@ User-agent: *
 Allow: /
 Allow: /listings/
 Allow: /listing/
+Allow: /blogs
+Allow: /blog/
+Allow: /all_categories
 Allow: /docs/
 Disallow: /admin/
 Disallow: /contribute/listing/preview

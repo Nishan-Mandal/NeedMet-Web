@@ -16,6 +16,11 @@
   --surface:                 #ffffff;
   --surface-green:           #d1fae5;
   --surface-overlay:         rgba(255, 255, 255, 0.08);
+  --surface-container-lowest:  #ffffff;
+  --surface-container-low:     #ecf6ec;
+  --surface-container:         #e6f1e7;
+  --surface-container-high:    #e1ebe1;
+  --surface-container-highest: #dbe5db;
    
   --text:                    #111827;
   --text-secondary:          #6b7280;

@@ -11,17 +11,18 @@ export default function SystemState({
   actionType,
   actionLabel = "+ Contribute Now",
   actionTo = "/",
+  onActionClick,
 }) {
 
   const navigate = useNavigate();
   
   const refreshPage = () => {
     navigate(0);
-  }
+  };
 
   const handleNavigate = () => {
     navigate(actionTo);
-  }
+  };
 
   const handleRedirect = () => {
     if (actionTo.startsWith("http")) {
@@ -31,16 +32,16 @@ export default function SystemState({
     }
   };
 
-  let onclickHandle = refreshPage;
+  let onclickHandle = handleNavigate;
 
-  if(actionType === "refresh") {
+  if (actionType === "refresh") {
     onclickHandle = refreshPage;
-  } else if(actionType === "navigate") {
+  } else if (actionType === "navigate") {
     onclickHandle = handleNavigate;
-  } else if(actionType === "redirect") {
+  } else if (actionType === "redirect") {
     onclickHandle = handleRedirect;
-  } else {
-    navigate('/');
+  } else if (actionType === "custom" && typeof onActionClick === "function") {
+    onclickHandle = onActionClick;
   }
 
   return (
