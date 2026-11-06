@@ -195,7 +195,7 @@ export default function HeroGallery({ images = [], isPremium = false }) {
     <>
       {/* Main photo container */}
       <div
-        className="relative w-full overflow-hidden rounded-2xl aspect-[4/3] min-[520px]:aspect-[16/10] max-h-[360px] min-[520px]:max-h-[420px] lg:max-h-[450px] cursor-pointer bg-surface border border-border/80 shadow-xs sm:shadow-sm bg-cover bg-center group select-none transition-all"
+        className="relative w-full overflow-hidden rounded-2xl aspect-[4/3] min-[520px]:aspect-[16/10] max-h-[360px] min-[520px]:max-h-[420px] lg:max-h-[450px] cursor-pointer bg-surface border border-slate-200/80 shadow-md sm:shadow-lg bg-cover bg-center group select-none transition-all"
         style={{ backgroundImage: `url(${imageList[currentIndex]})` }}
         onClick={() => setIsFullscreen(true)}
       >
