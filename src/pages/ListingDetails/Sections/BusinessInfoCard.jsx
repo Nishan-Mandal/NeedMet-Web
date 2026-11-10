@@ -90,7 +90,11 @@ export default function BusinessInfoCard({ listing = {}, className = '' }) {
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const today = dayNames[now.getDay()];
     const hours = listing.businessHours[today] || listing.businessHours[today.toLowerCase()];
-    if (!hours || hours.isClosed) return { isOpen: false, label: 'Closed Today' };
+    if (!hours) return null;
+    if (hours.is24Hours || hours.is24hours || hours.isOpen24Hours) {
+      return { isOpen: true, label: 'Open 24 Hours' };
+    }
+    if (hours.isClosed) return { isOpen: false, label: 'Closed Today' };
     const slots = hours.slots || [];
     if (slots.length === 0) return null;
 

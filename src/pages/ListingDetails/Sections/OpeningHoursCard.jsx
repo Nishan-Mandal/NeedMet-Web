@@ -68,18 +68,32 @@ export default function OpeningHoursCard({ businessHours }) {
     const details = getDayDetails(businessHours, day);
     const isToday = day === today;
 
-    if (!details || details.isClosed) {
-      return { day, slots: [], isClosed: true, isToday };
+    if (!details) {
+      return { day, slots: [], isOpen24Hours: false, isClosed: true, isToday };
     }
 
+    const isOpen24Hours = Boolean(details.is24Hours || details.is24hours || details.isOpen24Hours);
+    const isClosed = Boolean(details.isClosed);
+
+    // 1. If is24Hours is true -> Open 24 Hours
+    if (isOpen24Hours) {
+      return { day, slots: [], isOpen24Hours: true, isClosed: false, isToday };
+    }
+
+    // 2. If isClosed is true -> Closed
+    if (isClosed) {
+      return { day, slots: [], isOpen24Hours: false, isClosed: true, isToday };
+    }
+
+    // 3. Normal opening hours slots
     const rawSlots = details.slots || [];
     const formattedSlots = rawSlots.map(formatSlot).filter(Boolean);
 
     if (formattedSlots.length === 0) {
-      return { day, slots: [], isClosed: true, isToday };
+      return { day, slots: [], isOpen24Hours: false, isClosed: true, isToday };
     }
 
-    return { day, slots: formattedSlots, isClosed: false, isToday };
+    return { day, slots: formattedSlots, isOpen24Hours: false, isClosed: false, isToday };
   });
 
   // Close modal on Escape
@@ -100,7 +114,9 @@ export default function OpeningHoursCard({ businessHours }) {
   // Today's hours status text
   const todayRow = rows.find((r) => r.isToday);
   const todayStatus = todayRow
-    ? todayRow.isClosed
+    ? todayRow.isOpen24Hours
+      ? "Open 24 Hours Today"
+      : todayRow.isClosed
       ? "Closed Today"
       : `Open Today: ${todayRow.slots.join(", ")}`
     : "";
@@ -127,7 +143,11 @@ export default function OpeningHoursCard({ businessHours }) {
                 : "bg-emerald-50 text-emerald-700 border border-emerald-200"
             }`}
           >
-            {todayRow?.isClosed ? "Closed Today" : "Open Today"}
+            {todayRow?.isOpen24Hours
+              ? "Open 24 Hours"
+              : todayRow?.isClosed
+              ? "Closed Today"
+              : "Open Today"}
           </span>
         </div>
 
@@ -147,7 +167,7 @@ export default function OpeningHoursCard({ businessHours }) {
               </thead>
 
               <tbody>
-                {rows.map(({ day, slots, isClosed, isToday }) => (
+                {rows.map(({ day, slots, isOpen24Hours, isClosed, isToday }) => (
                   <tr
                     key={day}
                     className={`transition-colors ${
@@ -170,7 +190,11 @@ export default function OpeningHoursCard({ businessHours }) {
                     </td>
 
                     <td className="h-9 sm:h-10 text-xs sm:text-[0.84rem] bg-surface border border-border px-2.5 py-1.5 sm:px-3 text-center break-words">
-                      {isClosed ? (
+                      {isOpen24Hours ? (
+                        <span className="inline-block font-semibold text-emerald-600 text-xs sm:text-[0.84rem]">
+                          Open 24 Hours
+                        </span>
+                      ) : isClosed ? (
                         <span className="inline-block text-[11px] font-semibold text-accent-red/90 bg-red-50 px-2 py-0.5 rounded border border-red-100 leading-none">
                           Closed
                         </span>
@@ -256,7 +280,7 @@ export default function OpeningHoursCard({ businessHours }) {
                   </thead>
 
                   <tbody>
-                    {rows.map(({ day, slots, isClosed, isToday }) => (
+                    {rows.map(({ day, slots, isOpen24Hours, isClosed, isToday }) => (
                       <tr
                         key={day}
                         className={`transition-colors ${
@@ -279,7 +303,11 @@ export default function OpeningHoursCard({ businessHours }) {
                         </td>
 
                         <td className="text-xs sm:text-sm bg-surface border border-border p-3 text-center break-words">
-                          {isClosed ? (
+                          {isOpen24Hours ? (
+                            <span className="font-semibold text-emerald-600">
+                              Open 24 Hours
+                            </span>
+                          ) : isClosed ? (
                             <span className="inline-block text-xs font-semibold text-accent-red/90 bg-red-50 px-2.5 py-0.5 rounded border border-red-100">
                               Closed
                             </span>
