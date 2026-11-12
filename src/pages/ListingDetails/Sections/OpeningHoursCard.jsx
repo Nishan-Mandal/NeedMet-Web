@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { TimeSlot } from "../../../data/model/listingModel.js";
-import { X, ExternalLink, Clock } from "lucide-react";
 
 const WEEK_ORDER = [
   "Monday",
@@ -222,7 +221,7 @@ export default function OpeningHoursCard({ businessHours }) {
               className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-dark transition cursor-pointer"
             >
               <span>View Full Details Popup</span>
-              <ExternalLink size={13} />
+              <i className="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
             </button>
           </div>
         </div>
@@ -242,7 +241,7 @@ export default function OpeningHoursCard({ businessHours }) {
             <div className="p-4 sm:p-5 border-b border-border flex items-center justify-between bg-primary-surface/40">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-primary-surface text-primary flex items-center justify-center text-sm">
-                  <Clock size={16} />
+                  <i className="fa-regular fa-clock text-base"></i>
                 </div>
                 <div>
                   <h3 className="font-heading font-bold text-lg sm:text-xl text-text m-0">
@@ -260,7 +259,7 @@ export default function OpeningHoursCard({ businessHours }) {
                 className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition cursor-pointer"
                 aria-label="Close hours popup"
               >
-                <X size={18} />
+                <i className="fa-solid fa-xmark text-lg leading-none"></i>
               </button>
             </div>
 
