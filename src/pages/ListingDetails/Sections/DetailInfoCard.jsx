@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { X, ExternalLink, Info } from "lucide-react";
 
 /**
  * DetailInfoCard.jsx
@@ -48,7 +47,7 @@ export default function DetailInfoCard({
         </div>
 
         <div className="w-full rounded-xl bg-gray-50/50 border border-border flex flex-col items-center justify-center p-6 text-center text-text-secondary">
-          <Info size={28} className="text-slate-300 mb-2" />
+          <i className="fa-solid fa-circle-info text-3xl text-slate-300 mb-2"></i>
           <p className="text-sm font-medium">No additional details provided.</p>
         </div>
       </div>
@@ -124,7 +123,7 @@ export default function DetailInfoCard({
                 className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-dark transition cursor-pointer"
               >
                 <span>See More ({cleanRows.length - maxVisibleRows} more details)</span>
-                <ExternalLink size={13} />
+                <i className="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
               </button>
             </div>
           )}
@@ -160,7 +159,7 @@ export default function DetailInfoCard({
                 className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition cursor-pointer"
                 aria-label="Close details popup"
               >
-                <X size={18} />
+                <i className="fa-solid fa-xmark text-lg leading-none"></i>
               </button>
             </div>
 
