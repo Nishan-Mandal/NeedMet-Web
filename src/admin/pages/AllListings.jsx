@@ -1,5 +1,5 @@
 import { SystemState } from "../../components";
-import featureImg from "../../assets/maintenance.jpg"
+import featureImg from "../../assets/maintenance.jpg";
 
 export default function AllListings() {
   return (
@@ -12,6 +12,5 @@ export default function AllListings() {
       actionLabel="Go Back"
       actionTo={-1}
     />
-  )
+  );
 }
-
