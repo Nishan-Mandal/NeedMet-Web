@@ -36,4 +36,5 @@ try {
 }
 
 export const firestore = firestoreInstance;
+export const db = firestoreInstance;
 export const storage = getStorage(app);
