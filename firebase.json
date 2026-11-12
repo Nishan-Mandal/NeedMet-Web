@@ -33,6 +33,10 @@
         "function": "sitemap"
       },
       {
+        "source": "/api/**",
+        "function": "api"
+      },
+      {
         "source": "/listing/**",
         "function": "shareListing"
       },

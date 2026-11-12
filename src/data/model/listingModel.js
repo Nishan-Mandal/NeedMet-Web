@@ -110,12 +110,14 @@ class TimeSlot {
    DaySchedule Class
 ========================= */
 class DaySchedule {
-  constructor({ isClosed = false, slots = [] } = {}) {
+  constructor({ isClosed = false, is24Hours = false, slots = [] } = {}) {
     this.isClosed = isClosed;
+    this.is24Hours = is24Hours;
     this.slots = slots;
   }
 
   toReadable() {
+    if (this.is24Hours) return "Open 24 Hours";
     if (this.isClosed) return "Closed";
 
     return this.slots.map(slot =>
@@ -127,12 +129,14 @@ class DaySchedule {
     if (!json) {
       return new DaySchedule({
         isClosed: true,
+        is24Hours: false,
         slots: [],
       });
     }
 
     return new DaySchedule({
       isClosed: json.isClosed || false,
+      is24Hours: json.is24Hours || json.is24hours || false,
       slots: (json.slots || []).map(slot =>
         TimeSlot.fromJson(slot)
       ),
@@ -142,6 +146,7 @@ class DaySchedule {
   toJson() {
     return {
       isClosed: this.isClosed,
+      is24Hours: this.is24Hours,
       slots: this.slots.map(slot =>
         slot.toJson()
       ),

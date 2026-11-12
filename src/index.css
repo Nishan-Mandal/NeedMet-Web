@@ -1,7 +1,7 @@
 /* ==========================================================================
    Google Fonts
    ========================================================================== */
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap");
 
 /* ==========================================================================
    Tailwind v4
@@ -88,6 +88,17 @@
   --font-display: "Fraunces", serif;
   --font-serif:   Georgia, serif;
   --font-jakarta: "Plus Jakarta Sans", sans-serif;
+  --font-hand:    "Caveat", cursive;
+
+  /* Google Stitch Brand Palette */
+  --color-brand-900: #02542D;
+  --color-brand-800: #046A38;
+  --color-brand-700: #0A874B;
+  --color-brand-500: #22C55E;
+  --color-brand-300: #86EFAC;
+  --color-brand-200: #B8E0AC;
+  --color-brand-100: #DCFCE7;
+  --color-brand-50:  #F4FAF6;
 }
 
 /* ==========================================================================
@@ -194,6 +205,7 @@
   .font-display  { font-family: var(--font-display); }
   .font-primary  { font-family: var(--font-primary); }
   .font-serif    { font-family: var(--font-serif); }
+  .font-hand     { font-family: var(--font-hand, "Caveat", cursive); }
 
   .font-headline-sm { font-family: var(--font-heading); }
   .font-body-sm,
@@ -303,6 +315,13 @@
   scrollbar-width: none !important;  /* Firefox */
 }
 
+@utility box-shadow {
+  box-shadow: 0 4px 20px rgba(15, 92, 62, 0.10) !important;
+}
+
+.box-shadow {
+  box-shadow: 0 4px 20px rgba(15, 92, 62, 0.10) !important;
+}
 /* ==========================================================================
    Header — Nav Link animated underline (pseudo-element; can't be Tailwind)
    ========================================================================== */
@@ -891,5 +910,41 @@
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(17, 24, 39, 0.18) transparent;
+}
+
+/* ==========================================================================
+   Stitch UI - Dot Pattern Utility
+   ========================================================================== */
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, rgba(2, 84, 45, 0.09) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+.custom-gradient-mesh {
+  background: radial-gradient(ellipse 60% 50% at 90% 15%, rgba(184, 224, 172, 0.25) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 40% at 20% 70%, rgba(220, 252, 231, 0.25) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 40% at 50% 100%, rgba(184, 224, 172, 0.15) 0%, transparent 60%);
+}
+
+/* ==========================================================================
+   Brand & Partner Marquee Animation
+   ========================================================================== */
+@keyframes brand-marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-brand-marquee {
+  display: flex;
+  width: max-content;
+  animation: brand-marquee 32s linear infinite;
+}
+
+.animate-brand-marquee:hover {
+  animation-play-state: paused;
 }
 

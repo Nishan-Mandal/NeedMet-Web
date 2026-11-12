@@ -179,9 +179,11 @@ function ListingDetails() {
   const detailsRows = listing?.details
     ? (listing?.detailsOrder?.length
         ? listing.detailsOrder
-            .filter(key => key in listing.details)
+            .filter(key => key in listing.details && key && String(listing.details[key]).trim() !== '')
             .map(key => [key, String(listing.details[key])])
-        : Object.entries(listing.details).map(([key, value]) => [key, String(value)]))
+        : Object.entries(listing.details)
+            .filter(([key, value]) => key && value !== undefined && value !== null && String(value).trim() !== '')
+            .map(([key, value]) => [key, String(value)]))
     : [];
 
   const imageList = listing?.images?.map(image => image.fullUrl) || [];
@@ -201,11 +203,11 @@ function ListingDetails() {
       )}
 
       {/* ── Page wrapper ───────────────────────────────────── */}
-      <div className="min-h-screen bg-[#f8faf9] font-primary">
+      <div className="min-h-screen font-primary overflow-x-hidden w-full">
         <div className="w-full px-[18px] sm:px-8 lg:px-[70px] py-4 sm:py-6 lg:py-8">
 
           {/* ── Two-column Hero Section: Gallery on Left, Business Details on Right ── */}
-          <div className="flex flex-col min-[925px]:grid min-[925px]:grid-cols-12 gap-3.5 sm:gap-5 lg:gap-6 items-start">
+          <section className="flex flex-col min-[925px]:grid min-[925px]:grid-cols-12 gap-3.5 sm:gap-5 lg:gap-6 items-start">
 
             {/* Left Column (col-span-7): Gallery (+ Mobile Contributor Action Bar directly beneath) */}
             <div className="w-full min-[925px]:col-span-7 min-w-0 flex flex-col gap-3">
@@ -223,23 +225,17 @@ function ListingDetails() {
             <div className="w-full min-[925px]:col-span-5 min-w-0">
               <BusinessInfoCard listing={listing} />
             </div>
-          </div>
+          </section>
 
           {/* ── Desktop (>=925px): Full-Width Contributor Action Bar Spanning Across the Screen ── */}
           <div className="hidden min-[925px]:block mt-4 lg:mt-5 w-full">
             <ActionBar listing={listing} />
           </div>
 
-          {/* ── Full-width Detailed Information Section ── */}
-          {detailsRows.length > 0 && (
-            <div className="mt-6 sm:mt-8">
-              <DetailInfoCard title="Detailed Information" rows={detailsRows} />
-            </div>
-          )}
-
-          {/* ── Full-width Opening Hours Section ── */}
-          <div className="mt-6 sm:mt-8">
+          {/* ── Side-by-Side: Opening Hours | Detailed Information ── */}
+          <div className="mt-6 sm:mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-start">
             <OpeningHoursCard businessHours={listing?.businessHours} />
+            <DetailInfoCard title="Detailed Information" rows={detailsRows} />
           </div>
 
           {/* ── Full-width Ratings & Reviews Section ── */}

@@ -74,7 +74,7 @@ function formatReviewDate(createdAt) {
   });
 }
 
-/* ── YouTube-Style Comment Item Component ── */
+/* ── Review Card Component (Grid Column Compatible) ── */
 function CommentItem({ review }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const commentText = review?.comment || '';
@@ -85,46 +85,49 @@ function CommentItem({ review }) {
   const dateStr = formatReviewDate(review?.createdAt);
 
   return (
-    <div className="flex items-start gap-3 py-3 sm:py-3.5 border-b border-border/60 last:border-b-0 transition-colors">
-      {/* Small circular avatar */}
-      <div
-        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm font-heading text-white shrink-0 shadow-2xs select-none ring-1 ring-primary/20"
-        style={{ background: 'linear-gradient(135deg, #0f5c3e 0%, #1a8a5a 100%)' }}
-      >
-        {initial}
-      </div>
+    <div className="flex flex-col justify-between gap-3 p-4 rounded-xl border border-border/80 bg-gray-50/40 hover:bg-white hover:border-primary/30 box-shadow transition-all duration-150">
+      <div className="flex flex-col gap-2.5">
+        {/* Header: User avatar, name, date, rating */}
+        <div className="flex items-start justify-between gap-2.5">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs font-heading text-white shrink-0 shadow-2xs select-none ring-1 ring-primary/20"
+              style={{ background: 'linear-gradient(135deg, #0f5c3e 0%, #1a8a5a 100%)' }}
+            >
+              {initial}
+            </div>
+            <div className="min-w-0">
+              <h4 className="text-xs sm:text-sm font-bold text-text truncate m-0 font-heading" title={name}>
+                {name}
+              </h4>
+              <span className="text-[11px] text-text-secondary font-medium block">
+                {dateStr}
+              </span>
+            </div>
+          </div>
 
-      {/* Review Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs sm:text-sm font-bold text-text truncate max-w-[150px] min-[400px]:max-w-[200px] sm:max-w-none">
-            {name}
-          </span>
-          <span className="text-[11px] text-text-secondary font-medium">
-            {dateStr}
-          </span>
           {review?.rating > 0 && (
-            <div className="flex items-center gap-0.5 ml-auto sm:ml-0" title={`${review.rating} of 5 stars`}>
-              {renderStars(review.rating, 'text-[10px]')}
+            <div className="flex items-center gap-0.5 shrink-0 pt-0.5" title={`${review.rating} of 5 stars`}>
+              {renderStars(review.rating, 'text-[11px] sm:text-xs')}
             </div>
           )}
         </div>
 
-        {/* Comment Text with Wrap & Optional Read More */}
-        <p className="text-xs sm:text-sm text-text/90 leading-relaxed mt-1 m-0 break-words whitespace-pre-line">
+        {/* Comment Text with Wrap */}
+        <p className="text-xs sm:text-sm text-text/90 leading-relaxed m-0 break-words whitespace-pre-line">
           {displayText}
         </p>
-
-        {isLong && (
-          <button
-            type="button"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-[11px] sm:text-xs font-semibold text-primary hover:underline mt-1 p-0 bg-transparent border-0 cursor-pointer"
-          >
-            {isExpanded ? 'Show less' : 'Read more'}
-          </button>
-        )}
       </div>
+
+      {isLong && (
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-[11px] sm:text-xs font-semibold text-primary hover:underline self-start p-0 bg-transparent border-0 cursor-pointer"
+        >
+          {isExpanded ? 'Show less' : 'Read more'}
+        </button>
+      )}
     </div>
   );
 }
@@ -206,7 +209,7 @@ export default function RatingsV2({
       </div>
 
       {/* ── Rating Summary Card (Score | Breakdown | Factor Ratings) ── */}
-      <div className="bg-white border border-border rounded-2xl shadow-sm p-4 sm:p-6 overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-md sm:shadow-lg p-4 sm:p-6 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
 
           {/* 1. Left Column: Overall Rating */}
@@ -305,7 +308,7 @@ export default function RatingsV2({
       {!isMobileExpanded && (
         <div
           onClick={() => setIsMobileExpanded(true)}
-          className="sm:hidden w-full bg-white border border-border rounded-2xl p-4 shadow-sm cursor-pointer hover:border-primary/40 transition-all active:scale-[0.99]"
+          className="sm:hidden w-full bg-white border border-slate-200/80 rounded-2xl p-4 shadow-md sm:shadow-lg cursor-pointer hover:border-primary/40 transition-all active:scale-[0.99]"
         >
           <div className="flex items-center justify-between pb-2.5 border-b border-border/50">
             <div className="flex items-center gap-2">
@@ -348,7 +351,7 @@ export default function RatingsV2({
       <div
         className={`${
           isMobileExpanded ? 'flex' : 'hidden sm:flex'
-        } flex-col bg-white border border-border rounded-2xl shadow-sm overflow-hidden transition-all`}
+        } flex-col bg-white border border-slate-200/80 rounded-2xl shadow-md sm:shadow-lg overflow-hidden transition-all`}
       >
         {/* Header bar */}
         <div className="px-4 sm:px-6 py-3.5 border-b border-border flex items-center justify-between">
@@ -402,7 +405,7 @@ export default function RatingsV2({
             </div>
           ) : (
             <div
-              className="flex flex-col gap-0 overflow-y-auto max-h-[500px] pr-1"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 overflow-y-auto max-h-[540px] pr-1"
               ref={listRef}
             >
               {validReviews.map((review) => (
@@ -410,12 +413,12 @@ export default function RatingsV2({
               ))}
 
               {(loading || isFetchingMore) && (
-                <div className="flex items-center justify-center py-4 gap-2 text-xs font-medium text-text-secondary">
+                <div className="col-span-full flex items-center justify-center py-4 gap-2 text-xs font-medium text-text-secondary">
                   <i className="fa-solid fa-spinner fa-spin text-primary"></i>
                   Loading more reviews...
                 </div>
               )}
-              <div ref={sentinelRef} style={{ height: '2px' }} />
+              <div ref={sentinelRef} className="col-span-full" style={{ height: '2px' }} />
             </div>
           )}
         </div>
