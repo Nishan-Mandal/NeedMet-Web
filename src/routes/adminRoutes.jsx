@@ -3,4 +3,4 @@
  *
  * Injects routes from the independent admin module (src/admin) into the main application router.
  */
-export { adminRoutes } from "../admin/routes/adminRoutes";
+export const adminRoutes = [];
