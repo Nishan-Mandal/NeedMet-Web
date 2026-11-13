@@ -1,17 +1,8 @@
 import { Suspense } from 'react';
 import { Header, Footer, ScrollToTop, Loader } from './components';
-import { Outlet, useLocation } from 'react-router-dom';
-import Admin from './admin/admin';
+import { Outlet } from 'react-router-dom';
 
 function App() {
-  const location = useLocation();
-  const isAdmin = location.pathname.startsWith('/admin');
-
-  // Treat Admin site as an individual app inside the main app
-  if (isAdmin) {
-    return <Admin />;
-  }
-
   // Main customer-facing website application
   return (
     <>
