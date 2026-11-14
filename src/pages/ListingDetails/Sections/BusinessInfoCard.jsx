@@ -162,15 +162,40 @@ export default function BusinessInfoCard({ listing = {}, className = '' }) {
 
         {/* 3. Rating & Availability Status */}
         <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
-          <div className="inline-flex items-center gap-1.5 bg-amber-50/80 border border-amber-200/60 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs">
-            <i className="fa-solid fa-star text-amber-500 text-xs"></i>
-            <span className="text-xs sm:text-sm font-bold text-amber-950 font-heading">
-              {listing.rating || 0}
-            </span>
-            <span className="text-[11px] sm:text-xs text-amber-800/80 font-medium">
-              ({listing.reviews || 0} {listing.reviews === 1 ? 'review' : 'reviews'})
-            </span>
-          </div>
+          {Number(listing.rating) > 0 && Number(listing.reviews) > 0 ? (
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('reviews-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-1.5 bg-amber-50/80 hover:bg-amber-100/90 border border-amber-200/60 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs transition-colors cursor-pointer text-left"
+              title="View customer reviews"
+            >
+              <i className="fa-solid fa-star text-amber-500 text-xs"></i>
+              <span className="text-xs sm:text-sm font-bold text-amber-950 font-heading">
+                {Number(listing.rating).toFixed(1)}
+              </span>
+              <span className="text-[11px] sm:text-xs text-amber-800/80 font-medium">
+                ({listing.reviews} {listing.reviews === 1 ? 'review' : 'reviews'})
+              </span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('reviews-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-1.5 bg-primary-surface/70 hover:bg-primary-surface border border-primary/20 px-2.5 sm:px-3 py-1 rounded-full shadow-2xs transition-colors cursor-pointer text-left text-primary hover:text-primary-dark"
+              title="Add your review"
+            >
+              <i className="fa-regular fa-star text-xs text-amber-500"></i>
+              <span className="text-xs sm:text-sm font-bold font-heading">
+                Add your review
+              </span>
+            </button>
+          )}
 
           {openStatus && (
             <span

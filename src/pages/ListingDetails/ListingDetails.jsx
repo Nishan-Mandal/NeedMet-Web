@@ -239,8 +239,9 @@ function ListingDetails() {
           </div>
 
           {/* ── Full-width Ratings & Reviews Section ── */}
-          <div className="mt-6 sm:mt-8">
+          <div id="reviews-section" className="mt-6 sm:mt-8 scroll-mt-6">
             <RatingsV2
+              listingName={listing.name}
               rating={listing.rating}
               review_count={listing.reviews}
               ratingCount={listing.ratingCount}
