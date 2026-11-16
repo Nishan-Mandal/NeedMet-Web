@@ -118,7 +118,7 @@ export default function DetailInfoCard({
                         {isLocked ? (
                           <button
                             type="button"
-                            onClick={() => navigate('/login', { state: { from: location.pathname } })}
+                            onClick={() => navigate('/login', { state: { from: location.pathname + location.search } })}
                             aria-label="Log in to view"
                             title="Log in to view phone number"
                             className="group inline-flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold text-amber-950 bg-amber-50 hover:bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300 transition-colors cursor-pointer"
@@ -231,7 +231,7 @@ export default function DetailInfoCard({
                                 type="button"
                                 onClick={() => {
                                   setIsModalOpen(false);
-                                  navigate('/login', { state: { from: location.pathname } });
+                                  navigate('/login', { state: { from: location.pathname + location.search } });
                                 }}
                                 aria-label="Log in to view"
                                 title="Log in to view phone number"

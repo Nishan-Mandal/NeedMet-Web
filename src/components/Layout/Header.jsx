@@ -13,17 +13,25 @@ export default function Header() {
   const navigate = useNavigate();
   const { showToast } = useToast();
 
-  const { userLoggedIn, userData, logout } = useAuth();
+  const { userLoggedIn, userData, logout, currentUser } = useAuth();
 
   const location = useLocation();
   const isSearchPage = location.pathname === '/search';
 
   const handleLogout = async () => {
     try {
-      await logout();
       setShowMenu(false);
+      await logout();
       showToast("Logged out successfully", "regular");
-      navigate("/login");
+
+      const isProtectedRoute =
+        location.pathname.startsWith('/profile') ||
+        location.pathname.startsWith('/contribute') ||
+        location.pathname.startsWith('/admin');
+
+      if (isProtectedRoute) {
+        navigate("/");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -204,15 +212,42 @@ export default function Header() {
 
         <div className="flex-1 overflow-y-auto py-2">
 
-          <div className="mx-2 my-1 p-3 bg-primary-surface rounded-[10px] border border-primary/10 flex items-center gap-2.5">
-            <span className="w-[46px] h-[46px] shrink-0 rounded-full bg-gradient-to-br from-primary to-primary-light text-text-on-dark flex items-center justify-center font-bold text-lg">
-              {userData?.name?.charAt(0)?.toUpperCase() || "U"}
-            </span>
-            <div className="overflow-hidden">
-              <h4 className="text-[0.9rem] font-semibold text-primary truncate m-0">{userData?.name || "Guest User"}</h4>
-              <p className="text-[0.78rem] text-text-secondary truncate m-0">{userData?.email || "guest@example.com"}</p>
+          {userLoggedIn ? (
+            <div className="mx-2 my-1 p-3 bg-primary-surface rounded-[10px] border border-primary/10 flex items-center gap-2.5">
+              <span className="w-[46px] h-[46px] shrink-0 rounded-full bg-gradient-to-br from-primary to-primary-light text-text-on-dark flex items-center justify-center font-bold text-lg">
+                {(userData?.name?.charAt(0) || "U").toUpperCase()}
+              </span>
+              <div className="overflow-hidden">
+                <h4 className="text-[0.9rem] font-semibold text-primary truncate m-0">
+                  {userData?.name || "User"}
+                </h4>
+                {(userData?.email || userData?.phone || currentUser?.phoneNumber) && (
+                  <p className="text-[0.78rem] text-text-secondary truncate m-0">
+                    {userData?.email || userData?.phone || currentUser?.phoneNumber}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mx-2 my-1 p-3 bg-primary-surface/50 rounded-[10px] border border-primary/10 flex items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="w-10 h-10 shrink-0 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                  <i className="fa-solid fa-user text-sm" />
+                </span>
+                <div className="overflow-hidden">
+                  <h4 className="text-[0.88rem] font-semibold text-text truncate m-0">Welcome Guest</h4>
+                  <p className="text-[0.74rem] text-text-secondary truncate m-0">Log in for full access</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => { navigate("/login"); setShowMenu(false); }}
+                className="shrink-0 px-2.5 py-1 text-xs font-semibold text-primary hover:text-white bg-primary/10 hover:bg-primary rounded-md transition-colors cursor-pointer"
+              >
+                Log In
+              </button>
+            </div>
+          )}
 
           <div className="flex items-center gap-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-text-accent px-5 pt-5 pb-1 after:content-[''] after:flex-1 after:h-[1px] after:bg-border">Navigation</div>
 

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import blueTick from "../../../assets/blueTick.svg";
 import useInfo from "../../../contexts/infoContext.jsx";
 import { useAuth } from "../../../contexts/authContext.jsx";
+import { useToast } from "../../../contexts/toastContext.jsx";
 import { getHomeDetails } from "../../../services/firebase/firestore/homeService.js";
 import { useQuery } from "@tanstack/react-query";
 import QrPosterModal from "../../../components/QR/QrPosterModal.jsx";
@@ -27,6 +28,7 @@ function getOwnerLogo(fullName) {
 export default function ActionBar({ listing = {} }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { showToast } = useToast();
   const { userLoggedIn = false } = useAuth() || {};
 
   const [copied, setCopied] = useState(false);
@@ -175,7 +177,7 @@ export default function ActionBar({ listing = {} }) {
         type="button"
         onClick={() => {
           if (!userLoggedIn) {
-            navigate('/login', { state: { from: location.pathname } });
+            navigate('/login', { state: { from: location.pathname + location.search } });
             return;
           }
           setShowQrPoster(true);
@@ -201,7 +203,7 @@ export default function ActionBar({ listing = {} }) {
       return (
         <button
           type="button"
-          onClick={() => navigate('/login', { state: { from: location.pathname } })}
+          onClick={() => navigate('/login', { state: { from: location.pathname + location.search } })}
           aria-label="Log in to view phone number"
           title="Log in to view phone number"
           className={`group flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center rounded-full border border-primary/25 bg-primary-surface text-primary hover:bg-primary hover:text-white transition-all duration-150 active:scale-95 box-shadow text-xs sm:text-sm font-bold cursor-pointer ${
@@ -224,12 +226,28 @@ export default function ActionBar({ listing = {} }) {
       );
     }
 
+    const cleanPhone = String(phoneNumber).replace(/[^\d+]/g, '');
+
+    const handleCallClick = (e) => {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(phoneNumber).then(() => {
+          showToast(`Copied ${phoneNumber} to clipboard!`, "regular");
+        }).catch(() => {});
+      }
+      // On desktop, tel: has no native handler in Windows Chrome and causes tab hang/infinite reload.
+      const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (!isMobileDevice) {
+        e.preventDefault();
+      }
+    };
+
     return (
       <a
-        href={`tel:${phoneNumber}`}
+        href={`tel:${cleanPhone}`}
+        onClick={handleCallClick}
         aria-label={`Call: ${phoneNumber}`}
-        title={`Call: ${phoneNumber}`}
-        className={`flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-all duration-150 active:scale-95 box-shadow text-xs sm:text-sm font-bold no-underline ${
+        title={`Call or copy: ${phoneNumber}`}
+        className={`flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-primary text-white hover:bg-primary-dark transition-all duration-150 active:scale-95 box-shadow text-xs sm:text-sm font-bold no-underline cursor-pointer ${
           isMobile ? "w-full" : "shrink-0"
         }`}
       >

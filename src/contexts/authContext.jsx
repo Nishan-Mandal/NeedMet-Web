@@ -19,19 +19,20 @@ export function useAuth() {
   return context || defaultAuthContextValue;
 }
 
-const logout = async () => {
-  try {
-    await signOut(auth);
-
-  } catch(error) {
-    console.error(error);
-  }
-};
-
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const logout = async () => {
+    try {
+      setCurrentUser(null);
+      setUserData(null);
+      await signOut(auth);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {

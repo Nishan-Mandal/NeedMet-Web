@@ -247,7 +247,7 @@ export default function BusinessInfoCard({ listing = {}, className = '' }) {
                   onClick={(e) => {
                     if (isLockedWhatsapp) {
                       e.preventDefault();
-                      navigate('/login', { state: { from: location.pathname } });
+                      navigate('/login', { state: { from: location.pathname + location.search } });
                     }
                   }}
                   className={`w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full inline-flex items-center justify-center border text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 cursor-pointer no-underline ${item.colorClasses}`}

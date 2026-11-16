@@ -65,8 +65,11 @@ export default function LogIn() {
       await verifyOTP(confirmationResult, otp);
 
       showToast("Logged in successfully", "regular");
-      const redirectTo = location.state?.from || "/";
-      Navigate(redirectTo);
+      const redirectParam = new URLSearchParams(location.search).get("redirect");
+      const target = location.state?.from || redirectParam || "/";
+      const targetPath = typeof target === "string" ? target : target.pathname;
+      const safeTarget = (!targetPath || targetPath === "/login" || targetPath === "/signup") ? "/" : target;
+      Navigate(safeTarget, { replace: true });
     } catch (error) {
       console.error(error);
 

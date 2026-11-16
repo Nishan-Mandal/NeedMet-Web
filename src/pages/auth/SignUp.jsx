@@ -74,8 +74,11 @@ export default function SignUp() {
       await saveUserData(user, formData.name.trim(), formData.phone);
 
       showToast("Signed up successfully", "regular");
-      const redirectTo = location.state?.from || "/";
-      Navigate(redirectTo);
+      const redirectParam = new URLSearchParams(location.search).get("redirect");
+      const target = location.state?.from || redirectParam || "/";
+      const targetPath = typeof target === "string" ? target : target.pathname;
+      const safeTarget = (!targetPath || targetPath === "/login" || targetPath === "/signup") ? "/" : target;
+      Navigate(safeTarget, { replace: true });
     } catch (error) {
       console.error(error);
       showToast("Invalid OTP. Please check and try again.", "error");
