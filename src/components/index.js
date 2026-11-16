@@ -19,6 +19,7 @@ export { default as SystemState, InlineNoListingsFound } from './SystemState.jsx
 export { default as SEO } from './SEO.jsx';
 export { default as Banner } from './Banner.jsx';
 export { default as SectionCard } from './SectionCard.jsx';
+export { default as CategoryCard } from './CategoryCard.jsx';
 export { default as KeyValueFields } from './KeyValueFields.jsx';
 export { default as ImageSlider } from './ImageSlider.jsx';
 
