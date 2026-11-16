@@ -4,10 +4,19 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { getUserByPhone } from "../services/firebase/firestore/userService.js";
 import { Loader } from "../components";
 
-const AuthContext = createContext();
+const defaultAuthContextValue = {
+  currentUser: null,
+  userData: null,
+  userLoggedIn: false,
+  loading: true,
+  logout: async () => {},
+};
+
+const AuthContext = createContext(defaultAuthContextValue);
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  return context || defaultAuthContextValue;
 }
 
 const logout = async () => {
@@ -30,9 +39,13 @@ export function AuthProvider({ children }) {
           if (user) {
             setCurrentUser(user);
 
-            const firestoreUser = await getUserByPhone(user.phoneNumber.slice(3)); // Remove country code
-            setUserData(firestoreUser);
-
+            if (user.phoneNumber) {
+              const phoneClean = user.phoneNumber.startsWith("+91")
+                ? user.phoneNumber.slice(3)
+                : user.phoneNumber.replace(/[^\d]/g, '').slice(-10);
+              const firestoreUser = await getUserByPhone(phoneClean);
+              setUserData(firestoreUser);
+            }
           } else {
             setCurrentUser(null);
             setUserData(null);
@@ -66,3 +79,5 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+export default useAuth;
