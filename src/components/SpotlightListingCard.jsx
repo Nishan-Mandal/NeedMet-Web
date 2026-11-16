@@ -205,7 +205,7 @@ export default function SpotlightListingCard({ listing = {} }) {
             to={detailUrl}
             state={{ listing }}
             onClick={(e) => e.stopPropagation()}
-            className="flex-1 py-1.5 px-3 rounded-full bg-primary-container hover:bg-primary text-on-primary font-primary text-[12px] font-semibold text-center transition-all shadow-xs flex items-center justify-center gap-1.5 no-underline group/btn"
+            className="flex-1 py-1.5  px-1 sm:px-3 rounded-full bg-primary-container hover:bg-primary text-on-primary font-primary text-[12px] font-semibold text-center transition-all shadow-xs flex items-center justify-center gap-1.5 no-underline group/btn"
           >
             <span>View Details</span>
             <span className="material-symbols-outlined text-[15px] group-hover/btn:translate-x-0.5 transition-transform">

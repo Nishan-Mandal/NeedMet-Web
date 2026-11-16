@@ -4,7 +4,7 @@ import play_store from '../../assets/play_store.png';
 import play_store_icon from '../../assets/play_store_icon.png';
 import { useAuth } from "../../contexts/authContext.jsx";
 import Button from "../Common/Button.jsx";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "../../contexts/toastContext.jsx";
 
 export default function Header() {
@@ -13,41 +13,25 @@ export default function Header() {
   const navigate = useNavigate();
   const { showToast } = useToast();
 
-  const { userLoggedIn, userData, logout } = useAuth();
+  const { userLoggedIn, userData, logout, currentUser } = useAuth();
 
   const location = useLocation();
   const isSearchPage = location.pathname === '/search';
-  const isHomePage = location.pathname === '/';
-
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    if (!isHomePage) {
-      setIsScrolled(true);
-      return;
-    }
-
-    const handleScroll = () => {
-      // Scrolling very little (> 20px) turns navbar white
-      setIsScrolled(window.scrollY > 20);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [isHomePage]);
-
-  const isTransparent = isHomePage && !isScrolled;
 
   const handleLogout = async () => {
     try {
-      await logout();
       setShowMenu(false);
+      await logout();
       showToast("Logged out successfully", "regular");
-      navigate("/login");
+
+      const isProtectedRoute =
+        location.pathname.startsWith('/profile') ||
+        location.pathname.startsWith('/contribute') ||
+        location.pathname.startsWith('/admin');
+
+      if (isProtectedRoute) {
+        navigate("/");
+      }
     } catch (error) {
       console.error(error);
     }
@@ -57,13 +41,7 @@ export default function Header() {
     <>
       {/* ── Desktop HEADER ── */}
       <header
-        className={`sticky top-0 z-[9999] h-[68px] hidden md:flex items-center px-8 lg:px-[70px] transition-all duration-300 ease-in-out ${
-          isHomePage ? "md:-mb-[68px]" : ""
-        } ${
-          isTransparent
-            ? "bg-white/0 backdrop-blur-none border-b border-border/0 shadow-transparent"
-            : "bg-white/95 backdrop-blur-md border-b border-border shadow-[0_1px_0_var(--color-border),0_4px_16px_rgba(15,92,62,0.06)]"
-        }`}
+        className="sticky top-0 z-[9999] h-[68px] hidden md:flex items-center px-8 lg:px-[70px] bg-white border-b border-border shadow-[0_1px_0_var(--color-border),0_4px_16px_rgba(15,92,62,0.06)]"
       >
         <div className="w-full h-full flex items-center justify-between gap-4">
 
@@ -71,9 +49,7 @@ export default function Header() {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2 cursor-pointer select-none" onClick={() => navigate('/')}>
               <img src={companyLogo} alt="NeedMet logo" className="w-9 h-9 rounded-[10px] shadow-[0_2px_8px_rgba(15,92,62,0.18)]" />
-              <span className={`font-heading font-bold text-[1.35rem] tracking-[-0.02em] transition-colors duration-300 ease-in-out ${
-                isTransparent ? "text-white" : "text-primary"
-              }`}>
+              <span className="font-heading font-bold text-[1.35rem] tracking-[-0.02em] text-primary">
                 NeedMet
               </span>
             </div>
@@ -84,13 +60,9 @@ export default function Header() {
                 to="/"
                 className={({ isActive }) =>
                   `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
-                    isTransparent
-                      ? (isActive
-                          ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
-                          : 'text-white/80 hover:text-white hover:bg-white/10')
-                      : (isActive
-                          ? 'text-primary bg-primary-surface font-semibold'
-                          : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
+                    isActive
+                      ? 'text-primary bg-primary-surface font-semibold'
+                      : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
                   }`
                 }
               >
@@ -100,13 +72,9 @@ export default function Header() {
                 to="/all_categories"
                 className={({ isActive }) =>
                   `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
-                    isTransparent
-                      ? (isActive
-                          ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
-                          : 'text-white/80 hover:text-white hover:bg-white/10')
-                      : (isActive
-                          ? 'text-primary bg-primary-surface font-semibold'
-                          : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
+                    isActive
+                      ? 'text-primary bg-primary-surface font-semibold'
+                      : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
                   }`
                 }
               >
@@ -116,13 +84,9 @@ export default function Header() {
                 to="/blogs"
                 className={({ isActive }) =>
                   `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
-                    isTransparent
-                      ? (isActive
-                          ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
-                          : 'text-white/80 hover:text-white hover:bg-white/10')
-                      : (isActive
-                          ? 'text-primary bg-primary-surface font-semibold'
-                          : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
+                    isActive
+                      ? 'text-primary bg-primary-surface font-semibold'
+                      : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
                   }`
                 }
               >
@@ -132,13 +96,9 @@ export default function Header() {
                 to="/contribute/listing"
                 className={({ isActive }) =>
                   `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
-                    isTransparent
-                      ? (isActive
-                          ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
-                          : 'text-white/80 hover:text-white hover:bg-white/10')
-                      : (isActive
-                          ? 'text-primary bg-primary-surface font-semibold'
-                          : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
+                    isActive
+                      ? 'text-primary bg-primary-surface font-semibold'
+                      : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
                   }`
                 }
               >
@@ -149,13 +109,9 @@ export default function Header() {
                   to="/admin/dashboard"
                   className={({ isActive }) =>
                     `nav-link font-primary font-medium text-[0.9rem] flex items-center py-[7px] px-3.5 rounded-lg relative transition-all duration-300 ease-in-out ${
-                      isTransparent
-                        ? (isActive
-                            ? 'text-white bg-white/15 font-semibold backdrop-blur-xs'
-                            : 'text-white/80 hover:text-white hover:bg-white/10')
-                        : (isActive
-                            ? 'text-primary bg-primary-surface font-semibold'
-                            : 'text-text-secondary hover:text-primary hover:bg-primary-surface')
+                      isActive
+                        ? 'text-primary bg-primary-surface font-semibold'
+                        : 'text-text-secondary hover:text-primary hover:bg-primary-surface'
                     }`
                   }
                 >
@@ -172,9 +128,7 @@ export default function Header() {
                 to="/search"
                 className={({ isActive }) =>
                   `flex items-center justify-center w-[38px] h-[38px] rounded-[10px] text-[1.15rem] transition-all duration-300 ease-in-out ${
-                    isTransparent
-                      ? (isActive ? 'bg-white/20 text-white' : 'text-white/85 hover:text-white hover:bg-white/10')
-                      : (isActive ? 'bg-primary-surface text-primary' : 'text-primary hover:bg-primary-surface')
+                    isActive ? 'bg-primary-surface text-primary' : 'text-primary hover:bg-primary-surface'
                   }`
                 }
               >
@@ -183,11 +137,7 @@ export default function Header() {
             )}
 
             <button
-              className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-base cursor-pointer transition-all duration-300 ease-in-out active:scale-110 shadow-sm mr-1.5 ${
-                isTransparent
-                  ? 'bg-white/20 text-white border border-white/30 hover:bg-white/30'
-                  : 'bg-gradient-to-br from-primary to-primary-light text-text-on-dark'
-              }`}
+              className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-base cursor-pointer transition-all duration-300 ease-in-out active:scale-110 shadow-sm mr-1.5 bg-gradient-to-br from-primary to-primary-light text-text-on-dark"
               onClick={() => setShowMenu(prev => !prev)}
               aria-label="User Profile"
             >
@@ -198,9 +148,7 @@ export default function Header() {
             </button>
 
             <a
-              className={`hidden lg:flex items-center rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:opacity-90 hover:-translate-y-0.5 ${
-                isTransparent ? 'ring-1 ring-white/25' : ''
-              }`}
+              className="hidden lg:flex items-center rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:opacity-90 hover:-translate-y-0.5"
               href="https://play.google.com/store/apps/details?id=com.findon.app"
               target="_blank"
               rel="noopener noreferrer"
@@ -215,19 +163,11 @@ export default function Header() {
       {/* ── MOBILE TOP HEADER ── */}
       {!isSearchPage && (
         <header
-          className={`md:hidden flex justify-between items-center h-[58px] sticky top-0 z-[9999] px-[18px] sm:px-8 transition-all duration-300 ease-in-out ${
-            isHomePage ? "-mb-[58px]" : ""
-          } ${
-            isTransparent
-              ? "bg-white/0 backdrop-blur-none border-b border-border/0 shadow-transparent"
-              : "bg-white/95 backdrop-blur-md border-b border-border shadow-[0_1px_0_var(--color-border)]"
-          }`}
+          className="md:hidden flex justify-between items-center h-[58px] sticky top-0 z-[9999] px-[18px] sm:px-8 bg-white border-b border-border shadow-[0_1px_0_var(--color-border)]"
         >
           <div className="flex items-center gap-1.5 cursor-pointer" onClick={() => navigate('/')}>
             <img src={companyLogo} alt="NeedMet logo" className="w-8 h-8 rounded-[9px] shadow-[0_2px_6px_rgba(15,92,62,0.15)]" />
-            <span className={`font-heading font-bold text-[1.2rem] tracking-[-0.02em] transition-colors duration-300 ease-in-out ${
-              isTransparent ? "text-white" : "text-primary"
-            }`}>
+            <span className="font-heading font-bold text-[1.2rem] tracking-[-0.02em] text-primary">
               NeedMet
             </span>
           </div>
@@ -237,19 +177,13 @@ export default function Header() {
               href="https://play.google.com/store/apps/details?id=com.findon.app"
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center p-1 rounded-lg transition-all duration-300 ease-in-out ${
-                isTransparent ? "bg-white/15 border border-white/20" : ""
-              }`}
+              className="flex items-center p-1 rounded-lg transition-all duration-300 ease-in-out"
               aria-label="Get it on Play Store"
             >
               <img src={play_store_icon} alt="Play Store" className="h-5 w-5 object-contain" />
             </a>
             <button
-              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm cursor-pointer transition-all duration-300 ease-in-out active:scale-110 shadow-sm ${
-                isTransparent
-                  ? "bg-white/20 text-white border border-white/30 hover:bg-white/30"
-                  : "bg-gradient-to-br from-primary to-primary-light text-text-on-dark"
-              }`}
+              className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm cursor-pointer transition-all duration-300 ease-in-out active:scale-110 shadow-sm bg-gradient-to-br from-primary to-primary-light text-text-on-dark"
               onClick={() => setShowMenu(prev => !prev)}
               aria-label="User Profile"
             >
@@ -278,15 +212,42 @@ export default function Header() {
 
         <div className="flex-1 overflow-y-auto py-2">
 
-          <div className="mx-2 my-1 p-3 bg-primary-surface rounded-[10px] border border-primary/10 flex items-center gap-2.5">
-            <span className="w-[46px] h-[46px] shrink-0 rounded-full bg-gradient-to-br from-primary to-primary-light text-text-on-dark flex items-center justify-center font-bold text-lg">
-              {userData?.name?.charAt(0)?.toUpperCase() || "U"}
-            </span>
-            <div className="overflow-hidden">
-              <h4 className="text-[0.9rem] font-semibold text-primary truncate m-0">{userData?.name || "Guest User"}</h4>
-              <p className="text-[0.78rem] text-text-secondary truncate m-0">{userData?.email || "guest@example.com"}</p>
+          {userLoggedIn ? (
+            <div className="mx-2 my-1 p-3 bg-primary-surface rounded-[10px] border border-primary/10 flex items-center gap-2.5">
+              <span className="w-[46px] h-[46px] shrink-0 rounded-full bg-gradient-to-br from-primary to-primary-light text-text-on-dark flex items-center justify-center font-bold text-lg">
+                {(userData?.name?.charAt(0) || "U").toUpperCase()}
+              </span>
+              <div className="overflow-hidden">
+                <h4 className="text-[0.9rem] font-semibold text-primary truncate m-0">
+                  {userData?.name || "User"}
+                </h4>
+                {(userData?.email || userData?.phone || currentUser?.phoneNumber) && (
+                  <p className="text-[0.78rem] text-text-secondary truncate m-0">
+                    {userData?.email || userData?.phone || currentUser?.phoneNumber}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="mx-2 my-1 p-3 bg-primary-surface/50 rounded-[10px] border border-primary/10 flex items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="w-10 h-10 shrink-0 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                  <i className="fa-solid fa-user text-sm" />
+                </span>
+                <div className="overflow-hidden">
+                  <h4 className="text-[0.88rem] font-semibold text-text truncate m-0">Welcome Guest</h4>
+                  <p className="text-[0.74rem] text-text-secondary truncate m-0">Log in for full access</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => { navigate("/login"); setShowMenu(false); }}
+                className="shrink-0 px-2.5 py-1 text-xs font-semibold text-primary hover:text-white bg-primary/10 hover:bg-primary rounded-md transition-colors cursor-pointer"
+              >
+                Log In
+              </button>
+            </div>
+          )}
 
           <div className="flex items-center gap-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-text-accent px-5 pt-5 pb-1 after:content-[''] after:flex-1 after:h-[1px] after:bg-border">Navigation</div>
 

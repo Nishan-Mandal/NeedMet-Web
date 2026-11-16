@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button, Loader } from "../../components";
 import { useToast } from "../../contexts/toastContext";
 import { getUserByPhone } from "../../services/firebase/firestore/userService";
@@ -18,6 +18,7 @@ export default function LogIn() {
 
   const { showToast } = useToast();
   const Navigate = useNavigate();
+  const location = useLocation();
 
   const handleSendOTP = async () => {
     if (isSendingOtp) return;
@@ -64,7 +65,11 @@ export default function LogIn() {
       await verifyOTP(confirmationResult, otp);
 
       showToast("Logged in successfully", "regular");
-      Navigate("/");
+      const redirectParam = new URLSearchParams(location.search).get("redirect");
+      const target = location.state?.from || redirectParam || "/";
+      const targetPath = typeof target === "string" ? target : target.pathname;
+      const safeTarget = (!targetPath || targetPath === "/login" || targetPath === "/signup") ? "/" : target;
+      Navigate(safeTarget, { replace: true });
     } catch (error) {
       console.error(error);
 
@@ -297,7 +302,7 @@ export default function LogIn() {
 
           <p className="mt-6 text-center text-text-secondary text-sm">
             Don't have an account?
-            <Link to="/signup" className="text-primary font-semibold hover:text-primary-light transition-colors"> Sign up</Link>
+            <Link to="/signup" state={location.state} className="text-primary font-semibold hover:text-primary-light transition-colors"> Sign up</Link>
           </p>
 
           <p className="mt-6 text-center text-text-secondary text-xs sm:text-sm leading-relaxed">

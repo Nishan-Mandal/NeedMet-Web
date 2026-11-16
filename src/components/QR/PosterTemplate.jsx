@@ -1,4 +1,5 @@
 import React from "react";
+import { useAuth } from "../../contexts/authContext.jsx";
 import bgImage from "../../assets/poster-template.png";
 import igIcon from "../../assets/instagram.svg";
 import fbIcon from "../../assets/facebook.png";
@@ -24,6 +25,11 @@ const IcLocation = () => (
 );
 
 export default function SriSaiPoster({listing = {}, qrImage, socialQrs = {}}) {
+  const { userLoggedIn = false } = useAuth() || {};
+  const phoneValue = listing?.phone || listing?.alternatePhone;
+  const displayPhone = userLoggedIn
+    ? (phoneValue ? `+91 ${phoneValue}` : "N/A")
+    : "+91 ••••• •••••";
   const nameH1Class =
     listing?.name?.length >= 30
       ? "text-[60px] font-black text-[#1a5c2e] tracking-tight leading-none text-center mb-6"
@@ -84,7 +90,7 @@ export default function SriSaiPoster({listing = {}, qrImage, socialQrs = {}}) {
             </div>
             <div className="flex flex-col justify-center">
               <p className="text-[1.6rem] font-bold text-[#888] tracking-wider uppercase mb-[3px]">PHONE</p>
-              <p className="text-[1.5rem] font-bold text-[#111]">+91 {listing.phone || listing.alternatePhone}</p>
+              <p className="text-[1.5rem] font-bold text-[#111]">{displayPhone}</p>
             </div>
           </div>
 

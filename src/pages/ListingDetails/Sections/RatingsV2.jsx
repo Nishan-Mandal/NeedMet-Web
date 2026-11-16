@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useReviews } from '../../../hooks/useReviews.js';
 import { submitListingReview } from '../../../services/firebase/firestore/reviewService.js';
+import { useAuth } from '../../../contexts/authContext.jsx';
+import { useToast } from '../../../contexts/toastContext.jsx';
 
 /* ──────────────────────────────────────────────────────────────
-   RatingsV2.jsx — YouTube-Inspired Comments & Ratings Section
+   RatingsV2.jsx — Community Reviews & Ratings Section
+   - When ratings exist: Full Rating Summary Card (Score, Breakdown bars, Factor ratings) + Reviews list
+   - When 0 ratings: Clean "Add your review" message box without 0 rating UI
    - Compact, comment-style list (avatar, name, date, rating, body)
-   - Collapsible preview on mobile (<sm) matching YouTube comments pattern
-   - Expandable full review list with infinite scroll
-   - Rating Summary Card (Score, Breakdown bars, Factor ratings)
+   - Add Review Modal with quick overall rating & detailed factor ratings
 ─────────────────────────────────────────────────────────────── */
 
 function getRatingLabel(rating) {
@@ -74,7 +76,7 @@ function formatReviewDate(createdAt) {
   });
 }
 
-/* ── Review Card Component (Grid Column Compatible) ── */
+/* ── Review Card Component ── */
 function CommentItem({ review }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const commentText = review?.comment || '';
@@ -87,7 +89,6 @@ function CommentItem({ review }) {
   return (
     <div className="flex flex-col justify-between gap-3 p-4 rounded-xl border border-border/80 bg-gray-50/40 hover:bg-white hover:border-primary/30 box-shadow transition-all duration-150">
       <div className="flex flex-col gap-2.5">
-        {/* Header: User avatar, name, date, rating */}
         <div className="flex items-start justify-between gap-2.5">
           <div className="flex items-center gap-2.5 min-w-0">
             <div
@@ -113,7 +114,6 @@ function CommentItem({ review }) {
           )}
         </div>
 
-        {/* Comment Text with Wrap */}
         <p className="text-xs sm:text-sm text-text/90 leading-relaxed m-0 break-words whitespace-pre-line">
           {displayText}
         </p>
@@ -134,6 +134,7 @@ function CommentItem({ review }) {
 
 /* ── Main Component Export ── */
 export default function RatingsV2({
+  listingName = 'This Business',
   rating,
   review_count,
   ratingCount,
@@ -144,19 +145,31 @@ export default function RatingsV2({
 }) {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
+  const [initialSelectedRating, setInitialSelectedRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
+
+  const { currentUser, userData } = useAuth() || {};
+  const { showToast } = useToast();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (openReviewModal) setShowReviewModal(true);
   }, [openReviewModal]);
 
-  const queryClient = useQueryClient();
-
   const handleSubmitReview = async (factorRatings, comment) => {
-    const response = await submitListingReview({ listingId, factorRatings, comment });
+    const response = await submitListingReview({
+      listingId,
+      factorRatings,
+      comment,
+      user: currentUser || userData,
+    });
     if (response?.success) {
+      showToast('Thank you! Your review has been submitted.', 'success');
       await queryClient.invalidateQueries({ queryKey: ["reviews", listingId] });
       await queryClient.invalidateQueries({ queryKey: ["listingById", listingId] });
       setShowReviewModal(false);
+    } else {
+      showToast(response?.message || 'Failed to submit review. Please try again.', 'error');
     }
   };
 
@@ -180,10 +193,115 @@ export default function RatingsV2({
     };
   }, [hasMore, isFetchingMore, loadMore]);
 
-  const totalReviewsCount = review_count || ratingCount || validReviews.length || 0;
-  const overall = ((avgRatings.behaviour || 0) + (avgRatings.quality || 0) + (avgRatings.value || 0)) / 3;
+  const totalReviewsCount = Number(review_count || ratingCount || validReviews.length || reviews.length || 0);
+  const numericRating = Number(rating || 0);
+  const factorAverage =
+    ((Number(avgRatings?.behaviour || 0)) +
+     (Number(avgRatings?.quality || 0)) +
+     (Number(avgRatings?.value || 0))) / 3;
+  const displayRating = numericRating > 0 ? numericRating : (factorAverage > 0 ? Number(factorAverage.toFixed(1)) : 0);
+  const hasRatings = Boolean(displayRating > 0 || totalReviewsCount > 0 || validReviews.length > 0);
+
+  const totalStatsCount =
+    Object.values(ratingStats).reduce((acc, val) => acc + (Number(val) || 0), 0) ||
+    ratingCount ||
+    totalReviewsCount ||
+    0;
+
   const previewReview = validReviews[0];
 
+  const handleOpenAddRating = (prefillStars = 5) => {
+    setInitialSelectedRating(prefillStars);
+    setShowReviewModal(true);
+  };
+
+  // ── Case 1: When there are NO ratings / reviews (0 Rating State) ──
+  // Replaces the 0 rating UI with "Add your review" message box
+  if (!hasRatings) {
+    return (
+      <div className="flex flex-col gap-4 w-full font-primary">
+        {/* Section Header */}
+        <div className="flex items-center justify-between gap-2.5 sm:gap-4 w-full">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-primary-surface text-primary flex items-center justify-center text-sm shrink-0">
+              <i className="fa-solid fa-star"></i>
+            </div>
+            <h2 className="text-base sm:text-xl lg:text-2xl font-bold font-heading text-text-accent m-0 whitespace-nowrap">
+              Customer Reviews
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => handleOpenAddRating(5)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-primary bg-primary-surface border border-primary/25 hover:bg-primary hover:text-white transition-all cursor-pointer shadow-2xs hover:shadow active:scale-95 shrink-0"
+          >
+            <i className="fa-solid fa-star text-[11px] text-accent-yellow"></i>
+            <span>Add your review</span>
+          </button>
+        </div>
+
+        {/* Clean Message Box replacing the 0 Rating UI */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-md sm:shadow-lg p-6 sm:p-10 text-center flex flex-col items-center justify-center gap-3.5">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary-surface text-primary flex items-center justify-center text-xl sm:text-2xl shadow-2xs">
+            <i className="fa-regular fa-comment-dots"></i>
+          </div>
+
+          <div className="max-w-md">
+            <h3 className="text-base sm:text-lg font-bold font-heading text-text-accent m-0">
+              No reviews yet
+            </h3>
+            <p className="text-xs sm:text-sm text-text-secondary mt-1.5 m-0 leading-relaxed">
+              Be the first to share your experience with <span className="font-semibold text-text">{listingName}</span>. Add your review and help the community!
+            </p>
+          </div>
+
+          {/* Interactive 5-Star Rating row */}
+          <div
+            className="flex items-center gap-2 my-1 cursor-pointer group"
+            title="Click to rate"
+          >
+            {[1, 2, 3, 4, 5].map((starVal) => {
+              const isLit = hoverRating > 0 ? starVal <= hoverRating : false;
+              return (
+                <i
+                  key={starVal}
+                  onMouseEnter={() => setHoverRating(starVal)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  onClick={() => handleOpenAddRating(starVal)}
+                  className={`fa-solid fa-star text-2xl sm:text-3xl transition-transform hover:scale-125 ${
+                    isLit ? 'text-accent-yellow' : 'text-gray-200'
+                  }`}
+                />
+              );
+            })}
+          </div>
+
+          {/* Main Action Button */}
+          <button
+            type="button"
+            onClick={() => handleOpenAddRating(5)}
+            className="mt-1 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white shadow-md hover:shadow-lg transition-all cursor-pointer hover:-translate-y-0.5 active:scale-95"
+            style={{ background: 'linear-gradient(135deg, #0f5c3e 0%, #1a8a5a 100%)' }}
+          >
+            <i className="fa-solid fa-star text-accent-yellow text-xs"></i>
+            <span>Add your review</span>
+          </button>
+        </div>
+
+        {/* Add Review Modal */}
+        <AddReviewModal
+          isOpen={showReviewModal}
+          onClose={() => setShowReviewModal(false)}
+          listingName={listingName}
+          initialRating={initialSelectedRating}
+          onSubmit={handleSubmitReview}
+        />
+      </div>
+    );
+  }
+
+  // ── Case 2: When ratings/reviews exist (Full Rating Summary & Reviews UI) ──
   return (
     <div className="flex flex-col gap-4 w-full font-primary">
 
@@ -197,15 +315,22 @@ export default function RatingsV2({
             <h2 className="text-base sm:text-xl lg:text-2xl font-bold font-heading text-text-accent m-0 whitespace-nowrap">
               Customer Reviews
             </h2>
-            {totalReviewsCount > 0 && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-accent-yellow/15 text-amber-800 text-xs font-bold border border-accent-yellow/30 whitespace-nowrap shrink-0">
-                <i className="fa-solid fa-star text-[10px] text-accent-yellow"></i>
-                <span>{rating || '0.0'}</span>
-                <span className="opacity-80">({totalReviewsCount})</span>
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-accent-yellow/15 text-amber-800 text-xs font-bold border border-accent-yellow/30 whitespace-nowrap shrink-0">
+              <i className="fa-solid fa-star text-[10px] text-accent-yellow"></i>
+              <span>{displayRating.toFixed(1)}</span>
+              <span className="opacity-80">({totalReviewsCount})</span>
+            </span>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => handleOpenAddRating(5)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-bold text-primary bg-primary-surface border border-primary/25 hover:bg-primary hover:text-white transition-all cursor-pointer shadow-2xs hover:shadow active:scale-95 shrink-0"
+        >
+          <i className="fa-solid fa-star text-[11px] text-accent-yellow"></i>
+          <span>Add your review</span>
+        </button>
       </div>
 
       {/* ── Rating Summary Card (Score | Breakdown | Factor Ratings) ── */}
@@ -215,30 +340,40 @@ export default function RatingsV2({
           {/* 1. Left Column: Overall Rating */}
           <div className="lg:col-span-3 flex flex-col items-center lg:items-start text-center lg:text-left">
             <div className="flex items-baseline gap-2 leading-none">
-              <span className="text-5xl font-black text-text font-heading tracking-tight">
-                {ratingCount > 0 ? rating : '—'}
+              <span className="text-4xl sm:text-5xl font-black text-text font-heading tracking-tight">
+                {displayRating.toFixed(1)}
               </span>
               <span className="text-sm font-semibold text-text-secondary">out of 5</span>
             </div>
 
             <div className="flex items-center gap-1 my-2.5">
-              {renderStars(Math.round(rating || 0), 'text-base')}
+              {renderStars(Math.round(displayRating || 0), 'text-base')}
             </div>
 
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary-surface text-primary text-xs font-bold border border-primary/15">
-              {ratingCount > 0 ? getRatingLabel(rating) : 'No Ratings'}
+              {getRatingLabel(displayRating)}
             </span>
 
             <p className="text-xs text-text-secondary mt-2 m-0">
-              Based on {totalReviewsCount} verified reviews
+              Based on {totalReviewsCount} verified review{totalReviewsCount === 1 ? '' : 's'}
             </p>
+
+            <button
+              type="button"
+              onClick={() => handleOpenAddRating(5)}
+              className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white shadow-sm hover:shadow transition-all cursor-pointer hover:-translate-y-0.5 active:scale-95"
+              style={{ background: 'linear-gradient(135deg, #0f5c3e 0%, #1a8a5a 100%)' }}
+            >
+              <i className="fa-solid fa-star text-[11px] text-accent-yellow"></i>
+              <span>Add your review</span>
+            </button>
           </div>
 
           {/* 2. Middle Column: Star Breakdown Bars */}
           <div className="lg:col-span-5 flex flex-col gap-2.5 lg:px-6 lg:border-x border-border/70">
             {['5', '4', '3', '2', '1'].map((star) => {
               const count = ratingStats[star] || 0;
-              const percent = ratingCount > 0 ? Math.round((count / ratingCount) * 100) : 0;
+              const percent = totalStatsCount > 0 ? Math.round((count / totalStatsCount) * 100) : 0;
               return (
                 <div key={star} className="flex items-center gap-3 w-full">
                   <span className="text-xs font-bold text-text min-w-[28px] font-heading flex items-center gap-1">
@@ -273,28 +408,28 @@ export default function RatingsV2({
             <div className="grid grid-cols-2 gap-2.5 pt-1">
               <div className="p-3 rounded-xl bg-primary-surface/40 border border-primary/10 flex flex-col items-center justify-center text-center">
                 <span className="text-lg sm:text-xl font-bold font-heading text-primary leading-none">
-                  {avgRatings.behaviour ? Number(avgRatings.behaviour).toFixed(1) : '—'}
+                  {avgRatings?.behaviour && Number(avgRatings.behaviour) > 0 ? Number(avgRatings.behaviour).toFixed(1) : '—'}
                 </span>
                 <span className="text-xs font-semibold text-text-secondary mt-1">Staff Behaviour</span>
               </div>
 
               <div className="p-3 rounded-xl bg-primary-surface/40 border border-primary/10 flex flex-col items-center justify-center text-center">
                 <span className="text-lg sm:text-xl font-bold font-heading text-primary leading-none">
-                  {avgRatings.quality ? Number(avgRatings.quality).toFixed(1) : '—'}
+                  {avgRatings?.quality && Number(avgRatings.quality) > 0 ? Number(avgRatings.quality).toFixed(1) : '—'}
                 </span>
                 <span className="text-xs font-semibold text-text-secondary mt-1">Service Quality</span>
               </div>
 
               <div className="p-3 rounded-xl bg-primary-surface/40 border border-primary/10 flex flex-col items-center justify-center text-center">
                 <span className="text-lg sm:text-xl font-bold font-heading text-primary leading-none">
-                  {avgRatings.value ? Number(avgRatings.value).toFixed(1) : '—'}
+                  {avgRatings?.value && Number(avgRatings.value) > 0 ? Number(avgRatings.value).toFixed(1) : '—'}
                 </span>
                 <span className="text-xs font-semibold text-text-secondary mt-1">Value for Money</span>
               </div>
 
               <div className="p-3 rounded-xl bg-primary-surface/40 border border-primary/10 flex flex-col items-center justify-center text-center">
                 <span className="text-lg sm:text-xl font-bold font-heading text-primary leading-none">
-                  {overall ? Number(overall).toFixed(1) : '—'}
+                  {factorAverage > 0 ? Number(factorAverage).toFixed(1) : '—'}
                 </span>
                 <span className="text-xs font-semibold text-text-secondary mt-1">Overall Score</span>
               </div>
@@ -321,7 +456,7 @@ export default function RatingsV2({
             </div>
           </div>
 
-          {previewReview ? (
+          {previewReview && (
             <div className="flex items-start gap-2.5 pt-2.5">
               <div
                 className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs text-white shrink-0 shadow-2xs select-none"
@@ -339,33 +474,29 @@ export default function RatingsV2({
                 </span>
               </div>
             </div>
-          ) : (
-            <div className="py-2 text-center text-xs text-text-secondary">
-              No reviews yet. Tap to view or write a review!
-            </div>
           )}
         </div>
       )}
 
-      {/* ── YouTube-Style Full Reviews List (Always on Desktop, Expanded on Mobile) ── */}
+      {/* ── YouTube-Style Full Reviews List ── */}
       <div
         className={`${
           isMobileExpanded ? 'flex' : 'hidden sm:flex'
         } flex-col bg-white border border-slate-200/80 rounded-2xl shadow-md sm:shadow-lg overflow-hidden transition-all`}
       >
-        {/* Header bar */}
         <div className="px-4 sm:px-6 py-3.5 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h3 className="text-sm sm:text-base font-bold font-heading text-text m-0">
               Reviews ({totalReviewsCount})
             </h3>
-            <span className="text-xs text-text-secondary hidden min-[480px]:inline">
-              • {validReviews.length} loaded
-            </span>
+            {validReviews.length > 0 && (
+              <span className="text-xs text-text-secondary hidden min-[480px]:inline">
+                • {validReviews.length} loaded
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Mobile collapse control */}
             <button
               type="button"
               onClick={() => setIsMobileExpanded(false)}
@@ -377,53 +508,34 @@ export default function RatingsV2({
 
             <button
               type="button"
-              onClick={() => setShowReviewModal(true)}
+              onClick={() => handleOpenAddRating(5)}
               className="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-dark cursor-pointer bg-primary-surface px-2.5 py-1 rounded-lg border border-primary/20"
             >
               <i className="fa-regular fa-pen-to-square text-[11px]"></i>
-              <span className="hidden min-[380px]:inline">Add review</span>
+              <span className="hidden min-[380px]:inline">Add your review</span>
             </button>
           </div>
         </div>
 
-        {/* Scrollable Comments List */}
         <div className="p-4 sm:p-6">
-          {!loading && !isFetchingMore && !validReviews.length ? (
-            <div className="text-center py-8">
-              <i className="fa-regular fa-comment-dots text-3xl text-primary/30 mb-2 block"></i>
-              <p className="text-sm font-semibold text-text mb-1">No community reviews yet</p>
-              <p className="text-xs text-text-secondary max-w-xs mx-auto mb-3">
-                Be the first to share your experience with this business!
-              </p>
-              <button
-                type="button"
-                className="px-4 py-2 rounded-xl text-xs font-bold text-primary bg-primary-surface border border-primary/25 hover:bg-primary hover:text-white transition-all cursor-pointer"
-                onClick={() => setShowReviewModal(true)}
-              >
-                Write the First Review
-              </button>
-            </div>
-          ) : (
-            <div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 overflow-y-auto max-h-[540px] pr-1"
-              ref={listRef}
-            >
-              {validReviews.map((review) => (
-                <CommentItem key={review.id} review={review} />
-              ))}
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 overflow-y-auto max-h-[540px] pr-1"
+            ref={listRef}
+          >
+            {validReviews.map((review) => (
+              <CommentItem key={review.id} review={review} />
+            ))}
 
-              {(loading || isFetchingMore) && (
-                <div className="col-span-full flex items-center justify-center py-4 gap-2 text-xs font-medium text-text-secondary">
-                  <i className="fa-solid fa-spinner fa-spin text-primary"></i>
-                  Loading more reviews...
-                </div>
-              )}
-              <div ref={sentinelRef} className="col-span-full" style={{ height: '2px' }} />
-            </div>
-          )}
+            {(loading || isFetchingMore) && (
+              <div className="col-span-full flex items-center justify-center py-4 gap-2 text-xs font-medium text-text-secondary">
+                <i className="fa-solid fa-spinner fa-spin text-primary"></i>
+                Loading more reviews...
+              </div>
+            )}
+            <div ref={sentinelRef} className="col-span-full" style={{ height: '2px' }} />
+          </div>
         </div>
 
-        {/* Bottom Bar on Mobile when expanded */}
         <div className="sm:hidden px-4 py-3 border-t border-border/60 bg-gray-50/50 flex items-center justify-between">
           <button
             type="button"
@@ -435,34 +547,84 @@ export default function RatingsV2({
           </button>
           <button
             type="button"
-            onClick={() => setShowReviewModal(true)}
+            onClick={() => handleOpenAddRating(5)}
             className="text-xs font-bold text-primary hover:underline"
           >
-            Write a review
+            Add your review
           </button>
         </div>
       </div>
 
-      {/* ── Add Review Modal ─────────────────────────────────── */}
+      {/* Add Review Modal */}
       <AddReviewModal
         isOpen={showReviewModal}
         onClose={() => setShowReviewModal(false)}
-        listingName="This Listing"
+        listingName={listingName}
+        initialRating={initialSelectedRating}
         onSubmit={handleSubmitReview}
       />
     </div>
   );
 }
 
-/* ─── Add Review Modal (Preserved from original) ─────────── */
-export function AddReviewModal({ isOpen, onClose, onSubmit, listingName }) {
-  const [factorRatings, setFactorRatings] = useState({ behaviour: 0, quality: 0, value: 0 });
+/* ─── Add Review Modal ────────────────────────────────────── */
+export function AddReviewModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  listingName = 'This Business',
+  initialRating = 5,
+}) {
+  const [overallRating, setOverallRating] = useState(initialRating || 5);
+  const [factorRatings, setFactorRatings] = useState({
+    behaviour: initialRating || 5,
+    quality: initialRating || 5,
+    value: initialRating || 5,
+  });
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const modalRef = useRef(null);
 
+  useEffect(() => {
+    if (isOpen) {
+      const defaultRating = initialRating > 0 ? initialRating : 5;
+      setOverallRating(defaultRating);
+      setFactorRatings({
+        behaviour: defaultRating,
+        quality: defaultRating,
+        value: defaultRating,
+      });
+      setComment("");
+    }
+  }, [isOpen, initialRating]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  const handleOverallClick = (val) => {
+    setOverallRating(val);
+    setFactorRatings({
+      behaviour: val,
+      quality: val,
+      value: val,
+    });
+  };
+
   const handleRating = (factor, value) => {
-    setFactorRatings((prev) => ({ ...prev, [factor]: value }));
+    setFactorRatings((prev) => {
+      const updated = { ...prev, [factor]: value };
+      const vals = Object.values(updated).filter((v) => v > 0);
+      if (vals.length > 0) {
+        setOverallRating(Math.round(vals.reduce((a, b) => a + b, 0) / vals.length));
+      }
+      return updated;
+    });
   };
 
   const renderModalStars = (factor) => {
@@ -472,9 +634,30 @@ export function AddReviewModal({ isOpen, onClose, onSubmit, listingName }) {
         <i
           key={value}
           className={`cursor-pointer transition-transform hover:scale-110 text-xl ${
-            value <= factorRatings[factor] ? "fa-solid fa-star text-accent-yellow" : "fa-regular fa-star text-primary/30"
+            value <= (factorRatings[factor] || 0)
+              ? "fa-solid fa-star text-accent-yellow"
+              : "fa-regular fa-star text-primary/30"
           }`}
           onClick={() => handleRating(factor, value)}
+          title={`Rate ${value} star${value > 1 ? 's' : ''}`}
+        />
+      );
+    });
+  };
+
+  const renderOverallStars = () => {
+    return [...Array(5)].map((_, i) => {
+      const value = i + 1;
+      return (
+        <i
+          key={value}
+          className={`cursor-pointer transition-transform hover:scale-110 text-2xl sm:text-3xl ${
+            value <= overallRating
+              ? "fa-solid fa-star text-accent-yellow"
+              : "fa-regular fa-star text-primary/30"
+          }`}
+          onClick={() => handleOverallClick(value)}
+          title={`Rate ${value} star${value > 1 ? 's' : ''}`}
         />
       );
     });
@@ -483,7 +666,13 @@ export function AddReviewModal({ isOpen, onClose, onSubmit, listingName }) {
   const submitReview = async () => {
     try {
       setIsSubmitting(true);
-      await onSubmit(factorRatings, comment);
+      const fallbackVal = overallRating > 0 ? overallRating : 5;
+      const finalFactors = {
+        behaviour: factorRatings.behaviour || fallbackVal,
+        quality: factorRatings.quality || fallbackVal,
+        value: factorRatings.value || fallbackVal,
+      };
+      await onSubmit(finalFactors, comment);
     } catch (error) {
       console.error(error);
     } finally {
@@ -492,10 +681,10 @@ export function AddReviewModal({ isOpen, onClose, onSubmit, listingName }) {
   };
 
   const isFormValid =
+    overallRating > 0 ||
     factorRatings.behaviour > 0 ||
     factorRatings.quality > 0 ||
-    factorRatings.value > 0 ||
-    comment.trim() !== "";
+    factorRatings.value > 0;
 
   const handleOverlayClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) onClose();
@@ -509,57 +698,96 @@ export function AddReviewModal({ isOpen, onClose, onSubmit, listingName }) {
       onClick={handleOverlayClick}
     >
       <div
-        className="w-full max-w-[520px] bg-surface border border-primary/10 rounded-2xl sm:rounded-3xl p-6 sm:p-8 relative flex flex-col gap-5 sm:gap-6 shadow-2xl font-primary"
+        className="w-full max-w-[520px] max-h-[90vh] overflow-y-auto bg-surface border border-primary/10 rounded-2xl sm:rounded-3xl p-5 sm:p-7 relative flex flex-col gap-4 sm:gap-5 shadow-2xl font-primary"
         ref={modalRef}
       >
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg sm:text-xl font-bold text-text-accent font-heading m-0">
-            Rate {listingName}
-          </h2>
+        {/* Header */}
+        <div className="flex justify-between items-start gap-3 pb-2 border-b border-border/50">
+          <div>
+            <h2 className="text-lg sm:text-xl font-bold text-text-accent font-heading m-0">
+              Rate {listingName}
+            </h2>
+            <p className="text-xs text-text-secondary m-0 mt-0.5">
+              Share your rating and feedback with the community
+            </p>
+          </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-background-secondary text-text-secondary hover:bg-primary-surface hover:text-primary flex items-center justify-center text-lg cursor-pointer transition-all hover:rotate-90 border-none"
+            className="w-9 h-9 rounded-full bg-background-secondary text-text-secondary hover:bg-primary-surface hover:text-primary flex items-center justify-center text-lg cursor-pointer transition-all hover:rotate-90 border-none shrink-0"
             aria-label="Close review modal"
           >
             <i className="fa-regular fa-circle-xmark"></i>
           </button>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <p className="text-sm sm:text-base font-semibold text-text m-0">Owner's Behaviour</p>
-          <div className="flex items-center gap-2">{renderModalStars("behaviour")}</div>
+        {/* Quick Overall Rating */}
+        <div className="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-primary-surface/40 border border-primary/15 text-center gap-1.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-text font-heading">
+            Overall Rating
+          </span>
+          <div className="flex items-center gap-2.5 my-1">
+            {renderOverallStars()}
+          </div>
+          <span className="text-xs font-semibold text-primary">
+            {overallRating > 0 ? getRatingLabel(overallRating) : 'Select rating'}
+          </span>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <p className="text-sm sm:text-base font-semibold text-text m-0">Service / Product Quality</p>
-          <div className="flex items-center gap-2">{renderModalStars("quality")}</div>
+        {/* Factor Breakdown */}
+        <div className="flex flex-col gap-3 pt-1">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-text-secondary font-heading">
+              Detailed Factor Ratings
+            </span>
+            <span className="text-[11px] text-text-secondary italic">Optional breakdown</span>
+          </div>
+
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50/70 border border-border/60">
+            <span className="text-xs sm:text-sm font-semibold text-text">Staff Behaviour</span>
+            <div className="flex items-center gap-1.5">{renderModalStars("behaviour")}</div>
+          </div>
+
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50/70 border border-border/60">
+            <span className="text-xs sm:text-sm font-semibold text-text">Service / Quality</span>
+            <div className="flex items-center gap-1.5">{renderModalStars("quality")}</div>
+          </div>
+
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-gray-50/70 border border-border/60">
+            <span className="text-xs sm:text-sm font-semibold text-text">Value for Money</span>
+            <div className="flex items-center gap-1.5">{renderModalStars("value")}</div>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <p className="text-sm sm:text-base font-semibold text-text m-0">Value for Money</p>
-          <div className="flex items-center gap-2">{renderModalStars("value")}</div>
+        {/* Comment textarea */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-text">
+            Your Review <span className="text-text-secondary font-normal">(optional)</span>
+          </label>
+          <textarea
+            placeholder="Share details of your experience with this business..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="w-full min-h-[100px] resize-none border border-border rounded-xl p-3 bg-background text-text text-sm leading-relaxed outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
+          />
         </div>
 
-        <textarea
-          placeholder="Write your experience (optional)"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          className="w-full min-h-[120px] sm:min-h-[140px] resize-none border border-border rounded-xl p-3.5 bg-background text-text text-sm leading-relaxed outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
-        />
-
+        {/* Submit button */}
         <button
           onClick={submitReview}
           disabled={!isFormValid || isSubmitting}
-          className="w-full border-none text-white p-3.5 rounded-xl text-base font-bold font-primary cursor-pointer hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full border-none text-white p-3.5 rounded-xl text-sm sm:text-base font-bold font-primary cursor-pointer hover:-translate-y-0.5 hover:shadow-lg active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
           style={{ background: 'linear-gradient(135deg, #0f5c3e 0%, #1a8a5a 100%)' }}
         >
           {isSubmitting ? (
-            <>
-              <i className="fa-solid fa-spinner fa-spin mr-2"></i>
-              Submitting...
-            </>
+            <span className="flex items-center justify-center gap-2">
+              <i className="fa-solid fa-spinner fa-spin"></i>
+              <span>Submitting review...</span>
+            </span>
           ) : (
-            "Submit Review"
+            <span className="flex items-center justify-center gap-2">
+              <i className="fa-solid fa-star text-accent-yellow"></i>
+              <span>Submit Rating & Review</span>
+            </span>
           )}
         </button>
       </div>

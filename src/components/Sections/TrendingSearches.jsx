@@ -28,40 +28,43 @@ export default function TrendingSearches({
   const infiniteSearches = [...searches, ...searches];
 
   return (
-    <section 
-      className="trending-section shadow-md shadow-green-300/30 rounded-2xl  " 
-      style={style}
-    >
-      <div className="trending-container bg-background-secondary overflow-hidden rounded-[20px] px-5 py-8">
-        
-        <div className="trending-header flex flex-col mb-5 gap-1.5 max-[576px]:mb-3.5 max-[576px]:gap-1">
-          <span className="trending-tag font-primary text-[11px] font-bold tracking-[0.2em] uppercase text-text-accent mb-1.5">
+    <section className="w-full bg-transparent" style={style}>
+      <div className="w-full overflow-hidden px-1 sm:px-2 py-4 sm:py-6 bg-transparent">
+        <div className="flex flex-col mb-4 sm:mb-5 gap-1">
+          <span className="font-primary text-[11px] font-bold tracking-[0.2em] uppercase text-emerald-700 mb-1">
             What People Are Looking For
           </span>
 
-          <h2 className="trending-title font-heading font-bold text-text-accent tracking-[-0.02em] leading-[1.15] text-[clamp(1.5rem,3vw,2.2rem)] max-[1024px]:text-[1.4rem] max-[576px]:text-[1.2rem] m-0">
+          <h2 className="font-heading font-bold text-[#0f5c3e] tracking-tight leading-[1.15] text-2xl sm:text-3xl lg:text-[2rem] m-0">
             Trending Searches
           </h2>
         </div>
 
-        <div className="trending-scroll-wrapper group w-full overflow-hidden flex flex-col gap-2.5 max-[576px]:gap-2">
+        <div className="relative group w-full overflow-hidden flex flex-col gap-2 sm:gap-3 [mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%-40px),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%-40px),transparent_100%)]">
+          {/* Left Gradient Blur Mask */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-background via-background/70 to-transparent z-10 backdrop-blur-[2px]" />
+
+          {/* Right Gradient Blur Mask */}
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-background via-background/70 to-transparent z-10 backdrop-blur-[2px]" />
+
           {/* Row 1 */}
-          <div className="trending-scroll-track flex items-center gap-2.5 max-[576px]:gap-2 w-max animate-[trendingInfiniteScroll_32s_linear_infinite] max-[1024px]:animate-[trendingInfiniteScroll_28s_linear_infinite] max-[576px]:animate-[trendingInfiniteScroll_22s_linear_infinite] group-hover:[animation-play-state:paused]">
+          <div className="flex items-center gap-2 sm:gap-3 w-max animate-[trendingInfiniteScroll_32s_linear_infinite] group-hover:[animation-play-state:paused]">
             {infiniteSearches.map((item, index) => (
               <button
                 key={`${item.id}-${index}`}
-                className="trending-pill group/pill inline-flex items-center rounded-full font-primary shrink-0 whitespace-nowrap cursor-pointer border-[1.5px] border-border bg-surface transition duration-200 ease-out hover:border-primary-light hover:bg-primary-surface active:scale-[0.97] max-[576px]:active:opacity-80 gap-[7px] p-[9px_16px] max-[1024px]:p-[8px_14px] max-[576px]:gap-1.5 max-[576px]:p-[7px_12px]"
+                type="button"
                 onClick={() => navigateToSearch(item.label)}
+                className="group/pill inline-flex items-center rounded-full font-primary shrink-0 whitespace-nowrap cursor-pointer border border-slate-200/90 bg-white hover:border-emerald-600 hover:bg-emerald-50/70 active:scale-[0.97] transition duration-200 ease-out gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 shadow-xs"
               >
-                <span className="trending-pill-emoji leading-none text-[15px] max-[576px]:text-[14px]">
+                <span className="leading-none text-sm sm:text-base select-none">
                   {item.emoji}
                 </span>
 
-                <span className="trending-pill-label font-medium text-text whitespace-nowrap text-[13.5px] max-[1024px]:text-[13px] max-[576px]:text-[12px]">
+                <span className="font-medium text-slate-800 group-hover/pill:text-emerald-950 whitespace-nowrap text-xs sm:text-[13.5px]">
                   {item.label}
                 </span>
 
-                <span className="trending-pill-count font-semibold rounded-full leading-[1.4] min-w-[32px] text-center bg-primary-surface text-text-accent transition-colors duration-200 group-hover/pill:bg-primary group-hover/pill:text-text-on-dark text-[11.5px] px-2 py-0.5 max-[576px]:text-[10px] max-[576px]:px-1.5">
+                <span className="font-semibold rounded-full leading-tight min-w-[28px] text-center bg-emerald-100/70 text-emerald-800 transition-colors duration-200 group-hover/pill:bg-[#0f5c3e] group-hover/pill:text-white text-[10px] sm:text-[11.5px] px-2 py-0.5 ml-0.5">
                   {item.count}
                 </span>
               </button>
@@ -69,22 +72,23 @@ export default function TrendingSearches({
           </div>
 
           {/* Row 2 */}
-          <div className="trending-scroll-track trending-scroll-track-reverse flex items-center gap-2.5 max-[576px]:gap-2 w-max animate-[trendingInfiniteScroll_32s_linear_infinite_reverse] max-[1024px]:animate-[trendingInfiniteScroll_28s_linear_infinite_reverse] max-[576px]:animate-[trendingInfiniteScroll_22s_linear_infinite_reverse] group-hover:[animation-play-state:paused]">
+          <div className="flex items-center gap-2 sm:gap-3 w-max [animation-direction:reverse] animate-[trendingInfiniteScroll_32s_linear_infinite] group-hover:[animation-play-state:paused]">
             {infiniteSearches.map((item, index) => (
               <button
                 key={`reverse-${item.id}-${index}`}
-                className="trending-pill group/pill inline-flex items-center rounded-full font-primary shrink-0 whitespace-nowrap cursor-pointer border-[1.5px] border-border bg-surface transition duration-200 ease-out hover:border-primary-light hover:bg-primary-surface active:scale-[0.97] max-[576px]:active:opacity-80 gap-[7px] p-[9px_16px] max-[1024px]:p-[8px_14px] max-[576px]:gap-1.5 max-[576px]:p-[7px_12px]"
+                type="button"
                 onClick={() => navigateToSearch(item.label)}
+                className="group/pill inline-flex items-center rounded-full font-primary shrink-0 whitespace-nowrap cursor-pointer border border-slate-200/90 bg-white hover:border-emerald-600 hover:bg-emerald-50/70 active:scale-[0.97] transition duration-200 ease-out gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 shadow-xs"
               >
-                <span className="trending-pill-emoji leading-none text-[15px] max-[576px]:text-[14px]">
+                <span className="leading-none text-sm sm:text-base select-none">
                   {item.emoji}
                 </span>
 
-                <span className="trending-pill-label font-medium text-text whitespace-nowrap text-[13.5px] max-[1024px]:text-[13px] max-[576px]:text-[12px]">
+                <span className="font-medium text-slate-800 group-hover/pill:text-emerald-950 whitespace-nowrap text-xs sm:text-[13.5px]">
                   {item.label}
                 </span>
 
-                <span className="trending-pill-count font-semibold rounded-full leading-[1.4] min-w-[32px] text-center bg-primary-surface text-text-accent transition-colors duration-200 group-hover/pill:bg-primary group-hover/pill:text-text-on-dark text-[11.5px] px-2 py-0.5 max-[576px]:text-[10px] max-[576px]:px-1.5">
+                <span className="font-semibold rounded-full leading-tight min-w-[28px] text-center bg-emerald-100/70 text-emerald-800 transition-colors duration-200 group-hover/pill:bg-[#0f5c3e] group-hover/pill:text-white text-[10px] sm:text-[11.5px] px-2 py-0.5 ml-0.5">
                   {item.count}
                 </span>
               </button>
