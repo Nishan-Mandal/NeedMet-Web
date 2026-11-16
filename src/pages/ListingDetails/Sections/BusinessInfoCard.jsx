@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../../contexts/authContext.jsx';
 import { TimeSlot } from '../../../data/model/listingModel.js';
 
 /* ──────────────────────────────────────────────────────────────
@@ -81,6 +83,9 @@ function formatSocialLink(key, value) {
    - Expandable About / Description
 ─────────────────────────────────────────────────────────────── */
 export default function BusinessInfoCard({ listing = {}, className = '' }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userLoggedIn = false } = useAuth() || {};
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Check if listing is currently open
@@ -228,19 +233,29 @@ export default function BusinessInfoCard({ listing = {}, className = '' }) {
         {/* 5. Social Media Links */}
         {activeSocials.length > 0 && (
           <div className="flex items-center gap-2 flex-wrap pt-0.5">
-            {activeSocials.map((item) => (
-              <a
-                key={item.key}
-                href={item.url}
-                target="_blank"
-                rel="noreferrer"
-                title={item.label}
-                aria-label={item.label}
-                className={`w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full inline-flex items-center justify-center border text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 cursor-pointer no-underline ${item.colorClasses}`}
-              >
-                <i className={`${item.iconClass} text-center shrink-0`}></i>
-              </a>
-            ))}
+            {activeSocials.map((item) => {
+              const isLockedWhatsapp = item.key === 'whatsapp' && !userLoggedIn;
+
+              return (
+                <a
+                  key={item.key}
+                  href={isLockedWhatsapp ? '#' : item.url}
+                  target={isLockedWhatsapp ? undefined : "_blank"}
+                  rel={isLockedWhatsapp ? undefined : "noreferrer"}
+                  title={isLockedWhatsapp ? "Log in to chat on WhatsApp" : item.label}
+                  aria-label={isLockedWhatsapp ? "Log in to chat on WhatsApp" : item.label}
+                  onClick={(e) => {
+                    if (isLockedWhatsapp) {
+                      e.preventDefault();
+                      navigate('/login', { state: { from: location.pathname } });
+                    }
+                  }}
+                  className={`w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full inline-flex items-center justify-center border text-xs sm:text-sm transition-all duration-150 hover:-translate-y-0.5 hover:shadow-xs active:scale-95 cursor-pointer no-underline ${item.colorClasses}`}
+                >
+                  <i className={`${item.iconClass} text-center shrink-0`}></i>
+                </a>
+              );
+            })}
           </div>
         )}
 

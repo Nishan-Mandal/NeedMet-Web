@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../../contexts/authContext.jsx";
 
 /**
  * DetailInfoCard.jsx
@@ -11,6 +13,9 @@ export default function DetailInfoCard({
   rows = [],
   maxVisibleRows = 7,
 }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userLoggedIn = false } = useAuth() || {};
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Close modal on Escape key
@@ -97,19 +102,44 @@ export default function DetailInfoCard({
               </thead>
 
               <tbody>
-                {visibleRows.map(([label, value], index) => (
-                  <tr
-                    key={index}
-                    className="hover:bg-primary/[0.025] transition-colors"
-                  >
-                    <td className="h-9 sm:h-10 text-xs sm:text-[0.84rem] font-semibold text-text bg-surface border border-border px-2.5 py-1.5 sm:px-3 text-center break-words capitalize">
-                      {label}
-                    </td>
-                    <td className="h-9 sm:h-10 text-xs sm:text-[0.84rem] text-text-secondary bg-surface border border-border px-2.5 py-1.5 sm:px-3 text-center break-words truncate">
-                      {value}
-                    </td>
-                  </tr>
-                ))}
+                {visibleRows.map(([label, value], index) => {
+                  const isPhoneField = /phone|mobile|contact|call/i.test(label);
+                  const isLocked = isPhoneField && !userLoggedIn;
+
+                  return (
+                    <tr
+                      key={index}
+                      className="hover:bg-primary/[0.025] transition-colors"
+                    >
+                      <td className="h-9 sm:h-10 text-xs sm:text-[0.84rem] font-semibold text-text bg-surface border border-border px-2.5 py-1.5 sm:px-3 text-center break-words capitalize">
+                        {label}
+                      </td>
+                      <td className="h-9 sm:h-10 text-xs sm:text-[0.84rem] text-text-secondary bg-surface border border-border px-2.5 py-1.5 sm:px-3 text-center break-words truncate">
+                        {isLocked ? (
+                          <button
+                            type="button"
+                            onClick={() => navigate('/login', { state: { from: location.pathname } })}
+                            aria-label="Log in to view"
+                            title="Log in to view phone number"
+                            className="group inline-flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold text-amber-950 bg-amber-50 hover:bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300 transition-colors cursor-pointer"
+                          >
+                            <span className="flex items-center gap-1 group-hover:hidden">
+                              <i className="fa-solid fa-phone text-[9px] text-primary" />
+                              <span>Phone</span>
+                              <i className="fa-solid fa-lock text-[9px] text-amber-600" />
+                            </span>
+                            <span className="hidden group-hover:flex items-center gap-1">
+                              <i className="fa-solid fa-lock text-[10px] text-amber-600" />
+                              <span>Log in to view</span>
+                            </span>
+                          </button>
+                        ) : (
+                          value
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -183,19 +213,47 @@ export default function DetailInfoCard({
                   </thead>
 
                   <tbody>
-                    {cleanRows.map(([label, value], index) => (
-                      <tr
-                        key={index}
-                        className="hover:bg-primary/[0.025] transition-colors"
-                      >
-                        <td className="text-xs sm:text-sm font-semibold text-text bg-surface border border-border p-3 text-center break-words capitalize">
-                          {label}
-                        </td>
-                        <td className="text-xs sm:text-sm text-text-secondary bg-surface border border-border p-3 text-center break-words leading-relaxed">
-                          {value}
-                        </td>
-                      </tr>
-                    ))}
+                    {cleanRows.map(([label, value], index) => {
+                      const isPhoneField = /phone|mobile|contact|call/i.test(label);
+                      const isLocked = isPhoneField && !userLoggedIn;
+
+                      return (
+                        <tr
+                          key={index}
+                          className="hover:bg-primary/[0.025] transition-colors"
+                        >
+                          <td className="text-xs sm:text-sm font-semibold text-text bg-surface border border-border p-3 text-center break-words capitalize">
+                            {label}
+                          </td>
+                          <td className="text-xs sm:text-sm text-text-secondary bg-surface border border-border p-3 text-center break-words leading-relaxed">
+                            {isLocked ? (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setIsModalOpen(false);
+                                  navigate('/login', { state: { from: location.pathname } });
+                                }}
+                                aria-label="Log in to view"
+                                title="Log in to view phone number"
+                                className="group inline-flex items-center justify-center gap-1.5 text-xs font-bold text-amber-950 bg-amber-50 hover:bg-amber-100 px-3 py-1 rounded-full border border-amber-300 transition-colors cursor-pointer"
+                              >
+                                <span className="flex items-center gap-1.5 group-hover:hidden">
+                                  <i className="fa-solid fa-phone text-[10px] text-primary" />
+                                  <span>Phone</span>
+                                  <i className="fa-solid fa-lock text-[10px] text-amber-600" />
+                                </span>
+                                <span className="hidden group-hover:flex items-center gap-1.5">
+                                  <i className="fa-solid fa-lock text-[11px] text-amber-600" />
+                                  <span>Log in to view</span>
+                                </span>
+                              </button>
+                            ) : (
+                              value
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

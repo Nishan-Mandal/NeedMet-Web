@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import blueTick from "../../../assets/blueTick.svg";
 import useInfo from "../../../contexts/infoContext.jsx";
+import { useAuth } from "../../../contexts/authContext.jsx";
 import { getHomeDetails } from "../../../services/firebase/firestore/homeService.js";
 import { useQuery } from "@tanstack/react-query";
 import QrPosterModal from "../../../components/QR/QrPosterModal.jsx";
@@ -23,6 +25,10 @@ function getOwnerLogo(fullName) {
 }
 
 export default function ActionBar({ listing = {} }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userLoggedIn = false } = useAuth() || {};
+
   const [copied, setCopied] = useState(false);
   const [showQrPoster, setShowQrPoster] = useState(false);
 
@@ -167,9 +173,15 @@ export default function ActionBar({ listing = {} }) {
       {/* QR Poster */}
       <button
         type="button"
-        onClick={() => setShowQrPoster(true)}
+        onClick={() => {
+          if (!userLoggedIn) {
+            navigate('/login', { state: { from: location.pathname } });
+            return;
+          }
+          setShowQrPoster(true);
+        }}
         aria-label="Generate QR poster"
-        title="QR Code Poster"
+        title={userLoggedIn ? "QR Code Poster" : "Log in to view QR poster"}
         className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-full border border-border/80 bg-white sm:bg-gray-50 hover:bg-primary-surface hover:text-primary hover:border-primary/40 text-text flex items-center justify-center transition-all duration-150 active:scale-95 box-shadow cursor-pointer shrink-0"
       >
         <i className="fa-solid fa-qrcode text-[11px] sm:text-xs text-primary" />
@@ -183,6 +195,33 @@ export default function ActionBar({ listing = {} }) {
       return isMobile ? (
         <span className="text-xs text-text-secondary italic self-center text-center">No contact</span>
       ) : null;
+    }
+
+    if (!userLoggedIn) {
+      return (
+        <button
+          type="button"
+          onClick={() => navigate('/login', { state: { from: location.pathname } })}
+          aria-label="Log in to view phone number"
+          title="Log in to view phone number"
+          className={`group flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center rounded-full border border-primary/25 bg-primary-surface text-primary hover:bg-primary hover:text-white transition-all duration-150 active:scale-95 box-shadow text-xs sm:text-sm font-bold cursor-pointer ${
+            isMobile ? "w-full" : "shrink-0"
+          }`}
+        >
+          {/* Default state: shows 'Phone' */}
+          <span className="flex items-center justify-center gap-1.5 sm:gap-2 group-hover:hidden truncate">
+            <i className="fa-solid fa-phone text-[11px] sm:text-xs text-current shrink-0" />
+            <span className="truncate">Phone</span>
+            <i className="fa-solid fa-lock text-[10px] text-current/80 shrink-0" />
+          </span>
+
+          {/* Hover state: shows 'Log in to view' with green background and white text */}
+          <span className="hidden group-hover:flex items-center justify-center gap-1.5 sm:gap-2 truncate animate-in fade-in duration-150">
+            <i className="fa-solid fa-lock text-[11px] sm:text-xs text-current shrink-0" />
+            <span className="truncate">Log in to view</span>
+          </span>
+        </button>
+      );
     }
 
     return (
@@ -215,11 +254,11 @@ export default function ActionBar({ listing = {} }) {
         rel="noopener noreferrer"
         aria-label="Get directions"
         title="Directions on Google Maps"
-        className={`flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-primary/25 bg-primary-surface text-primary hover:bg-primary hover:text-white transition-all duration-150 active:scale-95 box-shadow text-xs sm:text-sm font-bold no-underline ${
+        className={`group flex h-8.5 sm:h-9 px-3.5 sm:px-4 items-center justify-center gap-1.5 sm:gap-2 rounded-full border border-primary/25 bg-primary-surface text-primary hover:bg-primary hover:text-white transition-all duration-150 active:scale-95 box-shadow text-xs sm:text-sm font-bold no-underline ${
           isMobile ? "w-full" : "shrink-0"
         }`}
       >
-        <i className="fa-solid fa-location-arrow text-[11px] sm:text-xs text-primary group-hover:text-white shrink-0" />
+        <i className="fa-solid fa-location-arrow text-[11px] sm:text-xs text-current shrink-0" />
         <span className="truncate">Direction</span>
       </a>
     );

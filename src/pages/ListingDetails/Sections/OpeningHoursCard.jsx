@@ -177,14 +177,13 @@ export default function OpeningHoursCard({ businessHours }) {
                   >
                     <td className="h-9 sm:h-10 text-xs sm:text-[0.84rem] font-semibold text-text bg-surface border border-border px-2.5 py-1.5 sm:px-3 text-center break-words">
                       <div className="flex items-center justify-center gap-1.5">
+                        {isToday && (
+                          <span className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0 inline-block"></span>
+                        )}
                         <span className={isToday ? "text-primary font-bold" : "text-text"}>
                           {day}
                         </span>
-                        {isToday && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-1 py-0.2 rounded-full leading-none">
-                            Today
-                          </span>
-                        )}
+                      
                       </div>
                     </td>
 
