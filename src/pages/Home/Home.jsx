@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from "react";
+import React, { useEffect, useMemo, Fragment } from "react";
 import {
   Hero,
   TestimonialSection,
@@ -45,6 +45,18 @@ function Home() {
   }, [homeData, setContactNo]);
 
   const categoryList = homeData?.listings ?? [];
+
+  const activePromoBanners = useMemo(() => {
+    return (homeData?.promoBanners || [])
+      .filter((b) => b.isActive !== false)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }, [homeData?.promoBanners]);
+
+  const activeBanners = useMemo(() => {
+    return (homeData?.banners || [])
+      .filter((b) => b.isActive !== false)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }, [homeData?.banners]);
 
   const { data: recommendedListings = [] } = useQuery({
     queryKey: ["recommendedListings", "short"],
@@ -140,12 +152,15 @@ function Home() {
         />
       )}
 
-      {/* 8. FIRST PROMO BANNER */}
-      {homeData?.banners?.[0] && (
+      {/* 8. PROMO BANNER */}
+      {(activePromoBanners[0] || activeBanners[0]) && (
         <Banner
-          imageUrl={homeData.banners[0].imageUrl}
-          webUrl={homeData.banners[0].webUrl}
-          route={homeData.banners[0].route}
+          imageUrl={(activePromoBanners[0] || activeBanners[0]).imageUrl}
+          webUrl={(activePromoBanners[0] || activeBanners[0]).webUrl}
+          route={(activePromoBanners[0] || activeBanners[0]).route}
+          image={(activePromoBanners[0] || activeBanners[0]).image}
+          weburl={(activePromoBanners[0] || activeBanners[0]).weburl}
+          redirectUrl={(activePromoBanners[0] || activeBanners[0]).redirectUrl}
         />
       )}
 
@@ -155,7 +170,8 @@ function Home() {
 
         if (!listings || listings.length === 0) return null;
 
-        const bannerIndex = (index + 1) % (homeData?.banners?.length || 1);
+        const bannerPool = activeBanners.length > 0 ? activeBanners : activePromoBanners;
+        const bannerItem = bannerPool.length > 0 ? bannerPool[index % bannerPool.length] : null;
 
         return (
           <Fragment key={category}>
@@ -168,11 +184,14 @@ function Home() {
               CardComponent={SpotlightListingCard}
             />
 
-            {homeData?.banners?.[bannerIndex] && (
+            {bannerItem && (
               <Banner
-                imageUrl={homeData.banners[bannerIndex].imageUrl}
-                webUrl={homeData.banners[bannerIndex].webUrl}
-                route={homeData.banners[bannerIndex].route}
+                imageUrl={bannerItem.imageUrl}
+                webUrl={bannerItem.webUrl}
+                route={bannerItem.route}
+                image={bannerItem.image}
+                weburl={bannerItem.weburl}
+                redirectUrl={bannerItem.redirectUrl}
               />
             )}
           </Fragment>

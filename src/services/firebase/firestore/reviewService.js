@@ -65,7 +65,8 @@ export const getReviews = async ({listingId, pageSize, lastDoc = null}) => {
 export const submitListingReview = async ({
   listingId,
   factorRatings,
-  comment,
+  comment = "",
+  user = null,
 }) => {
   try {
     const listingRef = doc(firestore, "listings", listingId);
@@ -79,8 +80,6 @@ export const submitListingReview = async ({
     }
 
     const avgRating = Math.round(validValues.reduce((a, b) => a + b, 0) / validValues.length);
-
-    const isRatingOnly = comment.trim() === "";
 
     await runTransaction(firestore, async (transaction) => {
       const listingSnap = await transaction.get(listingRef);
@@ -130,11 +129,11 @@ export const submitListingReview = async ({
 
       const reviewData = {
         reviewId: reviewRef.id,
-        userId: "anonymous",
-        userName: "Anonymous",
+        userId: user?.uid || "anonymous",
+        userName: user?.displayName || user?.name || "Anonymous",
         rating: avgRating,
         factorRatings,
-        comment,
+        comment: (comment || "").trim(),
         createdAt: serverTimestamp(),
       };
 
@@ -143,9 +142,7 @@ export const submitListingReview = async ({
       transaction.update(listingRef, {
         rating: Number(newListingRating.toFixed(1)),
         reviews: currentReviews + 1,
-        ratingCount: isRatingOnly
-          ? currentRatingCount + 1
-          : currentRatingCount,
+        ratingCount: currentRatingCount + 1,
         ratingStats,
         factorAvgRatings,
         updatedAt: serverTimestamp(),

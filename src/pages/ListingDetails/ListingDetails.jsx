@@ -32,6 +32,7 @@ import { TimeSlot } from '../../data/model/listingModel.js';
 import { useState } from 'react';
 import { SubmitIcon, BackIcon } from '../../assets/collection.jsx';
 import { useListingDraft } from '../../contexts/listingDraftContext';
+import { useAuth } from '../../contexts/authContext.jsx';
 import { buildListingPreviewFromFormData } from '../../services/firebase/listing/listingPreviewBuilder.js';
 import { createListingPipeline } from '../../services/firebase/listing/listingPipeline.js';
 import { useToast } from '../../contexts/toastContext';
@@ -44,6 +45,7 @@ function ListingDetails() {
   const [uploadProgress, setUploadProgress] = useState('');
 
   const { showToast } = useToast();
+  const { userLoggedIn = false } = useAuth() || {};
   const { draftFormData, clearDraftFormData } = useListingDraft();
 
   const isPreviewPage = location.pathname === '/contribute/listing/preview';
@@ -80,7 +82,7 @@ function ListingDetails() {
     name: listing.name,
     description: listing.description || `Find ${listing.name} in ${listing.address} on NeedMet.`,
     image: listing.images?.map(img => img.fullUrl) || [],
-    telephone: listing.phone || listing.alternatePhone,
+    telephone: userLoggedIn ? (listing.phone || listing.alternatePhone) : undefined,
     address: {
       '@type': 'PostalAddress',
       streetAddress: listing.address,
@@ -239,8 +241,9 @@ function ListingDetails() {
           </div>
 
           {/* ── Full-width Ratings & Reviews Section ── */}
-          <div className="mt-6 sm:mt-8">
+          <div id="reviews-section" className="mt-6 sm:mt-8 scroll-mt-6">
             <RatingsV2
+              listingName={listing.name}
               rating={listing.rating}
               review_count={listing.reviews}
               ratingCount={listing.ratingCount}

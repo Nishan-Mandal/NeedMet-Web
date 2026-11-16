@@ -114,7 +114,7 @@ export default function Hyperlocal() {
   };
 
   return (
-    <section className="relative bg-[var(--primary)] isolate overflow-hidden font-primary py-[48px] max-[992px]:py-[38px] max-[576px]:py-[32px] text-white ">
+    <section className="relative w-full bg-[var(--primary)] isolate overflow-hidden font-primary px-[18px] sm:px-8 lg:px-[70px] py-[35px] sm:py-[45px] lg:py-[55px] text-white">
       <style>{`
         @keyframes mapPulseRing {
           0% { transform: scale(1); opacity: 0.7; }
@@ -153,19 +153,19 @@ export default function Hyperlocal() {
       />
 
       {/* Main Container */}
-      <div className="relative z-[1] mx-auto grid items-center justify-between grid-cols-1 lg:grid-cols-2 gap-[36px] max-[992px]:gap-[28px] max-[576px]:gap-[30px] px-[18px] sm:px-8 lg:px-[70px]">
+      <div className="relative z-[1] w-full mx-auto grid items-center justify-between grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         
         {/* Left Column: Context & City Selectors */}
-        <div className="flex flex-col gap-[20px] max-w-[540px]">
-          <span className="font-primary text-[11px] font-bold tracking-[0.22em] uppercase text-[var(--accent-emerald,#4ade80)]">
+        <div className="flex flex-col gap-3 sm:gap-4 max-w-xl">
+          <span className="font-primary text-[11px] font-bold tracking-[0.2em] uppercase text-[var(--accent-emerald,#4ade80)]">
             Hyperlocal Discovery
           </span>
 
-          <h2 className="font-heading m-0 text-white font-bold tracking-[-0.03em] text-[clamp(34px,4.5vw,54px)] leading-[1.12]">
-            Businesses Right<br />Around You
+          <h2 className="font-heading m-0 text-white font-bold tracking-[-0.02em] text-[clamp(1.5rem,3vw,2.2rem)] leading-[1.15]">
+            Businesses Right<br className="hidden sm:inline" /> Around You
           </h2>
 
-          <p className="font-primary m-0 text-white/75 text-[15px] leading-[1.65] max-w-[440px]">
+          <p className="font-primary m-0 text-white/80 text-sm sm:text-base leading-relaxed max-w-[480px]">
             NeedMet shows verified services and shops within walking distance. 
             Click any category tag on the map to search live verified listings instantly.
           </p>

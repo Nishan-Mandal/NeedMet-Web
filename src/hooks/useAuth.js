@@ -17,9 +17,12 @@ export default function useAuth() {
     ...base,
     currentUser,
     userData,
+    userLoggedIn: base?.userLoggedIn ?? Boolean(currentUser),
     isAdmin: isUserAdmin,
     isStaff: isUserAdmin || normalizedRole === "sales",
     authLoading: loading ?? false,
   };
 }
+
+export { useAuth };
 

@@ -1,5 +1,3 @@
-import ListingCard from "../ListingCard.jsx";
-import NewListingCard from "../NewListingCard.jsx";
 import { Link, useLocation } from "react-router-dom";
 import NoDataImg from "../../assets/no_data.png";
 import SystemState, { InlineNoListingsFound } from "../SystemState.jsx";

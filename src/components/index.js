@@ -11,16 +11,14 @@ export {
 } from './Sections';
 
 // ── Core Domain / Shared Widgets ──
-export { default as ListingCard } from './ListingCard.jsx';
-export { default as NewListingCard } from './NewListingCard.jsx';
 export { default as SpotlightListingCard } from './SpotlightListingCard.jsx';
 export { default as SearchAutocomplete } from './SearchAutocomplete.jsx';
 export { default as SystemState, InlineNoListingsFound } from './SystemState.jsx';
 export { default as SEO } from './SEO.jsx';
 export { default as Banner } from './Banner.jsx';
 export { default as SectionCard } from './SectionCard.jsx';
+export { default as CategoryCard } from './CategoryCard.jsx';
 export { default as KeyValueFields } from './KeyValueFields.jsx';
-export { default as ImageSlider } from './ImageSlider.jsx';
 
 // ── Articles ──
 export {

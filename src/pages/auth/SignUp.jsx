@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button, Loader } from "../../components";
 import { sendOTP, verifyOTP } from "../../services/firebase/auth/authService";
 import { resetRecaptcha } from "../../services/firebase/auth/recaptchaService";
@@ -18,6 +18,7 @@ export default function SignUp() {
 
   const { showToast } = useToast();
   const Navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,7 +74,11 @@ export default function SignUp() {
       await saveUserData(user, formData.name.trim(), formData.phone);
 
       showToast("Signed up successfully", "regular");
-      Navigate("/");
+      const redirectParam = new URLSearchParams(location.search).get("redirect");
+      const target = location.state?.from || redirectParam || "/";
+      const targetPath = typeof target === "string" ? target : target.pathname;
+      const safeTarget = (!targetPath || targetPath === "/login" || targetPath === "/signup") ? "/" : target;
+      Navigate(safeTarget, { replace: true });
     } catch (error) {
       console.error(error);
       showToast("Invalid OTP. Please check and try again.", "error");
@@ -276,7 +281,7 @@ export default function SignUp() {
 
           <p className="mt-6 text-center text-text-secondary text-sm">
             Already have an account?
-            <Link to="/login" className="text-primary font-semibold hover:text-primary-light transition-colors"> Log in</Link>
+            <Link to="/login" state={location.state} className="text-primary font-semibold hover:text-primary-light transition-colors"> Log in</Link>
           </p>
 
           <p className="mt-6 text-center text-text-secondary text-xs sm:text-sm leading-relaxed">

@@ -2,26 +2,76 @@
    Banner Class
 ========================= */
 class Banner {
-  constructor({ imageUrl = "", route = "", webUrl = "" } = {}) {
-    this.imageUrl = imageUrl;
-    this.webUrl = webUrl;
-    this.route = route;
+  constructor({
+    id = "",
+    title = "",
+    imageUrl = "",
+    image = "",
+    route = "",
+    redirectUrl = "",
+    webUrl = "",
+    weburl = "",
+    isActive = true,
+    order = 0,
+    createdAt = null,
+    updatedAt = null,
+  } = {}) {
+    const finalMobile = imageUrl || image || "";
+    const finalDesktop = webUrl || weburl || "";
+    const finalRoute = route || redirectUrl || "";
+
+    this.id = id;
+    this.title = title;
+    this.imageUrl = finalMobile;
+    this.image = finalMobile;
+    this.webUrl = finalDesktop;
+    this.weburl = finalDesktop;
+    this.route = finalRoute;
+    this.redirectUrl = finalRoute;
+    this.isActive = isActive !== false;
+    this.order = typeof order === "number" ? order : 0;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   static fromJson(json = {}) {
+    const finalMobile = json.imageUrl || json.image || "";
+    const finalDesktop = json.webUrl || json.weburl || "";
+    const finalRoute = json.route || json.redirectUrl || "";
+    const isActive = json.isActive !== undefined ? json.isActive : (json.active !== undefined ? json.active : true);
+
     return new Banner({
-      imageUrl: json.imageUrl || "",
-      route: json.route || "",
-      webUrl: json.webUrl || json.weburl || "",
+      id: json.id || "",
+      title: json.title || json.name || json.label || "",
+      imageUrl: finalMobile,
+      image: finalMobile,
+      route: finalRoute,
+      redirectUrl: finalRoute,
+      webUrl: finalDesktop,
+      weburl: finalDesktop,
+      isActive: isActive,
+      order: typeof json.order === "number" ? json.order : 0,
+      createdAt: json.createdAt || null,
+      updatedAt: json.updatedAt || null,
     });
   }
 
   toJson() {
-    return {
-      imageUrl: this.imageUrl,
-      route: this.route,
-      webUrl: this.webUrl,
+    const data = {
+      title: this.title || "",
+      imageUrl: this.imageUrl || "",
+      image: this.imageUrl || "",
+      webUrl: this.webUrl || "",
+      weburl: this.webUrl || "",
+      route: this.route || "",
+      redirectUrl: this.route || "",
+      isActive: this.isActive !== false,
+      order: typeof this.order === "number" ? this.order : 0,
     };
+    if (this.id) data.id = this.id;
+    if (this.createdAt) data.createdAt = this.createdAt;
+    if (this.updatedAt) data.updatedAt = this.updatedAt;
+    return data;
   }
 }
 
@@ -58,6 +108,7 @@ class Home {
     active = false,
     banners = [],
     promoBanners = [],
+    posters = [],
     categories = [],
     listings = [],
     whatsappSupport = "",
@@ -66,6 +117,7 @@ class Home {
     this.active = active;
     this.banners = banners;
     this.promoBanners = promoBanners;
+    this.posters = posters;
     this.categories = categories;
     this.listings = listings;
     this.whatsappSupport = whatsappSupport;
@@ -84,6 +136,10 @@ class Home {
       ),
 
       promoBanners: (json.promoBanners || []).map((e) =>
+        Banner.fromJson(e)
+      ),
+
+      posters: (json.posters || []).map((e) =>
         Banner.fromJson(e)
       ),
 
@@ -106,6 +162,7 @@ class Home {
       active: this.active,
       banners: this.banners.map((e) => e.toJson()),
       promoBanners: this.promoBanners.map((e) => e.toJson()),
+      posters: this.posters.map((e) => e.toJson()),
       categories: this.categories.map((e) => e.toJson()),
       listings: this.listings,
       whatsappSupport: this.whatsappSupport,

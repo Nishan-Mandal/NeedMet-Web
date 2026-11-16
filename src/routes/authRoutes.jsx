@@ -1,7 +1,5 @@
-import { lazy } from "react";
-
-const SignUp = lazy(() => import("../pages/auth/SignUp.jsx"));
-const LogIn = lazy(() => import("../pages/auth/LogIn.jsx"));
+import SignUp from "../pages/auth/SignUp.jsx";
+import LogIn from "../pages/auth/LogIn.jsx";
 
 export const authRoutes = [
   {
