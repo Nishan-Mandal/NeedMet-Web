@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import empty_thumb from "../../../assets/empty_thumb.png";
 import { generateSlug } from "../../../utils/slugify";
+import { cleanAddress } from "../../../utils/address.utils";
 
 export default function SearchListItemCard({ listing }) {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ export default function SearchListItemCard({ listing }) {
           <span className="material-symbols-outlined text-[15px] text-secondary">
             location_on
           </span>
-          <span>{listing.address || "Haldia, West Bengal"}</span>
+          <span>{cleanAddress(listing.address, "Haldia, West Bengal")}</span>
         </p>
 
         {listing.description && (

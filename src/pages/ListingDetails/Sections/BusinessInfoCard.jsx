@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../contexts/authContext.jsx';
 import { TimeSlot } from '../../../data/model/listingModel.js';
+import { cleanAddress } from '../../../utils/address.utils.js';
 
 /* ──────────────────────────────────────────────────────────────
    Social Links Configuration
@@ -226,7 +227,7 @@ export default function BusinessInfoCard({ listing = {}, className = '' }) {
             <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary-surface text-primary flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
               <i className="fa-solid fa-location-dot text-xs"></i>
             </div>
-            <span className="pt-0.5 font-medium break-words text-text/80">{listing.address}</span>
+            <span className="pt-0.5 font-medium break-words text-text/80">{cleanAddress(listing.address)}</span>
           </div>
         )}
 

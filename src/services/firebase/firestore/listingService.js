@@ -18,20 +18,20 @@ import { uploadListingImages } from "../storage/listingImageService";
 
 
 const formatData = (snap) => {
-  return snap.docs.map((doc) =>
-    Listing.fromJson({
-      listingId: doc.id,
-      ...doc.data(),
-    })
-  );
+  return snap.docs
+    .map((doc) =>
+      Listing.fromJson({
+        listingId: doc.id,
+        ...doc.data(),
+      })
+    )
+    .filter((listing) => Boolean(listing.verifiedBy));
 };
 
 
-const verificationConstraints = import.meta.env.DEV
-  ? []
-  : [
-      where("verifiedBy", "!=", null),
-    ];
+const verificationConstraints = [
+  where("verifiedBy", "!=", null),
+];
 
 const listingRef = collection(firestore, "listings");
 
@@ -44,16 +44,21 @@ export const generateListingRef = () => {
 // read - services
 //=========================================
 
-export const getListingById = async (listingId) => {
+export const getListingById = async (listingId, { checkVerified = true } = {}) => {
   try {
     const ref = doc(firestore, "listings", listingId);
     const snap = await getDoc(ref);
 
     if (!snap.exists()) return null;
 
+    const data = snap.data();
+    if (checkVerified && !data?.verifiedBy) {
+      return null;
+    }
+
     return Listing.fromJson({
         listingId: snap.id,
-        ...snap.data()
+        ...data
     });
 
   } catch (error) {
