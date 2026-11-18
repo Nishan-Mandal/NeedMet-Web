@@ -55,6 +55,7 @@ export default function ListingSection({
 }) {
   const location = useLocation();
   const isListingPage = location.pathname.includes('/listings');
+  const verifiedListings = (listings || []).filter((item) => Boolean(item?.verifiedBy));
 
   return (
     <section
@@ -62,7 +63,7 @@ export default function ListingSection({
       style={{ backgroundColor: bgColor || 'white' }}
     >
       {/* Header */}
-      {showSeeAll && see_all_navigate && listings.length !== 0 ? (
+      {showSeeAll && see_all_navigate && verifiedListings.length !== 0 ? (
         <HeaderWithSeeAll
           title={title}
           subTitle={subTitle}
@@ -73,7 +74,7 @@ export default function ListingSection({
       )}
 
       {/* Cards Grid */}
-      {listings.length === 0 ? (
+      {verifiedListings.length === 0 ? (
         isListingPage ? (
           <SystemState
             imageSrc={NoDataImg}
@@ -95,7 +96,7 @@ export default function ListingSection({
               : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 w-full"
           }
         >
-          {listings.map((listing) => (
+          {verifiedListings.map((listing) => (
             <CardComponent key={listing.listingId} listing={listing} />
           ))}
         </div>

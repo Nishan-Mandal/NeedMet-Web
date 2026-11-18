@@ -313,6 +313,31 @@ export default function Header() {
             <i className="fa-solid fa-shield-halved w-4 text-center"></i>
             <span>Privacy Policy</span>
           </button>
+
+          {/* Social Links */}
+          <div className="flex items-center gap-2.5 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-text-accent px-5 pt-4 pb-1 after:content-[''] after:flex-1 after:h-[1px] after:bg-border">Follow Us</div>
+          <div className="flex items-center gap-2.5 px-5 py-2">
+            <a
+              href="https://www.facebook.com/profile.php?id=61585759615730"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-primary bg-primary-surface hover:bg-primary hover:text-white transition-colors text-sm no-underline"
+              aria-label="Facebook"
+            >
+              <i className="fa-brands fa-facebook-f"></i>
+            </a>
+            <a
+              href="https://www.instagram.com/needmet.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-primary bg-primary-surface hover:bg-primary hover:text-white transition-colors text-sm no-underline"
+              aria-label="Instagram"
+            >
+              <i className="fa-brands fa-instagram"></i>
+            </a>
+            {/* <a href="/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center text-primary bg-primary-surface hover:bg-primary hover:text-white transition-colors text-sm no-underline" aria-label="YouTube"><i className="fa-brands fa-youtube"></i></a> */}
+            {/* <a href="/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center text-primary bg-primary-surface hover:bg-primary hover:text-white transition-colors text-sm no-underline" aria-label="LinkedIn"><i className="fa-brands fa-linkedin-in"></i></a> */}
+          </div>
         </div>
 
         {/* Auth action – pinned to bottom */}

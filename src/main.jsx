@@ -30,7 +30,7 @@ const queryClient = new QueryClient({
 
 const localStoragePersister = createSyncStoragePersister({
   storage: window.localStorage,
-  key: "NEEDMET_QUERY_OFFLINE_CACHE",
+  key: "NEEDMET_QUERY_OFFLINE_CACHE_V2",
 });
 
 createRoot(document.getElementById("root")).render(

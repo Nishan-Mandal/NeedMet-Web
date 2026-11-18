@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import empty_thumb from "../assets/empty_thumb.png";
 import { generateSlug } from "../utils/slugify.js";
+import { cleanAddress } from "../utils/address.utils.js";
 
 /**
  * Calculates current open/closed status from businessHours mapping.
@@ -167,7 +168,7 @@ export default function SpotlightListingCard({ listing = {} }) {
               location_on
             </span>
             <span className="truncate">
-              {listing?.address || "Haldia, West Bengal"}
+              {cleanAddress(listing?.address, "Haldia, West Bengal")}
             </span>
           </p>
         </div>

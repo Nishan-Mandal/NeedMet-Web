@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 const SOCIAL_LINKS = [
-  { href: "/", icon: "fa-brands fa-facebook-f", label: "Facebook" },
-  { href: "/", icon: "fa-brands fa-instagram", label: "Instagram" },
-  { href: "/", icon: "fa-brands fa-youtube", label: "YouTube" },
-  { href: "/", icon: "fa-brands fa-linkedin-in", label: "LinkedIn" },
+  { href: "https://www.facebook.com/profile.php?id=61585759615730", icon: "fa-brands fa-facebook-f", label: "Facebook" },
+  { href: "https://www.instagram.com/needmet.in/", icon: "fa-brands fa-instagram", label: "Instagram" },
+  // { href: "/", icon: "fa-brands fa-youtube", label: "YouTube" },
+  // { href: "/", icon: "fa-brands fa-linkedin-in", label: "LinkedIn" },
 ];
 
 const FOOTER_LINKS = [
@@ -29,6 +29,8 @@ export default function Footer() {
               <a
                 key={social.label}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-[38px] h-[38px] rounded-full flex items-center justify-center text-white/85 bg-white/[0.08] border border-white/10 hover:-translate-y-0.5 hover:bg-white/[0.16] hover:text-white transition-all duration-200 no-underline"
                 aria-label={social.label}
               >
