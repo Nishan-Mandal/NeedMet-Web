@@ -19,6 +19,7 @@ import {
 } from '../../components';
 
 import { generateSlug } from '../../utils/slugify.js';
+import { cleanAddress } from '../../utils/address.utils.js';
 import ErrorImg from '../../assets/error.png';
 import NoDataImg from '../../assets/no_data.png';
 import { useParams, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
@@ -55,6 +56,7 @@ function ListingDetails() {
     : null;
 
   const stateListing = location.state?.listing;
+  const verifiedStateListing = stateListing?.verifiedBy ? stateListing : undefined;
 
   const [searchParams] = useSearchParams();
   const shouldOpenReviewModal = searchParams.get('show') === 'review_modal';
@@ -64,11 +66,11 @@ function ListingDetails() {
   const { data: fetchedListing, isLoading: loading, error } = useQuery({
     queryKey: ['listingById', listingId],
     queryFn: () => getListingById(listingId),
-    initialData: stateListing,
+    initialData: verifiedStateListing,
     enabled: !isPreviewPage && !!listingId,
   });
 
-  const listing = isPreviewPage ? previewListing : fetchedListing || stateListing;
+  const listing = isPreviewPage ? previewListing : (fetchedListing || verifiedStateListing);
 
   // ── SEO ─────────────────────────────────────────────────────
   const cleanListingSlug = listing && listing.listingId !== 'preview-listing' ? generateSlug(listing.name) : '';
@@ -76,16 +78,18 @@ function ListingDetails() {
     ? `https://needmet.in/listing/${listing.listingId}/${cleanListingSlug}`
     : undefined;
 
+  const displayAddress = cleanAddress(listing?.address, listing?.city || 'Haldia, West Bengal');
+
   const schema = listing && listing.listingId !== 'preview-listing' ? {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     name: listing.name,
-    description: listing.description || `Find ${listing.name} in ${listing.address} on NeedMet.`,
+    description: listing.description || `Find ${listing.name} in ${displayAddress} on NeedMet.`,
     image: listing.images?.map(img => img.fullUrl) || [],
     telephone: userLoggedIn ? (listing.phone || listing.alternatePhone) : undefined,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: listing.address,
+      streetAddress: displayAddress,
       addressLocality: listing.city || 'Delhi',
       addressCountry: 'IN',
     },
@@ -195,8 +199,8 @@ function ListingDetails() {
       {/* SEO */}
       {listing && (
         <SEO
-          title={`${listing.name} in ${listing.address} - ${listing.category} | NeedMet`}
-          description={`Find ${listing.name} (${listing.category}) in ${listing.address}. Get contact details, location directions, opening hours, and more on NeedMet.`}
+          title={`${listing.name} in ${displayAddress} - ${listing.category} | NeedMet`}
+          description={`Find ${listing.name} (${listing.category}) in ${displayAddress}. Get contact details, location directions, opening hours, and more on NeedMet.`}
           canonicalUrl={canonicalUrl}
           schema={schema}
           image={listing.images?.[0]?.fullUrl}

@@ -58,19 +58,27 @@ function Home() {
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   }, [homeData?.banners]);
 
-  const { data: recommendedListings = [] } = useQuery({
+  const { data: rawRecommendedListings = [] } = useQuery({
     queryKey: ["recommendedListings", "short"],
     queryFn: () => getRecommendedListings({ quantity: 20 }),
     staleTime: 30 * 60 * 1000, // 30 minutes
     gcTime: 24 * 60 * 60 * 1000,
   });
 
-  const { data: newListings = [] } = useQuery({
+  const { data: rawNewListings = [] } = useQuery({
     queryKey: ["newListings", "short"],
     queryFn: () => getNewListings({ quantity: 20 }),
     staleTime: 15 * 60 * 1000, // 15 minutes
     gcTime: 24 * 60 * 60 * 1000,
   });
+
+  const recommendedListings = useMemo(() => {
+    return (rawRecommendedListings || []).filter((item) => Boolean(item?.verifiedBy));
+  }, [rawRecommendedListings]);
+
+  const newListings = useMemo(() => {
+    return (rawNewListings || []).filter((item) => Boolean(item?.verifiedBy));
+  }, [rawNewListings]);
 
   const categoryQueries = useQueries({
     queries: categoryList.map((category) => ({
@@ -166,7 +174,8 @@ function Home() {
 
       {/* 9. CATEGORY LISTINGS & BANNERS */}
       {categoryList.map((category, index) => {
-        const listings = categoryQueries[index]?.data ?? [];
+        const rawCategoryListings = categoryQueries[index]?.data ?? [];
+        const listings = (rawCategoryListings || []).filter((item) => Boolean(item?.verifiedBy));
 
         if (!listings || listings.length === 0) return null;
 
