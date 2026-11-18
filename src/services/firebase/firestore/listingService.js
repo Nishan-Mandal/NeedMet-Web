@@ -310,7 +310,6 @@ export const getSimilarListingsPaginated = async ({ listingId, category, quantit
             listingRef,
             ...verificationConstraints,
             where("category", "==", category),
-            where(documentId(), "!=", listingId),
             startAfter(pageParam),
             limit(quantity)
         );
@@ -319,7 +318,7 @@ export const getSimilarListingsPaginated = async ({ listingId, category, quantit
         const lastDoc = snap.docs[snap.docs.length - 1] ?? null;
 
         return {
-            listings: formatData(snap),
+            listings: formatData(snap).filter((listing) => listing.listingId !== listingId),
             lastDoc,
             hasMore: snap.docs.length === quantity
         };

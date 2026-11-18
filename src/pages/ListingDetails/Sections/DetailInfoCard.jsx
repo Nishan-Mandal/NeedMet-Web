@@ -111,10 +111,13 @@ export default function DetailInfoCard({
                       key={index}
                       className="hover:bg-primary/[0.025] transition-colors"
                     >
-                      <td className="h-9 sm:h-10 text-xs sm:text-[0.84rem] font-semibold text-text bg-surface border border-border px-2.5 py-1.5 sm:px-3 text-center break-words capitalize">
+                      <td className="h-10 sm:h-11 py-2 sm:py-2.5 px-2.5 sm:px-3 text-xs sm:text-[0.84rem] font-semibold text-text bg-surface border border-border text-center break-words capitalize align-middle">
                         {label}
                       </td>
-                      <td className="h-9 sm:h-10 text-xs sm:text-[0.84rem] text-text-secondary bg-surface border border-border px-2.5 py-1.5 sm:px-3 text-center break-words truncate">
+                      <td
+                        title={typeof value === 'string' ? value : undefined}
+                        className="h-10 sm:h-11 py-2 sm:py-2.5 px-2.5 sm:px-3 text-xs sm:text-[0.84rem] text-text-secondary bg-surface border border-border text-center break-words leading-relaxed sm:leading-normal align-middle"
+                      >
                         {isLocked ? (
                           <button
                             type="button"

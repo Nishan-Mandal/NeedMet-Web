@@ -78,7 +78,7 @@ function ListingDetails() {
     ? `https://needmet.in/listing/${listing.listingId}/${cleanListingSlug}`
     : undefined;
 
-  const displayAddress = cleanAddress(listing?.address);
+  const displayAddress = cleanAddress(listing?.address, listing?.city || 'Haldia, West Bengal');
 
   const schema = listing && listing.listingId !== 'preview-listing' ? {
     '@context': 'https://schema.org',
