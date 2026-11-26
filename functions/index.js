@@ -26,6 +26,10 @@ const SOCIAL_BOT_USER_AGENTS = [
   "skypeuripreview",
   "applebot",
   "googlebot",
+  "google-inspectiontool",
+  "adsbot-google",
+  "storebot-google",
+  "googlebot-image",
   "bingbot",
   "duckduckbot",
   "baiduspider",
@@ -180,6 +184,88 @@ async function getIndexHtml() {
   );
 }
 
+/**
+ * Injects page-specific SEO tags, canonical link, OpenGraph/Twitter meta, JSON-LD schemas,
+ * and optional semantic fallback HTML inside <div id="root"> into the production SPA index.html.
+ * Serving the same enriched HTML to crawlers and browsers avoids User-Agent header stripping
+ * issues on Firebase Hosting while preserving full React hydration for human visitors.
+ */
+function injectSeoIntoHtml(
+  baseHtml,
+  {
+    title,
+    description,
+    canonicalUrl,
+    ogType = "website",
+    imageUrl = "https://needmet.in/og-default.png",
+    imageType = "image/png",
+    imageAlt = "NeedMet",
+    schemas = [],
+    ssrBodyHtml = "",
+  }
+) {
+  let html = String(baseHtml || "");
+
+  // Strip fallback head tags that will be replaced with page-specific values
+  html = html
+    .replace(/<title\b[^>]*>[\s\S]*?<\/title>/gi, "")
+    .replace(/<meta\b[^>]*\bname=["']description["'][^>]*>/gi, "")
+    .replace(/<link\b[^>]*\brel=["']canonical["'][^>]*>/gi, "")
+    .replace(/<meta\b[^>]*\bproperty=["']og:[^"']*["'][^>]*>/gi, "")
+    .replace(/<meta\b[^>]*\bname=["']twitter:[^"']*["'][^>]*>/gi, "")
+    .replace(/<script\b[^>]*\bid=["']seo-schema-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
+
+  const schemaScripts = schemas
+    .filter(Boolean)
+    .map((schemaObj, idx) => {
+      const idAttr = idx === 0 ? ' id="seo-schema-jsonld"' : "";
+      return `  <script type="application/ld+json"${idAttr}>\n${JSON.stringify(schemaObj)}\n  </script>`;
+    })
+    .join("\n");
+
+  const seoHeadBlock = `
+  <title>${escapeHtml(title)}</title>
+  <meta name="description" content="${escapeHtml(description)}" />
+  <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
+
+  <!-- Open Graph / WhatsApp / Facebook / LinkedIn -->
+  <meta property="og:type" content="${escapeHtml(ogType)}" />
+  <meta property="og:site_name" content="NeedMet" />
+  <meta property="og:url" content="${escapeHtml(canonicalUrl)}" />
+  <meta property="og:title" content="${escapeHtml(title)}" />
+  <meta property="og:description" content="${escapeHtml(description)}" />
+  <meta property="og:image" content="${escapeHtml(imageUrl)}" />
+  <meta property="og:image:secure_url" content="${escapeHtml(imageUrl)}" />
+  <meta property="og:image:type" content="${escapeHtml(imageType)}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="${escapeHtml(imageAlt)}" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="${escapeHtml(canonicalUrl)}" />
+  <meta name="twitter:title" content="${escapeHtml(title)}" />
+  <meta name="twitter:description" content="${escapeHtml(description)}" />
+  <meta name="twitter:image" content="${escapeHtml(imageUrl)}" />
+  <meta name="twitter:image:alt" content="${escapeHtml(imageAlt)}" />
+
+${schemaScripts}
+</head>`;
+
+  if (/<\/head>/i.test(html)) {
+    html = html.replace(/<\/head>/i, seoHeadBlock);
+  }
+
+  if (ssrBodyHtml) {
+    html = html.replace(
+      /<div\s+id=["']root["']\s*>\s*<\/div>/i,
+      `<div id="root">${ssrBodyHtml}</div>`
+    );
+  }
+
+  return html;
+}
+
 // Helper to extract listingId from any URL format or query param
 function extractListingId(req) {
   if (req.query && req.query.id) {
@@ -224,31 +310,33 @@ exports.shareListing = onRequest(
 
     const listingId = extractListingId(req);
 
-    // 1. If human visitor or missing ID, serve standard React SPA HTML
-    if (!isBot || !listingId) {
+    // 1. Missing ID: serve standard React SPA HTML with 404 status
+    if (!listingId) {
       const fullHtml = await getIndexHtml();
       res.set("Cache-Control", "private, no-cache, no-store, must-revalidate");
-      return res.status(200).send(fullHtml);
+      return res.status(404).send(fullHtml);
     }
 
-    // 2. Crawler bot: fetch listing data from Firestore
+    // 2. Fetch listing data from Firestore and serve SEO-enriched SPA HTML to all clients & crawlers
     try {
       const docSnap = await db.collection("listings").doc(listingId).get();
 
       if (!docSnap.exists) {
-        logShareStatus({
-          listingId,
-          isBot: true,
-          botType: matchedBot,
-          userAgent: req.headers["user-agent"] || "",
-          ip: clientIp,
-          status: "listing_not_found",
-          path: req.path || req.originalUrl || "",
-        });
+        if (isBot) {
+          logShareStatus({
+            listingId,
+            isBot: true,
+            botType: matchedBot,
+            userAgent: req.headers["user-agent"] || "",
+            ip: clientIp,
+            status: "listing_not_found",
+            path: req.path || req.originalUrl || "",
+          });
+        }
 
         const fullHtml = await getIndexHtml();
         res.set("Cache-Control", "private, no-cache, no-store, must-revalidate");
-        return res.status(200).send(fullHtml);
+        return res.status(404).send(fullHtml);
       }
 
       const listing = docSnap.data();
@@ -295,17 +383,19 @@ exports.shareListing = onRequest(
         ? `https://needmet.in/listing/${listingId}/${slug}`
         : `https://needmet.in/listing/${listingId}`;
 
-      logShareStatus({
-        listingId,
-        listingName: name,
-        category,
-        isBot: true,
-        botType: matchedBot,
-        userAgent: req.headers["user-agent"] || "",
-        ip: clientIp,
-        status: "preview_generated",
-        path: req.path || req.originalUrl || "",
-      });
+      if (isBot) {
+        logShareStatus({
+          listingId,
+          listingName: name,
+          category,
+          isBot: true,
+          botType: matchedBot,
+          userAgent: req.headers["user-agent"] || "",
+          ip: clientIp,
+          status: "preview_generated",
+          path: req.path || req.originalUrl || "",
+        });
+      }
 
       // Prepare rich Schema.org structured data
       const localBusinessSchema = {
@@ -358,84 +448,47 @@ exports.shareListing = onRequest(
         ]
       };
 
-      // Construct clean, crawlable HTML: showing image, name, about, and address
-      const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${escapeHtml(title)}</title>
-  <meta name="description" content="${escapeHtml(description)}" />
-  <link rel="canonical" href="${canonicalUrl}" />
-
-  <!-- Open Graph / WhatsApp / Facebook / LinkedIn -->
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="NeedMet" />
-  <meta property="og:url" content="${canonicalUrl}" />
-  <meta property="og:title" content="${escapeHtml(title)}" />
-  <meta property="og:description" content="${escapeHtml(description)}" />
-  <meta property="og:image" content="${imageUrl}" />
-  <meta property="og:image:secure_url" content="${imageUrl}" />
-  <meta property="og:image:type" content="${imageType}" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="${escapeHtml(name)}" />
-
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="${canonicalUrl}" />
-  <meta name="twitter:title" content="${escapeHtml(title)}" />
-  <meta name="twitter:description" content="${escapeHtml(description)}" />
-  <meta name="twitter:image" content="${imageUrl}" />
-  <meta name="twitter:image:alt" content="${escapeHtml(name)}" />
-
-  <!-- Schema.org Structured Data -->
-  <script type="application/ld+json">
-${JSON.stringify(localBusinessSchema)}
-  </script>
-  <script type="application/ld+json">
-${JSON.stringify(breadcrumbsSchema)}
-  </script>
-</head>
-<body style="font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1f2937; max-width: 800px; margin: 0 auto; padding: 20px;">
-  <article>
+      const ssrBodyHtml = `<article style="font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1f2937; max-width: 800px; margin: 0 auto; padding: 20px;">
     <header>
       <h1 style="font-size: 28px; margin-bottom: 8px;">${escapeHtml(name)}</h1>
       ${address ? `<p style="color: #4b5563; font-size: 15px; margin-bottom: 16px;"><strong>Address:</strong> ${escapeHtml(address)}</p>` : ""}
     </header>
-
-    ${imageUrl ? `
-    <div style="margin: 20px 0;">
-      <img src="${imageUrl}" alt="${escapeHtml(name)}" width="1200" height="630" style="max-width: 100%; height: auto; border-radius: 8px;" />
-    </div>` : ""}
-
-    ${hasAbout ? `
+    ${imageUrl ? `<div style="margin: 20px 0;"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(name)}" width="1200" height="630" style="max-width: 100%; height: auto; border-radius: 8px;" /></div>` : ""}
     <section style="margin: 24px 0;">
-      <h2 style="font-size: 20px; margin-bottom: 8px;">About</h2>
-      <p style="white-space: pre-line;">${escapeHtml(listing.description)}</p>
-    </section>` : `
-    <section style="margin: 24px 0;">
-      <p>${escapeHtml(description)}</p>
-    </section>`}
-  </article>
-</body>
-</html>`;
+      ${hasAbout ? `<h2 style="font-size: 20px; margin-bottom: 8px;">About</h2><p style="white-space: pre-line;">${escapeHtml(listing.description)}</p>` : `<p>${escapeHtml(description)}</p>`}
+    </section>
+  </article>`;
 
-      res.set("Cache-Control", "private, max-age=300");
+      const baseHtml = await getIndexHtml();
+      const html = injectSeoIntoHtml(baseHtml, {
+        title,
+        description,
+        canonicalUrl,
+        ogType: "website",
+        imageUrl,
+        imageType,
+        imageAlt: name,
+        schemas: [localBusinessSchema, breadcrumbsSchema],
+        ssrBodyHtml,
+      });
+
+      res.set("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800");
       return res.status(200).send(html);
     } catch (error) {
       console.error(`Error generating preview for listing ${listingId}:`, error);
 
-      logShareStatus({
-        listingId,
-        isBot: true,
-        botType: matchedBot,
-        userAgent: req.headers["user-agent"] || "",
-        ip: clientIp,
-        status: "error",
-        error: error.message || String(error),
-        path: req.path || req.originalUrl || "",
-      });
+      if (isBot) {
+        logShareStatus({
+          listingId,
+          isBot: true,
+          botType: matchedBot,
+          userAgent: req.headers["user-agent"] || "",
+          ip: clientIp,
+          status: "error",
+          error: error.message || String(error),
+          path: req.path || req.originalUrl || "",
+        });
+      }
 
       const fullHtml = await getIndexHtml();
       res.set("Cache-Control", "private, no-cache, no-store, must-revalidate");
@@ -486,14 +539,14 @@ exports.shareArticle = onRequest(
 
     const articleId = extractArticleId(req);
 
-    // 1. If human visitor or missing ID, serve standard SPA HTML
-    if (!isBot || !articleId) {
+    // 1. Missing ID: serve standard SPA HTML with 404 status
+    if (!articleId) {
       const fullHtml = await getIndexHtml();
       res.set("Cache-Control", "private, no-cache, no-store, must-revalidate");
-      return res.status(200).send(fullHtml);
+      return res.status(404).send(fullHtml);
     }
 
-    // 2. Crawler bot: fetch article from Firestore "gen_articles"
+    // 2. Fetch article from Firestore "gen_articles" and serve SEO-enriched SPA HTML to all clients & crawlers
     try {
       let docSnap = await db.collection("gen_articles").doc(articleId).get();
 
@@ -509,19 +562,21 @@ exports.shareArticle = onRequest(
       }
 
       if (!docSnap.exists) {
-        logShareStatus({
-          articleId,
-          isBot: true,
-          botType: matchedBot,
-          userAgent: req.headers["user-agent"] || "",
-          ip: clientIp,
-          status: "article_not_found",
-          path: req.path || req.originalUrl || "",
-        });
+        if (isBot) {
+          logShareStatus({
+            articleId,
+            isBot: true,
+            botType: matchedBot,
+            userAgent: req.headers["user-agent"] || "",
+            ip: clientIp,
+            status: "article_not_found",
+            path: req.path || req.originalUrl || "",
+          });
+        }
 
         const fullHtml = await getIndexHtml();
         res.set("Cache-Control", "private, no-cache, no-store, must-revalidate");
-        return res.status(200).send(fullHtml);
+        return res.status(404).send(fullHtml);
       }
 
       const article = docSnap.data();
@@ -551,17 +606,19 @@ exports.shareArticle = onRequest(
       const authorName = "NeedMet Editorial";
       const category = "Local Guides";
 
-      logShareStatus({
-        articleId: realId,
-        articleTitle: title,
-        category,
-        isBot: true,
-        botType: matchedBot,
-        userAgent: req.headers["user-agent"] || "",
-        ip: clientIp,
-        status: "article_preview_generated",
-        path: req.path || req.originalUrl || "",
-      });
+      if (isBot) {
+        logShareStatus({
+          articleId: realId,
+          articleTitle: title,
+          category,
+          isBot: true,
+          botType: matchedBot,
+          userAgent: req.headers["user-agent"] || "",
+          ip: clientIp,
+          status: "article_preview_generated",
+          path: req.path || req.originalUrl || "",
+        });
+      }
 
       const blogPostingSchema = {
         "@context": "https://schema.org",
@@ -612,83 +669,132 @@ exports.shareArticle = onRequest(
       };
 
       const articleBodyHtml = simpleMarkdownToHtml(article.content_markdown || description);
-
-      const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${escapeHtml(title)}</title>
-  <meta name="description" content="${escapeHtml(description)}" />
-  <link rel="canonical" href="${canonicalUrl}" />
-
-  <!-- Open Graph / WhatsApp / Facebook / LinkedIn -->
-  <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="NeedMet" />
-  <meta property="og:url" content="${canonicalUrl}" />
-  <meta property="og:title" content="${escapeHtml(title)}" />
-  <meta property="og:description" content="${escapeHtml(description)}" />
-  <meta property="og:image" content="${imageUrl}" />
-  <meta property="og:image:secure_url" content="${imageUrl}" />
-  <meta property="og:image:type" content="${imageType}" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="${escapeHtml(title)}" />
-
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="${canonicalUrl}" />
-  <meta name="twitter:title" content="${escapeHtml(title)}" />
-  <meta name="twitter:description" content="${escapeHtml(description)}" />
-  <meta name="twitter:image" content="${imageUrl}" />
-  <meta name="twitter:image:alt" content="${escapeHtml(title)}" />
-
-  <!-- Schema.org Structured Data -->
-  <script type="application/ld+json">
-${JSON.stringify(blogPostingSchema)}
-  </script>
-  <script type="application/ld+json">
-${JSON.stringify(breadcrumbsSchema)}
-  </script>
-</head>
-<body style="font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1f2937; max-width: 800px; margin: 0 auto; padding: 20px;">
-  <article>
+      const ssrBodyHtml = `<article style="font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1f2937; max-width: 800px; margin: 0 auto; padding: 20px;">
     <header>
       <h1 style="font-size: 28px; margin-bottom: 16px;">${escapeHtml(title)}</h1>
     </header>
-
-    ${imageUrl ? `
-    <div style="margin: 20px 0;">
-      <img src="${imageUrl}" alt="${escapeHtml(title)}" width="1200" height="630" style="max-width: 100%; height: auto; border-radius: 8px;" />
-    </div>` : ""}
-
+    ${imageUrl ? `<div style="margin: 20px 0;"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(title)}" width="1200" height="630" style="max-width: 100%; height: auto; border-radius: 8px;" /></div>` : ""}
     <div class="article-content" style="font-size: 16px; margin: 24px 0;">
       ${articleBodyHtml}
     </div>
-  </article>
-</body>
-</html>`;
+  </article>`;
 
-      res.set("Cache-Control", "private, max-age=300");
+      const baseHtml = await getIndexHtml();
+      const html = injectSeoIntoHtml(baseHtml, {
+        title: `${title} | NeedMet Guides`,
+        description,
+        canonicalUrl,
+        ogType: "article",
+        imageUrl,
+        imageType,
+        imageAlt: title,
+        schemas: [blogPostingSchema, breadcrumbsSchema],
+        ssrBodyHtml,
+      });
+
+      res.set("Cache-Control", "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800");
       return res.status(200).send(html);
     } catch (error) {
       console.error(`Error generating preview for article ${articleId}:`, error);
 
-      logShareStatus({
-        articleId,
-        isBot: true,
-        botType: matchedBot,
-        userAgent: req.headers["user-agent"] || "",
-        ip: clientIp,
-        status: "error",
-        error: error.message || String(error),
-        path: req.path || req.originalUrl || "",
-      });
+      if (isBot) {
+        logShareStatus({
+          articleId,
+          isBot: true,
+          botType: matchedBot,
+          userAgent: req.headers["user-agent"] || "",
+          ip: clientIp,
+          status: "error",
+          error: error.message || String(error),
+          path: req.path || req.originalUrl || "",
+        });
+      }
 
       const fullHtml = await getIndexHtml();
       res.set("Cache-Control", "private, no-cache, no-store, must-revalidate");
       return res.status(200).send(fullHtml);
     }
+  }
+);
+
+function formatSlugTitle(slug = "") {
+  return String(slug)
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim();
+}
+
+/**
+ * Cloud Function to inject page-specific canonical URLs, titles, descriptions, and semantic
+ * fallback HTML for category, listing collection, blog index, and documentation routes.
+ */
+exports.seoPage = onRequest(
+  {
+    cors: true,
+    region: "us-central1",
+    maxInstances: 10,
+  },
+  async (req, res) => {
+    const rawPath = (req.path || req.url || "/").split("?")[0];
+    const cleanPath = rawPath.length > 1 && rawPath.endsWith("/") ? rawPath.slice(0, -1) : rawPath;
+    const canonicalUrl = `https://needmet.in${cleanPath}`;
+
+    let title = "NeedMet | Find Local Businesses & Services Near You";
+    let description =
+      "Find trusted local businesses and services near you. Ratings, reviews, hours, and directions — all on NeedMet.";
+    let heading = "NeedMet Local Business Directory";
+
+    if (cleanPath.startsWith("/listings/category/")) {
+      const slug = cleanPath.replace("/listings/category/", "").split("/")[0];
+      const categoryName = formatSlugTitle(decodeURIComponent(slug || "Local"));
+      title = `Best ${categoryName} Services | NeedMet`;
+      description = `Find the best ${categoryName} services and businesses on NeedMet. View ratings, customer reviews, contact details, maps, and hours.`;
+      heading = `Best ${categoryName} Services`;
+    } else if (cleanPath === "/listings/recommended") {
+      title = "Recommended Local Businesses | NeedMet";
+      description = "Discover top-rated local services and businesses handpicked for you on NeedMet.";
+      heading = "Recommended Local Businesses";
+    } else if (cleanPath === "/listings/newly_added") {
+      title = "Newly Added Local Businesses | NeedMet";
+      description = "Check out the latest local service providers, shops, and businesses newly added to NeedMet.";
+      heading = "Newly Added Local Businesses";
+    } else if (cleanPath === "/all_categories") {
+      title = "All Service Categories | NeedMet";
+      description = "Browse all local service categories and trusted businesses on NeedMet.";
+      heading = "All Service Categories";
+    } else if (cleanPath === "/blogs") {
+      title = "Local Guides & Articles | NeedMet";
+      description = "Read helpful local guides, tips, and business spotlights on NeedMet.";
+      heading = "NeedMet Guides & Articles";
+    } else if (cleanPath === "/search") {
+      title = "Search Local Businesses & Services | NeedMet";
+      description = "Search for trusted local businesses, shops, and service providers near you on NeedMet.";
+      heading = "Search Local Businesses";
+    } else if (cleanPath.startsWith("/docs/")) {
+      const docSlug = cleanPath.replace("/docs/", "").split("/")[0];
+      const docTitle = formatSlugTitle(decodeURIComponent(docSlug || "Information"));
+      title = `${docTitle} | NeedMet`;
+      description = `Read our official ${docTitle} document on NeedMet.`;
+      heading = docTitle;
+    }
+
+    const ssrBodyHtml = `<main style="font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1f2937; max-width: 800px; margin: 0 auto; padding: 20px;">
+    <h1>${escapeHtml(heading)}</h1>
+    <p>${escapeHtml(description)}</p>
+  </main>`;
+
+    const baseHtml = await getIndexHtml();
+    const html = injectSeoIntoHtml(baseHtml, {
+      title,
+      description,
+      canonicalUrl,
+      ogType: "website",
+      imageAlt: title,
+      ssrBodyHtml,
+    });
+
+    res.set("Cache-Control", "public, max-age=3600, s-maxage=2592000, stale-while-revalidate=2592000");
+    return res.status(200).send(html);
   }
 );
 

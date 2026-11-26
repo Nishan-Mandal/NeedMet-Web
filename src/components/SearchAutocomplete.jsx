@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlgoliaService } from "../services/algolia/searchService";
 import useDebounce from "../hooks/useDebounce";
+import { generateSlug } from "../utils/slugify";
 
 /**
  * Helper to highlight matching substrings in suggestion items
@@ -182,7 +183,8 @@ export default function SearchAutocomplete({
         const id = item.value.objectID || item.value.listingId || item.value.id;
         const name = item.value.title || item.value.name || item.value.businessName || "";
         if (id) {
-          navigate(`/listing/${id}`);
+          const slug = name ? generateSlug(name) : "";
+          navigate(slug ? `/listing/${id}/${slug}` : `/listing/${id}`);
         } else if (name) {
           navigate(`/search?q=${encodeURIComponent(name)}`);
         }
