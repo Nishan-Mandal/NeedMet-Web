@@ -55,11 +55,16 @@ function LegalPage() {
     enabled: !!legalDocument,
   });
 
+  const canonicalUrl = legalDocument ? `https://needmet.in/docs/${legalDocument}` : undefined;
+
   if (loading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 bg-[#f8faf9]">
-        <Loader text="Loading document..." />
-      </div>
+      <>
+        <SEO canonicalUrl={canonicalUrl} />
+        <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 bg-[#f8faf9]">
+          <Loader text="Loading document..." />
+        </div>
+      </>
     );
   }
 

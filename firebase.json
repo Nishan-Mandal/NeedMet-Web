@@ -45,6 +45,26 @@
         "function": "shareArticle"
       },
       {
+        "source": "/listings/**",
+        "function": "seoPage"
+      },
+      {
+        "source": "/all_categories",
+        "function": "seoPage"
+      },
+      {
+        "source": "/blogs",
+        "function": "seoPage"
+      },
+      {
+        "source": "/docs/**",
+        "function": "seoPage"
+      },
+      {
+        "source": "/search",
+        "function": "seoPage"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

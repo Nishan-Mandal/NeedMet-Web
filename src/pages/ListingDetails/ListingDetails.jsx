@@ -61,7 +61,7 @@ function ListingDetails() {
   const [searchParams] = useSearchParams();
   const shouldOpenReviewModal = searchParams.get('show') === 'review_modal';
 
-  const { listingId } = useParams();
+  const { listingId, slug: routeSlug } = useParams();
 
   const { data: fetchedListing, isLoading: loading, error } = useQuery({
     queryKey: ['listingById', listingId],
@@ -73,9 +73,9 @@ function ListingDetails() {
   const listing = isPreviewPage ? previewListing : (fetchedListing || verifiedStateListing);
 
   // ── SEO ─────────────────────────────────────────────────────
-  const cleanListingSlug = listing && listing.listingId !== 'preview-listing' ? generateSlug(listing.name) : '';
-  const canonicalUrl = listing && listing.listingId !== 'preview-listing'
-    ? `https://needmet.in/listing/${listing.listingId}/${cleanListingSlug}`
+  const cleanListingSlug = listing && listing.listingId !== 'preview-listing' ? generateSlug(listing.name) : routeSlug || '';
+  const canonicalUrl = !isPreviewPage && listingId
+    ? (cleanListingSlug ? `https://needmet.in/listing/${listingId}/${cleanListingSlug}` : `https://needmet.in/listing/${listingId}`)
     : undefined;
 
   const displayAddress = cleanAddress(listing?.address, listing?.city || 'Haldia, West Bengal');
@@ -143,7 +143,14 @@ function ListingDetails() {
     );
   }
 
-  if (loading) return <ListingDetailsLoader />;
+  if (loading) {
+    return (
+      <>
+        <SEO canonicalUrl={canonicalUrl} />
+        <ListingDetailsLoader />
+      </>
+    );
+  }
 
   if (!listing) {
     return (
